@@ -1,0 +1,57 @@
+---
+import Icon from '@/components/icons/Icon.astro';
+import { privacyPolicies } from '@/data/privacy-policies';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Política de privacidad"
+  description="Políticas de privacidad, cookies, autorización y tratamiento de datos personales de EMCOSALUD."
+>
+  <section class="bg-brand-blue-dark py-12 text-white md:py-14">
+    <div class="container-page">
+      <p class="mb-2 text-sm font-semibold uppercase tracking-wide text-brand-green-light">
+        Institucional
+      </p>
+      <h1 class="m-0 text-3xl font-bold md:text-4xl">Política de privacidad</h1>
+      <p class="mt-3 max-w-2xl text-white/90">
+        Consulta y descarga los documentos sobre protección de datos personales y uso del sitio web.
+      </p>
+    </div>
+  </section>
+
+  <section class="section-block">
+    <div class="container-page max-w-3xl">
+      <div class="grid gap-5">
+        {
+          privacyPolicies.map((policy) => (
+            <a
+              href={policy.href}
+              target={policy.external ? '_blank' : undefined}
+              rel={policy.external ? 'noopener noreferrer' : undefined}
+              class="card-base group flex gap-4 no-underline text-inherit transition hover:border-brand-green hover:shadow-brand"
+            >
+              <span
+                class="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-xl bg-brand-blue text-white"
+                aria-hidden="true"
+              >
+                <span class="text-lg font-bold leading-none">{policy.badge}</span>
+              </span>
+              <span class="min-w-0 flex-1">
+                <h2 class="m-0 mb-1 flex items-center gap-2 text-lg font-bold text-brand-blue">
+                  <Icon name={policy.icon} size={20} class="text-brand-green shrink-0" />
+                  {policy.title}
+                </h2>
+                <p class="m-0 text-sm leading-relaxed text-slate-600">{policy.description}</p>
+                <span class="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-brand-green-dark group-hover:underline">
+                  Ver documento
+                  <Icon name="external" size={14} />
+                </span>
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>

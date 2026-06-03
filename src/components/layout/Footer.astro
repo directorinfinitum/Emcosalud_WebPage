@@ -22,7 +22,7 @@ const footerLinkIcons: Record<string, IconName> = {
 ---
 
 <footer class="bg-brand-blue-dark text-white">
-  <div class="container-page grid gap-8 py-12 md:grid-cols-2 lg:grid-cols-4">
+  <div class="container-page grid gap-8 py-12 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
     <div>
       <Logo variant="footer" showTagline={true} />
       <p class="mt-4 text-sm leading-relaxed text-white/85">{site.description}</p>
@@ -122,6 +122,43 @@ const footerLinkIcons: Record<string, IconName> = {
           </li>
         ))}
       </ul>
+    </div>
+
+    <div
+      class="flex flex-col items-center justify-start gap-4 border-t border-white/10 pt-8 lg:col-span-4 lg:border-t-0 lg:pt-0 xl:col-span-1 xl:border-l xl:border-white/10 xl:px-4 xl:pt-2"
+      aria-label="Entidades de vigilancia y política de datos"
+    >
+      <ul class="m-0 flex list-none flex-wrap items-center justify-center gap-5 p-0 xl:flex-col xl:gap-4">
+        {
+          site.regulators.map((regulator) => (
+            <li>
+              <a
+                href={regulator.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex opacity-90 transition hover:opacity-100"
+                aria-label={regulator.name}
+              >
+                <img
+                  src={regulator.logo}
+                  alt={regulator.name}
+                  width={regulator.width}
+                  height={regulator.height}
+                  class="h-auto max-h-10 w-auto max-w-[8.5rem] object-contain xl:max-h-11 xl:max-w-[9.5rem]"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <a
+        href={site.legal.privacyHub}
+        class="inline-block max-w-[9.25rem] rounded-full border border-white/70 px-3 py-1.5 text-center text-[0.6875rem] font-semibold leading-[1.35] text-white no-underline transition hover:border-brand-green-light hover:bg-white/10 hover:text-brand-green-light xl:max-w-[8.75rem]"
+      >
+        Política de tratamiento de Datos
+      </a>
     </div>
   </div>
 

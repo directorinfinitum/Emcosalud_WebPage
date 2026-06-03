@@ -28,6 +28,38 @@ export const site = {
     emcofarma: 'https://emcofarma.com',
     escuela: 'https://escuelaemcosalud.com',
   },
+  legal: {
+    privacyHub: '/politica-privacidad',
+    dataTreatmentPolicyPdf:
+      '/documents/politica-tratamiento-datos-emco.pdf',
+    authorizationFormPdf:
+      '/documents/formulario-autorizacion-tratamiento-datos.pdf',
+    cookiesPolicyPdf:
+      'https://emcofarma.com/wp-content/uploads/2025/09/POLITICA-USO-DE-COOKIES-Y-SITIO-WEB-INSTITUCIONAL.pdf',
+  },
+  regulators: [
+    {
+      name: 'Vigilado Supersalud',
+      href: 'https://www.supersalud.gov.co/es-co/Paginas/Home.aspx',
+      logo: '/images/footer/supersalud.png',
+      width: 160,
+      height: 48,
+    },
+    {
+      name: 'Contraloría General de la República',
+      href: 'https://www.contraloria.gov.co',
+      logo: '/images/footer/contraloria.png',
+      width: 200,
+      height: 64,
+    },
+    {
+      name: 'Fiduprevisora',
+      href: 'https://www.fiduprevisora.com.co',
+      logo: '/images/footer/fiduprevisora.png',
+      width: 180,
+      height: 60,
+    },
+  ],
 } as const;
 
 export const brand = {
