@@ -1,8 +1,121 @@
 ---
-import PlaceholderPage from '@/components/sections/PlaceholderPage.astro';
+import Icon from '@/components/icons/Icon.astro';
+import {
+  sicofGeneralConcepts,
+  sicofNav,
+  sicofNormativity,
+  sicofNormativityIntro,
+  sicofObjective,
+  sicofSubsystemConcepts,
+  sicofSubtitle,
+} from '@/data/sicof';
 import BaseLayout from '@/layouts/BaseLayout.astro';
+
+const accentClasses: Record<
+  (typeof sicofSubsystemConcepts)[number]['accent'],
+  string
+> = {
+  'brand-blue': 'bg-brand-blue',
+  'blue-light': 'bg-brand-blue-light',
+  green: 'bg-brand-green',
+  'green-dark': 'bg-brand-green-dark',
+  'blue-dark': 'bg-brand-blue-dark',
+};
 ---
 
-<BaseLayout title="SICOF">
-  <PlaceholderPage title="SICOF" />
+<BaseLayout
+  title="SICOF"
+  description="Subsistema de Administración del Riesgo de Corrupción, Opacidad y Fraude — EMCOSALUD."
+>
+  <section class="bg-brand-blue-dark py-12 text-white md:py-14">
+    <div class="container-page">
+      <p class="mb-2 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-brand-green-light">
+        <Icon name="shield-check" size={18} />
+        Institucional
+      </p>
+      <h1 class="m-0 text-3xl font-bold md:text-4xl">SICOF</h1>
+      <p class="mt-3 max-w-3xl text-lg text-white/90">{sicofSubtitle}</p>
+      <nav
+        class="mt-6 flex flex-wrap gap-2"
+        aria-label="Secciones de la página SICOF"
+      >
+        {
+          sicofNav.map((item) => (
+            <a
+              href={`#${item.id}`}
+              class="rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-sm font-semibold text-white no-underline transition hover:border-brand-green-light hover:bg-white/20"
+            >
+              {item.label}
+            </a>
+          ))
+        }
+      </nav>
+    </div>
+  </section>
+
+  <section class="section-block">
+    <div class="container-page max-w-4xl space-y-12">
+      <article id="objetivo" class="scroll-mt-28">
+        <h2 class="section-title text-xl md:text-2xl">Objetivo SICOF</h2>
+        <p class="mt-4 text-slate-700 leading-relaxed">{sicofObjective}</p>
+      </article>
+
+      <article id="conceptos" class="scroll-mt-28">
+        <h2 class="section-title text-xl">Conceptos generales SICOF</h2>
+        <div class="mt-6 grid gap-4 sm:grid-cols-3">
+          {
+            sicofGeneralConcepts.map((concept) => (
+              <div class="card-base border-t-4 border-t-brand-blue">
+                <h3 class="m-0 text-base font-bold text-brand-blue">{concept.title}</h3>
+                <p class="mt-2 m-0 text-sm leading-relaxed text-slate-600">
+                  {concept.description}
+                </p>
+              </div>
+            ))
+          }
+        </div>
+      </article>
+
+      <article id="subsistema" class="scroll-mt-28">
+        <h2 class="section-title text-xl">Conceptos para comprender el Subsistema SICOF</h2>
+        <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {
+            sicofSubsystemConcepts.map((concept) => (
+              <div
+                class:list={[
+                  'rounded-xl p-4 text-white shadow-brand-sm',
+                  accentClasses[concept.accent],
+                ]}
+              >
+                <h3 class="m-0 text-base font-bold">{concept.title}</h3>
+                <p class="mt-2 m-0 text-sm leading-relaxed text-white/90">
+                  {concept.description}
+                </p>
+              </div>
+            ))
+          }
+        </div>
+      </article>
+
+      <article
+        id="normatividad"
+        class="scroll-mt-28 rounded-2xl border border-slate-200 bg-white p-6 shadow-brand-sm md:p-8"
+      >
+        <h2 class="section-title mb-3 flex items-center gap-3 border-l-4 border-l-brand-green pl-3 text-xl">
+          Normatividad
+        </h2>
+        <p class="mb-4 text-slate-700 leading-relaxed">{sicofNormativityIntro}</p>
+        <ul class="m-0 list-none space-y-2 p-0">
+          {
+            sicofNormativity.map((item) => (
+              <li class="flex items-start gap-2 text-sm text-slate-700">
+                <Icon name="document" size={14} class="mt-0.5 shrink-0 text-brand-blue" />
+                {item}
+              </li>
+            ))
+          }
+        </ul>
+      </article>
+    </div>
+  </section>
 </BaseLayout>

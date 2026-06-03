@@ -1,8 +1,138 @@
 ---
-import PlaceholderPage from '@/components/sections/PlaceholderPage.astro';
+import Icon from '@/components/icons/Icon.astro';
+import {
+  sarlaftContactEmail,
+  sarlaftDefinition,
+  sarlaftElements,
+  sarlaftElementsIntro,
+  sarlaftFormHref,
+  sarlaftIntro,
+  sarlaftNormativity,
+  sarlaftSystem,
+} from '@/data/sarlaft';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="SARLAFT">
-  <PlaceholderPage title="SARLAFT" />
+<BaseLayout
+  title="SARLAFT"
+  description="Sistema de Administración de Riesgo de Lavado de Activos y Financiación del Terrorismo — EMCOSALUD."
+>
+  <section class="bg-brand-blue-dark py-12 text-white md:py-14">
+    <div class="container-page">
+      <p class="mb-2 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-brand-green-light">
+        <Icon name="shield-check" size={18} />
+        Institucional
+      </p>
+      <h1 class="m-0 text-3xl font-bold md:text-4xl">SARLAFT</h1>
+      <p class="mt-4 max-w-3xl text-base leading-relaxed text-white/90 md:text-lg">
+        {sarlaftIntro}
+      </p>
+      <a
+        href={sarlaftFormHref}
+        download
+        class="btn btn--primary mt-6"
+      >
+        <Icon name="document" size={18} />
+        Descargar formulario
+      </a>
+    </div>
+  </section>
+
+  <section class="section-block">
+    <div class="container-page max-w-4xl space-y-10">
+      <article>
+        <h2 class="section-title text-xl md:text-2xl">{sarlaftDefinition.title}</h2>
+        <p class="mt-4 text-slate-700 leading-relaxed">{sarlaftDefinition.general}</p>
+        <h3 class="mt-6 mb-3 text-base font-bold text-brand-blue">¿Qué hace este sistema?</h3>
+        <p class="mb-3 text-slate-700">Este sistema se enfoca en:</p>
+        <ul class="m-0 list-none space-y-2 p-0">
+          {
+            sarlaftDefinition.focuses.map((item) => (
+              <li class="flex items-start gap-2 text-slate-700">
+                <Icon name="shield-check" size={16} class="mt-1 shrink-0 text-brand-green-dark" />
+                {item}
+              </li>
+            ))
+          }
+        </ul>
+        <p class="mt-4 text-slate-700 leading-relaxed">{sarlaftDefinition.review}</p>
+      </article>
+
+      <article class="card-base border-l-4 border-l-brand-green">
+        <h2 class="section-title mb-3 text-xl">{sarlaftSystem.title}</h2>
+        <p class="m-0 text-slate-700 leading-relaxed">{sarlaftSystem.compliance}</p>
+        <p class="mt-4 m-0 text-slate-700 leading-relaxed">{sarlaftSystem.scope}</p>
+      </article>
+
+      <article>
+        <h2 class="section-title text-xl">Elementos del SARLAFT</h2>
+        <p class="section-lead mb-4">
+          Componentes esenciales para prevenir y controlar el riesgo de Lavado de Activos y
+          Financiación del Terrorismo (LA/FT).
+        </p>
+        <p class="mb-4 text-slate-700 leading-relaxed">{sarlaftElementsIntro}</p>
+        <ul class="m-0 grid list-none gap-2 p-0 sm:grid-cols-2">
+          {
+            sarlaftElements.map((item) => (
+              <li class="flex items-start gap-2 rounded-lg bg-slate-50 px-3 py-2 text-sm text-slate-700">
+                <Icon name="document" size={14} class="mt-0.5 shrink-0 text-brand-blue" />
+                {item}
+              </li>
+            ))
+          }
+        </ul>
+        <p class="mt-6 flex flex-wrap items-center gap-2 text-slate-700">
+          <Icon name="mail" size={18} class="text-brand-green" />
+          <span>Contacto para más información:</span>
+          <a
+            href={`mailto:${sarlaftContactEmail}`}
+            class="font-semibold text-brand-blue hover:text-brand-green-dark"
+          >
+            {sarlaftContactEmail}
+          </a>
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <section class="section-block bg-slate-50 pt-0" id="normatividad">
+    <div class="container-page max-w-4xl">
+      <h2 class="section-title flex items-center gap-2">
+        <Icon name="document" size={28} class="text-brand-green" />
+        Normatividad
+      </h2>
+
+      <div class="mt-6 space-y-4">
+        {
+          sarlaftNormativity.map((group) => (
+            <details class="group rounded-xl border border-slate-200 bg-white shadow-brand-sm open:border-brand-green/40">
+              <summary class="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 font-bold text-brand-blue marker:content-none [&::-webkit-details-marker]:hidden">
+                {group.title}
+                <Icon
+                  name="arrow-right"
+                  size={18}
+                  class="shrink-0 text-brand-green transition group-open:rotate-90"
+                />
+              </summary>
+              <ul class="m-0 space-y-2 border-t border-slate-100 px-5 py-4 text-sm leading-relaxed text-slate-700">
+                {group.items.map((item) => (
+                  <li class="flex items-start gap-2">
+                    <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-green" aria-hidden="true" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </details>
+          ))
+        }
+      </div>
+
+      <div class="mt-8">
+        <a href={sarlaftFormHref} download class="btn btn--outline">
+          <Icon name="document" size={18} />
+          Descargar formulario SARLAFT
+        </a>
+      </div>
+    </div>
+  </section>
 </BaseLayout>

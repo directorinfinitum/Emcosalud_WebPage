@@ -1,8 +1,68 @@
 ---
-import PlaceholderPage from '@/components/sections/PlaceholderPage.astro';
+import Icon from '@/components/icons/Icon.astro';
+import {
+  financialStatements,
+  financialStatementsIntro,
+} from '@/data/financial-statements';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="Estados financieros">
-  <PlaceholderPage title="Estados financieros" />
+<BaseLayout
+  title="Estados financieros"
+  description="Estados financieros de EMCOSALUD — publicación conforme a la circular externa 016 de 2016 de la Supersalud."
+>
+  <section class="bg-brand-blue-dark py-12 text-white md:py-14">
+    <div class="container-page">
+      <p class="mb-2 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-brand-green-light">
+        <Icon name="chart" size={18} />
+        Institucional
+      </p>
+      <h1 class="m-0 text-3xl font-bold md:text-4xl">Estados financieros</h1>
+    </div>
+  </section>
+
+  <section class="section-block">
+    <div class="container-page max-w-4xl">
+      <p class="section-lead mb-10">{financialStatementsIntro}</p>
+
+      <div class="grid gap-8 sm:grid-cols-2">
+        {
+          financialStatements.map((statement) => (
+            <a
+              href={statement.pdfHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-brand-sm no-underline transition hover:border-brand-green hover:shadow-brand"
+            >
+              <div class="flex items-center justify-center bg-slate-50 px-6 py-8">
+                <img
+                  src={statement.thumbnail}
+                  alt=""
+                  width={120}
+                  height={140}
+                  class="h-auto w-28 object-contain transition group-hover:scale-105"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <div class="flex flex-1 flex-col p-5 text-center">
+                <p class="m-0 text-xs font-bold uppercase tracking-wide text-brand-green-dark">
+                  {statement.publishedAt}
+                </p>
+                <h2 class="m-0 mt-2 text-base font-bold uppercase text-brand-blue sm:text-lg">
+                  {statement.title}
+                </h2>
+                <p class="m-0 mt-2 text-sm text-slate-600">{statement.description}</p>
+                <span class="mt-4 inline-flex items-center justify-center gap-1 text-sm font-semibold text-brand-blue group-hover:text-brand-green-dark">
+                  <Icon name="document" size={16} />
+                  Ver PDF
+                  <Icon name="external" size={14} />
+                </span>
+              </div>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
 </BaseLayout>
