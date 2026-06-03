@@ -1,6 +1,7 @@
 ---
 import Icon from '@/components/icons/Icon.astro';
 import SedeLocationBlock from '@/components/sections/SedeLocationBlock.astro';
+import SedePageHero from '@/components/sections/SedePageHero.astro';
 import { getSede, sedeIndex } from '@/data/sedes';
 import { site } from '@/data/site';
 import BaseLayout from '@/layouts/BaseLayout.astro';
@@ -25,29 +26,21 @@ const deptLabel = sede.department === 'huila' ? 'Huila' : 'Tolima';
   title={`Sede ${sede.name}`}
   description={`Información de contacto, horarios y servicios de la sede EMCOSALUD en ${sede.name}, ${deptLabel}.`}
 >
-  <section class="bg-brand-blue-dark py-10 text-white md:py-12">
-    <div class="container-page">
-      <nav class="mb-4 text-sm text-white/80" aria-label="Miga de pan">
-        <a href="/" class="text-white/90 no-underline hover:text-brand-green-light">Inicio</a>
-        <span class="mx-2">/</span>
-        <a href="/sedes" class="text-white/90 no-underline hover:text-brand-green-light">Sedes</a>
-        <span class="mx-2">/</span>
-        <span class="text-white">{sede.name}</span>
-      </nav>
-      <h1 class="m-0 text-3xl font-bold md:text-4xl">{sede.name}</h1>
-      <p class="mt-2 text-lg capitalize text-brand-green-light">{deptLabel}</p>
-      <p class="mt-1 text-white/90">{sede.headline}</p>
-    </div>
-  </section>
+  <SedePageHero
+    crumbs={[
+      { label: 'Inicio', href: '/' },
+      { label: 'Sedes', href: '/sedes' },
+      { label: sede.name },
+    ]}
+    title={sede.name}
+    department={deptLabel}
+    lead={sede.headline}
+    phoneLabel={deptPhone.label}
+    phoneTel={deptPhone.tel}
+  />
 
-  <section class="section-block">
-    <div class="container-page max-w-4xl space-y-10">
-      <p class="m-0">
-        <a href="/sedes" class="inline-flex items-center gap-1 text-sm font-semibold text-brand-blue no-underline hover:text-brand-green-dark">
-          <Icon name="arrow-right" size={16} class="-scale-x-100" />
-          Ver todas las sedes
-        </a>
-      </p>
+  <section class="section-block pt-10 md:pt-12">
+    <div class="container-page max-w-5xl space-y-10">
 
       {
         sede.locations?.length ? (

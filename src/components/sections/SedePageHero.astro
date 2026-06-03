@@ -1,0 +1,78 @@
+---
+import Icon from '@/components/icons/Icon.astro';
+
+export type SedeHeroCrumb = {
+  label: string;
+  href?: string;
+};
+
+type Props = {
+  crumbs: SedeHeroCrumb[];
+  title: string;
+  department?: string;
+  lead?: string;
+  phoneLabel?: string;
+  phoneTel?: string;
+};
+
+const { crumbs, title, department, lead, phoneLabel, phoneTel } = Astro.props;
+const showLead =
+  lead &&
+  lead.toLowerCase() !== `${title.toLowerCase()} sede` &&
+  lead.toLowerCase() !== title.toLowerCase();
+---
+
+<section class="border-b border-brand-blue/30 bg-brand-blue-dark text-white">
+  <div class="container-page py-4 md:py-5">
+    <nav class="mb-2 text-xs text-white/75 md:text-sm" aria-label="Miga de pan">
+      {
+        crumbs.map((crumb, i) => (
+          <>
+            {i > 0 && <span class="mx-1.5">/</span>}
+            {crumb.href ? (
+              <a href={crumb.href} class="text-white/90 no-underline hover:text-brand-green-light">
+                {crumb.label}
+              </a>
+            ) : (
+              <span class="text-white">{crumb.label}</span>
+            )}
+          </>
+        ))
+      }
+    </nav>
+
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div class="min-w-0">
+        <div class="flex flex-wrap items-center gap-2 md:gap-3">
+          <h1 class="m-0 text-2xl font-bold md:text-3xl">{title}</h1>
+          {department && (
+            <span class="rounded-full bg-brand-green/20 px-3 py-0.5 text-sm font-semibold text-brand-green-light">
+              {department}
+            </span>
+          )}
+        </div>
+        {showLead && <p class="mt-1 mb-0 text-sm text-white/85 md:text-base">{lead}</p>}
+      </div>
+
+      <div class="flex shrink-0 flex-wrap items-center gap-2 sm:justify-end">
+        {
+          phoneTel && phoneLabel && (
+            <a
+              href={`tel:${phoneTel}`}
+              class="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold text-white no-underline transition hover:border-brand-green-light hover:bg-white/15"
+            >
+              <Icon name="phone" size={16} />
+              {phoneLabel}
+            </a>
+          )
+        }
+        <a
+          href="/sedes"
+          class="inline-flex items-center gap-1 rounded-full border border-white/25 px-4 py-2 text-sm font-medium text-white/90 no-underline transition hover:bg-white/10"
+        >
+          Todas las sedes
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
