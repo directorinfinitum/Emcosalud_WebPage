@@ -1,0 +1,142 @@
+---
+import Logo from '@/components/brand/Logo.astro';
+import Icon from '@/components/icons/Icon.astro';
+import SocialLinks from '@/components/layout/SocialLinks.astro';
+import type { IconName } from '@/data/icons';
+import { footerNavigation } from '@/data/navigation';
+import { site } from '@/data/site';
+
+const footerLinkIcons: Record<string, IconName> = {
+  'Clínica Emcosalud': 'hospital',
+  Emcofarma: 'pharmacy',
+  'Escuela Emcosalud': 'graduation',
+  'Servicios médicos': 'stethoscope',
+  'Citas médicas': 'calendar',
+  PQR: 'file-claim',
+  Blog: 'blog',
+  Nosotros: 'users',
+  'Estados financieros': 'chart',
+  SARLAFT: 'shield-check',
+  SICOF: 'document',
+};
+---
+
+<footer class="bg-brand-blue-dark text-white">
+  <div class="container-page grid gap-8 py-12 md:grid-cols-2 lg:grid-cols-4">
+    <div>
+      <Logo variant="footer" showTagline={true} />
+      <p class="mt-4 text-sm leading-relaxed text-white/85">{site.description}</p>
+      <ul class="mt-4 space-y-2 text-sm">
+        <li class="flex items-start gap-2">
+          <Icon name="phone" size={18} class="mt-0.5 shrink-0 text-brand-green-light" />
+          <a
+            href={`tel:${site.phones.huila.tel}`}
+            class="text-white/90 no-underline hover:text-brand-green-light"
+          >
+            Huila: {site.phones.huila.label}
+          </a>
+        </li>
+        <li class="flex items-start gap-2">
+          <Icon name="phone" size={18} class="mt-0.5 shrink-0 text-brand-green-light" />
+          <a
+            href={`tel:${site.phones.tolima.tel}`}
+            class="text-white/90 no-underline hover:text-brand-green-light"
+          >
+            Tolima: {site.phones.tolima.label}
+          </a>
+        </li>
+        <li class="flex items-start gap-2">
+          <Icon name="location" size={18} class="mt-0.5 shrink-0 text-brand-green-light" />
+          <span>Neiva — Calle 5 # 6-73</span>
+        </li>
+      </ul>
+      <SocialLinks
+        class="mt-4 gap-4 [&_a]:inline-flex [&_a]:h-9 [&_a]:w-9 [&_a]:items-center [&_a]:justify-center [&_a]:rounded-full [&_a]:bg-white/10 [&_a]:text-white [&_a]:no-underline [&_a]:transition [&_a:hover]:bg-brand-green [&_a:hover]:text-brand-blue-dark"
+        size={20}
+      />
+    </div>
+
+    <div>
+      <h2 class="mb-3 flex items-center gap-2 text-base font-bold text-brand-green-light">
+        <Icon name="building" size={18} />
+        Institucional
+      </h2>
+      <ul class="m-0 list-none space-y-2 p-0 text-sm">
+        {footerNavigation.institucional.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              class="inline-flex items-center gap-2 text-white/90 no-underline hover:text-brand-green-light"
+            >
+              {footerLinkIcons[link.label] && (
+                <Icon name={footerLinkIcons[link.label]} size={16} />
+              )}
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="mb-3 flex items-center gap-2 text-base font-bold text-brand-green-light">
+        <Icon name="stethoscope" size={18} />
+        Servicios
+      </h2>
+      <ul class="m-0 list-none space-y-2 p-0 text-sm">
+        {footerNavigation.servicios.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              class="inline-flex items-center gap-2 text-white/90 no-underline hover:text-brand-green-light"
+            >
+              {footerLinkIcons[link.label] && (
+                <Icon name={footerLinkIcons[link.label]} size={16} />
+              )}
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="mb-3 flex items-center gap-2 text-base font-bold text-brand-green-light">
+        <Icon name="external" size={18} />
+        Enlaces
+      </h2>
+      <ul class="m-0 list-none space-y-2 p-0 text-sm">
+        {footerNavigation.enlaces.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              target={link.external ? '_blank' : undefined}
+              rel={link.external ? 'noopener noreferrer' : undefined}
+              class="inline-flex items-center gap-2 text-white/90 no-underline hover:text-brand-green-light"
+            >
+              {footerLinkIcons[link.label] && (
+                <Icon name={footerLinkIcons[link.label]} size={16} />
+              )}
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+
+  <div class="border-t border-white/10">
+    <div class="container-page flex flex-wrap items-center justify-between gap-4 py-4 text-sm text-white/75">
+      <p class="m-0">© {new Date().getFullYear()} {site.name}. Todos los derechos reservados.</p>
+      <img
+        src={site.assets.logo}
+        alt=""
+        class="h-8 w-auto opacity-40"
+        width="120"
+        height="34"
+        loading="lazy"
+        aria-hidden="true"
+      />
+    </div>
+  </div>
+</footer>

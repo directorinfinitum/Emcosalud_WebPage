@@ -1,0 +1,90 @@
+---
+import Icon from '@/components/icons/Icon.astro';
+import PlaceholderPage from '@/components/sections/PlaceholderPage.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { site } from '@/data/site';
+---
+
+<BaseLayout title="Contacto">
+  <section class="section">
+    <div class="container">
+      <h1 class="section__title">
+        <Icon name="mail" size={32} class="section-title-icon" />
+        Contacto
+      </h1>
+      <p class="section__lead">Comunícate con nuestras líneas y sedes de atención.</p>
+      <div class="card-grid contact-cards">
+        <div class="card contact-card">
+          <span class="contact-card__icon"><Icon name="phone" size={26} /></span>
+          <h3>Huila</h3>
+          <p>
+            <a href={`tel:${site.phones.huila.tel}`}>{site.phones.huila.label}</a>
+          </p>
+        </div>
+        <div class="card contact-card">
+          <span class="contact-card__icon"><Icon name="phone" size={26} /></span>
+          <h3>Tolima</h3>
+          <p>
+            <a href={`tel:${site.phones.tolima.tel}`}>{site.phones.tolima.label}</a>
+          </p>
+        </div>
+        <div class="card contact-card">
+          <span class="contact-card__icon"><Icon name="location" size={26} /></span>
+          <h3>Sede Neiva</h3>
+          <p>Calle 5 # 6-73, Neiva — Huila</p>
+        </div>
+        <div class="card contact-card">
+          <span class="contact-card__icon"><Icon name="hospital" size={26} /></span>
+          <h3>Clínica</h3>
+          <p>
+            <a href={site.external.clinica} target="_blank" rel="noopener noreferrer">
+              clinicaemcosalud.com
+              <Icon name="external" size={14} class="icon--inline" />
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <PlaceholderPage title="Formulario de contacto" description="Próximo: formulario y mapa de sedes." />
+</BaseLayout>
+
+<style>
+  .section-title-icon {
+    color: var(--color-brand-green);
+    vertical-align: -0.35rem;
+    margin-right: 0.35rem;
+  }
+
+  .contact-card {
+    text-align: center;
+  }
+
+  .contact-card__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    margin-bottom: 0.75rem;
+    border-radius: 50%;
+    background: var(--color-surface-accent);
+    color: var(--color-brand-blue);
+  }
+
+  .contact-card h3 {
+    margin: 0 0 0.35rem;
+    color: var(--color-brand-blue);
+  }
+
+  .contact-card p {
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+
+  .contact-card a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+</style>

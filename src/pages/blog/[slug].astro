@@ -1,0 +1,27 @@
+---
+import PlaceholderPage from '@/components/sections/PlaceholderPage.astro';
+import { blogPosts } from '@/data/services';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+export function getStaticPaths() {
+  return blogPosts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+---
+
+<BaseLayout title={post.title}>
+  <section class="section-block pb-0">
+    <div class="container-page">
+      <p class="mb-4">
+        <a href="/blog" class="font-semibold no-underline hover:text-brand-green-dark">← Volver al blog</a>
+      </p>
+      <h1 class="section-title">{post.title}</h1>
+      <p class="section-lead">{post.excerpt}</p>
+    </div>
+  </section>
+  <PlaceholderPage title="Contenido del artículo" description="Migrar cuerpo HTML desde WordPress." />
+</BaseLayout>

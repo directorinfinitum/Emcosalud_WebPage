@@ -1,0 +1,15 @@
+---
+import BlogPreview from '@/components/sections/BlogPreview.astro';
+import Hero from '@/components/sections/Hero.astro';
+import QuickAccess from '@/components/sections/QuickAccess.astro';
+import ServicesSection from '@/components/sections/ServicesSection.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { site } from '@/data/site';
+---
+
+<BaseLayout title={site.name} description={site.description}>
+  <Hero />
+  <QuickAccess />
+  <ServicesSection />
+  <BlogPreview />
+</BaseLayout>

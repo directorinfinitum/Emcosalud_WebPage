@@ -1,0 +1,54 @@
+---
+import Icon from '@/components/icons/Icon.astro';
+import { blogPosts } from '@/data/services';
+
+function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString('es-CO', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  });
+}
+---
+
+<section class="section-block bg-brand-green/10">
+  <div class="container-page">
+    <div class="mb-2 flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <h2 class="section-title flex items-center gap-2">
+          <Icon name="blog" size={28} class="text-brand-green" />
+          Novedades y salud
+        </h2>
+        <p class="section-lead mb-0">Recomendaciones y fechas conmemorativas de interés.</p>
+      </div>
+      <a class="btn btn--outline shrink-0" href="/blog">
+        <Icon name="blog" size={18} />
+        Ver blog
+      </a>
+    </div>
+
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        blogPosts.map((post) => (
+          <article class="card-base">
+            <time
+              class="mb-2 block text-xs font-bold text-brand-green-dark"
+              datetime={post.date}
+            >
+              {formatDate(post.date)}
+            </time>
+            <h3 class="m-0 mb-2 text-base font-bold">
+              <a
+                href={`/blog/${post.slug}`}
+                class="text-brand-blue no-underline hover:text-brand-green-dark"
+              >
+                {post.title}
+              </a>
+            </h3>
+            <p class="m-0 text-sm text-slate-600">{post.excerpt}</p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

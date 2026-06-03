@@ -1,0 +1,62 @@
+---
+import Icon from '@/components/icons/Icon.astro';
+import { medicalServices, promotionServices } from '@/data/services';
+---
+
+<section class="section-block" id="servicios">
+  <div class="container-page">
+    <h2 class="section-title flex items-center gap-2">
+      <Icon name="stethoscope" size={28} class="text-brand-green" />
+      Servicios
+    </h2>
+    <p class="section-lead">
+      Atención ambulatoria y programas de promoción y mantenimiento de la salud.
+    </p>
+
+    <div class="mb-8 grid gap-5 md:grid-cols-2">
+      <div class="card-base">
+        <h3 class="mb-4 flex items-center gap-3 text-lg font-bold text-brand-blue">
+          <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-green/15 text-brand-blue">
+            <Icon name="stethoscope" size={22} />
+          </span>
+          Servicios médicos
+        </h3>
+        <ul class="m-0 list-none space-y-2 p-0 text-slate-600">
+          {medicalServices.map((s) => (
+            <li class="flex items-start gap-2">
+              <Icon name="heart-pulse" size={14} class="mt-1 shrink-0 text-brand-green-dark" />
+              {s}
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div class="card-base" id="promocion">
+        <h3 class="mb-4 flex items-center gap-3 text-lg font-bold text-brand-blue">
+          <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-green/15 text-brand-blue">
+            <Icon name="shield-check" size={22} />
+          </span>
+          Promoción y mantenimiento de la salud
+        </h3>
+        <ul class="m-0 list-none space-y-2 p-0 text-slate-600">
+          {promotionServices.map((s) => (
+            <li class="flex items-start gap-2">
+              <Icon name="heart-pulse" size={14} class="mt-1 shrink-0 text-brand-green-dark" />
+              {s}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap gap-3">
+      <a class="btn btn--outline" href="/servicios">
+        <Icon name="document" size={18} />
+        Conoce el portafolio completo
+      </a>
+      <a class="btn btn--primary" href="/citas">
+        <Icon name="calendar" size={18} />
+        Solicita tu cita
+      </a>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,46 @@
+---
+import Icon from '@/components/icons/Icon.astro';
+import { quickAccessLinks } from '@/data/navigation';
+---
+
+<section class="section-block bg-slate-50" id="acceso-directo">
+  <div class="container-page">
+    <h2 class="section-title flex items-center gap-2">
+      <Icon name="shield-check" size={28} class="text-brand-green" />
+      Acceso directo
+    </h2>
+    <p class="section-lead">
+      Servicios pensados para cuidar de ti y tu familia, de manera rápida y eficiente.
+    </p>
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      {
+        quickAccessLinks.map((link) => (
+          <a
+            class="card-base group grid grid-cols-[auto_1fr_auto] items-start gap-4 no-underline text-inherit transition hover:-translate-y-0.5 hover:border-brand-green hover:shadow-brand"
+            href={link.href}
+            target={link.external ? '_blank' : undefined}
+            rel={link.external ? 'noopener noreferrer' : undefined}
+          >
+            <span
+              class="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-green/15 text-brand-blue transition group-hover:bg-brand-green group-hover:text-brand-blue-dark"
+              aria-hidden="true"
+            >
+              <Icon name={link.icon} size={28} />
+            </span>
+            <span>
+              <h3 class="m-0 mb-1 text-base font-bold text-brand-blue">{link.label}</h3>
+              {link.description && (
+                <p class="m-0 text-sm leading-snug text-slate-600">{link.description}</p>
+              )}
+            </span>
+            <Icon
+              name={link.external ? 'external' : 'arrow-right'}
+              size={20}
+              class="mt-1 text-brand-green"
+            />
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</section>

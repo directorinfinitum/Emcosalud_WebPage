@@ -1,0 +1,33 @@
+---
+import { site } from '@/data/site';
+
+interface Props {
+  variant?: 'header' | 'footer';
+  showTagline?: boolean;
+}
+
+const { variant = 'header', showTagline = variant === 'header' } = Astro.props;
+
+const imgClass =
+  variant === 'footer'
+    ? 'h-12 w-auto max-w-[220px] object-contain'
+    : 'h-11 w-auto max-w-[min(200px,42vw)] object-contain md:h-12';
+
+const taglineClass =
+  variant === 'footer'
+    ? 'text-[0.65rem] font-semibold tracking-wide text-white/85 pl-1'
+    : 'text-[0.65rem] font-semibold tracking-wide text-brand-blue pl-1';
+---
+
+<a href="/" class="inline-flex flex-col items-start gap-0.5 no-underline text-inherit hover:opacity-90">
+  <img
+    src={site.assets.logo}
+    alt={site.assets.logoAlt}
+    width="200"
+    height="56"
+    loading="eager"
+    decoding="async"
+    class={imgClass}
+  />
+  {showTagline && <span class={taglineClass}>{site.tagline}</span>}
+</a>

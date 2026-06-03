@@ -1,0 +1,82 @@
+---
+import type { IconName } from '@/data/icons';
+
+interface Props {
+  name: IconName;
+  size?: number;
+  class?: string;
+  title?: string;
+}
+
+const { name, size = 24, class: className = '', title } = Astro.props;
+
+const paths: Record<IconName, string> = {
+  calendar:
+    '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+  stethoscope:
+    '<path d="M4.8 10.2a4 4 0 0 0 6.4 0M11 10.2V6a3 3 0 0 1 6 0v8a5 5 0 0 1-10 0V9"/>',
+  document:
+    '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>',
+  hospital:
+    '<path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6M10 9h4M12 7v4"/>',
+  lab: '<path d="M9 3h6v7l5 9a2 2 0 0 1-1.7 3H5.7a2 2 0 0 1-1.7-3l5-9V3M9 3h6"/>',
+  chart:
+    '<path d="M3 3v18h18M7 16l4-4 4 4 5-6"/>',
+  phone:
+    '<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.86.3 1.7.54 2.5a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.58-1.11a2 2 0 0 1 2.11-.45c.8.24 1.64.42 2.5.54A2 2 0 0 1 22 16.92z"/>',
+  location:
+    '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>',
+  mail:
+    '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 7L2 7"/>',
+  clock:
+    '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+  'heart-pulse':
+    '<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 12 5.7 5.5 5.5 0 0 0 4 8.5c0 2.3 1.5 4.05 3 5.5l5 5Z"/><path d="M3 14h4l1.5-2 2 3 2-4 1.5 3H21"/>',
+  'shield-check':
+    '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/>',
+  blog:
+    '<path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
+  users:
+    '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+  pill:
+    '<path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/>',
+  'file-claim':
+    '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v4a2 2 0 0 0 2 2h4M10 13h4M10 17h6"/>',
+  external:
+    '<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/>',
+  'arrow-right': '<path d="M5 12h14M12 5l7 7-7 7"/>',
+  facebook:
+    '<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>',
+  whatsapp:
+    '<path d="M21 11.5a8.4 8.4 0 0 1-1.2 4.3 8.5 8.5 0 0 1-7.7 5 8.4 8.4 0 0 1-4.3-1.2L3 21l1.4-4.8A8.4 8.4 0 0 1 3.2 12 8.5 8.5 0 0 1 8.2 3.5 8.4 8.4 0 0 1 12.5 3 8.5 8.5 0 0 1 21 11.5z"/>',
+  youtube:
+    '<path d="M2.5 17a24.1 24.1 0 0 1 0-10 2 2 0 0 1 1.7-1.7 49.6 49.6 0 0 1 16.6 0 2 2 0 0 1 1.7 1.7 24.1 24.1 0 0 1 0 10 2 2 0 0 1-1.7 1.7 49.6 49.6 0 0 1-16.6 0 2 2 0 0 1-1.7-1.7Z"/><path d="m10 15 5-3-5-3z"/>',
+  instagram:
+    '<rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37zM17.5 6.5h.01"/>',
+  building:
+    '<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4M8 6h.01M16 6h.01M12 6h.01M8 10h.01M16 10h.01M12 10h.01M8 14h.01M16 14h.01M12 14h.01"/>',
+  graduation:
+    '<path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 2 3 3 6 3s6-1 6-3v-5"/>',
+  pharmacy:
+    '<path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><line x1="12" y1="8" x2="16" y2="12"/>',
+};
+
+const svgInner = paths[name] ?? paths.document;
+---
+
+<svg
+  class:list={['inline-block shrink-0 align-middle', className]}
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden={title ? undefined : true}
+  role={title ? 'img' : undefined}
+>
+  {title && <title>{title}</title>}
+  <g set:html={svgInner} />
+</svg>

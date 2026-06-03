@@ -1,0 +1,137 @@
+---
+import Icon from '@/components/icons/Icon.astro';
+import {
+  aboutIntro,
+  aboutMission,
+  aboutVision,
+  corporateObjectives,
+  institutionalPrinciples,
+} from '@/data/about';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Quiénes somos"
+  description="Historia, misión, visión y principios de EMCOSALUD — cooperativa de servicios de salud."
+>
+  <!-- Encabezado -->
+  <section class="bg-brand-blue-dark py-12 text-white md:py-16">
+    <div class="container-page">
+      <p class="mb-2 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-brand-green-light">
+        <Icon name="users" size={18} />
+        Institucional
+      </p>
+      <h1 class="m-0 text-3xl font-bold md:text-4xl">{aboutIntro.title}</h1>
+      <p class="mt-4 max-w-3xl text-lg text-white/90">{aboutIntro.subtitle}</p>
+    </div>
+  </section>
+
+  <!-- Historia -->
+  <section class="section-block">
+    <div class="container-page max-w-4xl">
+      <div class="space-y-4 text-slate-700 leading-relaxed">
+        {aboutIntro.paragraphs.map((paragraph) => <p class="m-0">{paragraph}</p>)}
+      </div>
+      <div class="mt-8 grid gap-4 sm:grid-cols-2">
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+          <p class="m-0 flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-brand-blue">
+            <Icon name="location" size={20} class="text-brand-green" />
+            Huila
+          </p>
+          <p class="mt-2 m-0 text-2xl font-bold text-brand-blue">10 municipios</p>
+          <p class="mt-1 m-0 text-sm text-slate-600">
+            Sedes propias para servicios de mediana y baja complejidad.
+          </p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+          <p class="m-0 flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-brand-blue">
+            <Icon name="location" size={20} class="text-brand-green" />
+            Tolima
+          </p>
+          <p class="mt-2 m-0 text-2xl font-bold text-brand-blue">8 municipios</p>
+          <p class="mt-1 m-0 text-sm text-slate-600">
+            Sedes propias y exclusivas para nuestra población.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Misión y visión -->
+  <section class="section-block bg-slate-50 pt-0">
+    <div class="container-page grid gap-6 md:grid-cols-2">
+      <article class="card-base border-t-4 border-t-brand-green">
+        <h2 class="section-title mb-3 flex items-center gap-2 text-xl">
+          <Icon name="shield-check" size={24} class="text-brand-green" />
+          {aboutVision.title}
+        </h2>
+        <p class="m-0 text-slate-700 leading-relaxed">{aboutVision.text}</p>
+      </article>
+      <article class="card-base border-t-4 border-t-brand-blue">
+        <h2 class="section-title mb-3 flex items-center gap-2 text-xl">
+          <Icon name="heart-pulse" size={24} class="text-brand-green" />
+          {aboutMission.title}
+        </h2>
+        <p class="m-0 text-slate-700 leading-relaxed">{aboutMission.text}</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- Principios -->
+  <section class="section-block">
+    <div class="container-page">
+      <h2 class="section-title flex items-center gap-2">
+        <Icon name="building" size={28} class="text-brand-green" />
+        Principios institucionales
+      </h2>
+      <p class="section-lead">
+        Valores que orientan nuestra gestión en salud y economía solidaria.
+      </p>
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          institutionalPrinciples.map((principle) => (
+            <article class="card-base h-full transition hover:border-brand-green/40 hover:shadow-brand">
+              <h3 class="m-0 mb-2 text-base font-bold text-brand-blue">{principle.title}</h3>
+              <p class="m-0 text-sm leading-relaxed text-slate-600">{principle.description}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Objetivos -->
+  <section class="section-block bg-brand-green/10 pt-0">
+    <div class="container-page max-w-4xl">
+      <h2 class="section-title flex items-center gap-2">
+        <Icon name="chart" size={28} class="text-brand-green" />
+        Objetivos corporativos
+      </h2>
+      <ul class="m-0 list-none space-y-4 p-0">
+        {
+          corporateObjectives.map((objective, index) => (
+            <li class="flex gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-brand-sm">
+              <span
+                class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-green text-sm font-bold text-brand-blue-dark"
+                aria-hidden="true"
+              >
+                {index + 1}
+              </span>
+              <p class="m-0 pt-1 text-slate-700 leading-relaxed">{objective}</p>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="mt-10 flex flex-wrap gap-3">
+        <a class="btn btn--primary" href="/citas">
+          <Icon name="calendar" size={18} />
+          Solicitar cita
+        </a>
+        <a class="btn btn--outline" href="/sedes">
+          <Icon name="location" size={18} />
+          Ver sedes
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
