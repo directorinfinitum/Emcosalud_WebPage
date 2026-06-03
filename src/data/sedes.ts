@@ -17,11 +17,16 @@ export type SedeSchedule = {
   lines: string[];
 };
 
+export type SedeImage = {
+  src: string;
+  alt: string;
+};
+
 export type SedeLocation = {
   name: string;
   address?: string;
-  image?: string;
-  imageAlt?: string;
+  /** Una o más fotos de la sede (carrusel). */
+  images?: SedeImage[];
   mapEmbedUrl?: string;
   /** Enlace para abrir la ubicación en Google Maps. */
   mapsHref?: string;
@@ -233,8 +238,16 @@ export const sedesBySlug: Record<string, Sede> = {
       {
         name: 'NEIVA SEDE',
         address: 'Calle 8 # 10-45, Neiva, Huila',
-        image: '/images/sedes/neiva.jpg',
-        imageAlt: 'Edificio sede EMCOSALUD Neiva',
+        images: [
+          {
+            src: '/images/sedes/neiva-edificio.jpg',
+            alt: 'Fachada sede EMCOSALUD Neiva',
+          },
+          {
+            src: '/images/sedes/neiva-instalaciones.jpg',
+            alt: 'Instalaciones y atención al usuario — sede Neiva',
+          },
+        ],
         mapEmbedUrl:
           'https://maps.google.com/maps?q=calle+8+%2310-45+neiva&t=m&z=15&output=embed&iwloc=near',
         mapsHref:

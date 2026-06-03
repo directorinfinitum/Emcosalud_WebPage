@@ -1,5 +1,6 @@
 ---
 import Icon from '@/components/icons/Icon.astro';
+import WhatsAppIcon from '@/components/icons/WhatsAppIcon.astro';
 import type { IconName } from '@/data/icons';
 import { site } from '@/data/site';
 
@@ -14,7 +15,6 @@ const networks: { href: string; label: string; icon: IconName }[] = [
   { href: site.social.facebook, label: 'Facebook', icon: 'facebook' },
   { href: site.social.instagram, label: 'Instagram', icon: 'instagram' },
   { href: site.social.youtube, label: 'YouTube', icon: 'youtube' },
-  { href: site.social.whatsapp, label: 'WhatsApp', icon: 'whatsapp' },
 ];
 ---
 
@@ -31,4 +31,12 @@ const networks: { href: string; label: string; icon: IconName }[] = [
       </a>
     ))
   }
+  <a
+    href={site.social.whatsapp}
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="WhatsApp"
+  >
+    <WhatsAppIcon size={size} class="icon--social" />
+  </a>
 </div>

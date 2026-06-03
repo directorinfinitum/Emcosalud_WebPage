@@ -1,5 +1,7 @@
 ---
 import Icon from '@/components/icons/Icon.astro';
+import WhatsAppIcon from '@/components/icons/WhatsAppIcon.astro';
+import SedeImageCarousel from '@/components/react/SedeImageCarousel';
 import type { SedeLocation } from '@/data/sedes';
 
 type Props = {
@@ -7,7 +9,9 @@ type Props = {
 };
 
 const { location } = Astro.props;
-const hasPlace = Boolean(location.image || location.mapEmbedUrl);
+const galleryImages = location.images ?? [];
+const hasGallery = galleryImages.length > 0;
+const hasPlace = hasGallery || Boolean(location.mapEmbedUrl);
 ---
 
 <article class="space-y-8">
@@ -16,17 +20,8 @@ const hasPlace = Boolean(location.image || location.mapEmbedUrl);
   {
     hasPlace && (
       <div class="grid items-start gap-8 lg:grid-cols-2 lg:gap-10">
-        {location.image && (
-          <div class="overflow-hidden rounded-3xl border border-slate-200 shadow-brand">
-            <img
-              src={location.image}
-              alt={location.imageAlt ?? location.name}
-              width={684}
-              height={1024}
-              class="h-full max-h-[32rem] w-full object-cover object-center"
-              loading="lazy"
-            />
-          </div>
+        {hasGallery && (
+          <SedeImageCarousel client:visible images={galleryImages} />
         )}
 
         <div class="space-y-5">
@@ -82,25 +77,25 @@ const hasPlace = Boolean(location.image || location.mapEmbedUrl);
           )}
 
           {(location.whatsappHref || location.appointmentHref) && (
-            <div class="flex flex-wrap gap-3 pt-1">
+            <div class="flex flex-wrap gap-3 pt-2">
               {location.whatsappHref && (
                 <a
                   href={location.whatsappHref}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="btn inline-flex rounded-full border-brand-green bg-brand-green px-6 text-sm font-bold uppercase tracking-wide text-brand-blue-dark no-underline hover:bg-brand-green-light"
+                  class="btn btn--whatsapp min-h-11 rounded-full px-6 text-sm font-semibold no-underline"
                 >
-                  <Icon name="whatsapp" size={20} />
+                  <WhatsAppIcon size={22} class="text-white" />
                   Agenda tu cita
                 </a>
               )}
               {location.appointmentHref && (
                 <a
                   href={location.appointmentHref}
-                  class="btn btn--primary inline-flex rounded-full px-6 text-sm no-underline"
+                  class="btn btn--blue min-h-11 rounded-full px-6 text-sm font-semibold no-underline"
                 >
-                  <Icon name="calendar" size={18} />
-                  Solicitar cita
+                  <Icon name="calendar" size={18} class="text-white" />
+                  Agenda tu cita
                 </a>
               )}
             </div>
