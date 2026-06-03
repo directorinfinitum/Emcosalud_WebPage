@@ -1,8 +1,64 @@
 ---
-import PlaceholderPage from '@/components/sections/PlaceholderPage.astro';
+import Icon from '@/components/icons/Icon.astro';
+import {
+  sedeDepartments,
+  sedePath,
+  sedesForDepartment,
+  sedesPageIntro,
+} from '@/data/sedes';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="Sedes">
-  <PlaceholderPage title="Sedes Huila y Tolima" description="Listado de municipios y puntos de atención." />
+<BaseLayout
+  title="Sedes"
+  description="Puntos de atención EMCOSALUD en Huila y Tolima — horarios, contacto y servicios por municipio."
+>
+  <section class="bg-brand-blue-dark py-12 text-white md:py-14">
+    <div class="container-page">
+      <p class="mb-2 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-brand-green-light">
+        <Icon name="location" size={18} />
+        Atención al usuario
+      </p>
+      <h1 class="m-0 text-3xl font-bold md:text-4xl">Nuestras sedes</h1>
+      <p class="mt-3 max-w-3xl text-lg text-white/90">{sedesPageIntro}</p>
+    </div>
+  </section>
+
+  <section class="section-block">
+    <div class="container-page space-y-16">
+      {
+        sedeDepartments.map((dept) => (
+          <article id={dept.id} class="scroll-mt-28">
+            <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] lg:items-start">
+              <div>
+                <h2 class="section-title m-0 text-2xl">{dept.label}</h2>
+                <p class="mt-3 text-slate-600 leading-relaxed">{dept.description}</p>
+                <img
+                  src={dept.banner}
+                  alt={`Sedes EMCOSALUD — ${dept.label}`}
+                  width={640}
+                  height={360}
+                  class="mt-6 w-full max-w-md rounded-2xl border border-slate-200 object-cover shadow-brand-sm"
+                  loading="lazy"
+                />
+              </div>
+              <ul class="m-0 grid list-none gap-3 p-0 sm:grid-cols-2">
+                {sedesForDepartment(dept.id).map((municipio) => (
+                  <li>
+                    <a
+                      href={sedePath(municipio.slug)}
+                      class="card-base flex items-center justify-between gap-2 no-underline transition hover:border-brand-green hover:shadow-brand"
+                    >
+                      <span class="font-semibold text-brand-blue">{municipio.name}</span>
+                      <Icon name="arrow-right" size={18} class="text-brand-green shrink-0" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </section>
 </BaseLayout>

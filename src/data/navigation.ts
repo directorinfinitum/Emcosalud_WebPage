@@ -1,10 +1,13 @@
 import type { IconName, QuickAccessItem } from './icons';
+import { buildSedesNavChildren } from './sedes';
 
 export type NavLink = {
   label: string;
-  href: string;
+  href?: string;
   external?: boolean;
   icon?: IconName;
+  /** Submenú (p. ej. Huila → municipios bajo Sedes). */
+  children?: NavLink[];
 };
 
 export type NavItem = {
@@ -27,13 +30,8 @@ export const mainNavigation: NavItem[] = [
   },
   {
     label: 'Sedes',
-    children: [
-      { label: 'Neiva', href: '/sedes/neiva' },
-      { label: 'Ibagué', href: '/sedes/ibague' },
-      { label: 'Campoalegre', href: '/sedes/campoalegre' },
-      { label: 'Ver todas (Huila)', href: '/sedes#huila' },
-      { label: 'Ver todas (Tolima)', href: '/sedes#tolima' },
-    ],
+    href: '/sedes',
+    children: buildSedesNavChildren(),
   },
   {
     label: 'Servicios',

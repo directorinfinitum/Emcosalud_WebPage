@@ -1,0 +1,186 @@
+---
+import Icon from '@/components/icons/Icon.astro';
+import { getSede, sedeIndex } from '@/data/sedes';
+import { site } from '@/data/site';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+export function getStaticPaths() {
+  return sedeIndex.map((s) => ({ params: { slug: s.slug } }));
+}
+
+const { slug } = Astro.params;
+const sede = getSede(slug ?? '');
+
+if (!sede) {
+  return Astro.redirect('/sedes');
+}
+
+const deptPhone =
+  sede.department === 'huila' ? site.phones.huila : site.phones.tolima;
+const deptLabel = sede.department === 'huila' ? 'Huila' : 'Tolima';
+---
+
+<BaseLayout
+  title={`Sede ${sede.name}`}
+  description={`Información de contacto, horarios y servicios de la sede EMCOSALUD en ${sede.name}, ${deptLabel}.`}
+>
+  <section class="bg-brand-blue-dark py-10 text-white md:py-12">
+    <div class="container-page">
+      <nav class="mb-4 text-sm text-white/80" aria-label="Miga de pan">
+        <a href="/" class="text-white/90 no-underline hover:text-brand-green-light">Inicio</a>
+        <span class="mx-2">/</span>
+        <a href="/sedes" class="text-white/90 no-underline hover:text-brand-green-light">Sedes</a>
+        <span class="mx-2">/</span>
+        <span class="text-white">{sede.name}</span>
+      </nav>
+      <h1 class="m-0 text-3xl font-bold md:text-4xl">{sede.name}</h1>
+      <p class="mt-2 text-lg capitalize text-brand-green-light">{deptLabel}</p>
+      <p class="mt-1 text-white/90">{sede.headline}</p>
+    </div>
+  </section>
+
+  <section class="section-block">
+    <div class="container-page max-w-4xl space-y-10">
+      <p class="m-0">
+        <a href="/sedes" class="inline-flex items-center gap-1 text-sm font-semibold text-brand-blue no-underline hover:text-brand-green-dark">
+          <Icon name="arrow-right" size={16} class="-scale-x-100" />
+          Ver todas las sedes
+        </a>
+      </p>
+
+      {
+        sede.locations?.length ? (
+          sede.locations.map((location) => (
+            <article class="card-base space-y-4">
+              <h2 class="section-title m-0 text-xl">{location.name}</h2>
+              {location.address && (
+                <p class="m-0 flex items-start gap-2 text-slate-600">
+                  <Icon name="location" size={18} class="mt-0.5 shrink-0 text-brand-blue" />
+                  {location.address}
+                </p>
+              )}
+              {location.contacts.length > 0 && (
+                <ul class="m-0 list-none space-y-2 p-0">
+                  {location.contacts.map((c) => (
+                    <li class="text-sm text-slate-700">
+                      <span class="font-semibold text-brand-blue">{c.label}: </span>
+                      {c.href ? (
+                        <a href={c.href} class="text-brand-blue no-underline hover:text-brand-green-dark">
+                          {c.value}
+                        </a>
+                      ) : (
+                        c.value
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {location.schedules?.map((block) => (
+                <div>
+                  <h3 class="m-0 text-sm font-bold uppercase tracking-wide text-brand-blue">
+                    {block.title}
+                  </h3>
+                  <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-600">
+                    {block.lines.map((line) => (
+                      <li>{line}</li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+              {location.services && (
+                <ul class="m-0 list-disc space-y-1 pl-5 text-sm text-slate-600">
+                  {location.services.map((s) => (
+                    <li>{s}</li>
+                  ))}
+                </ul>
+              )}
+            </article>
+          ))
+        ) : (
+          <article class="card-base space-y-6">
+            {sede.contacts && (
+              <div>
+                <h2 class="section-title m-0 text-lg">Contacto</h2>
+                <ul class="mt-3 m-0 list-none space-y-2 p-0">
+                  {sede.contacts.map((c) => (
+                    <li class="text-sm text-slate-700">
+                      <span class="font-semibold text-brand-blue">{c.label}: </span>
+                      {c.href ? (
+                        <a href={c.href} class="text-brand-blue no-underline hover:text-brand-green-dark">
+                          {c.value}
+                        </a>
+                      ) : (
+                        c.value
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {sede.schedules?.map((block) => (
+              <div>
+                <h3 class="m-0 text-sm font-bold uppercase tracking-wide text-brand-blue">
+                  {block.title}
+                </h3>
+                <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-600">
+                  {block.lines.map((line) => (
+                    <li>{line}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </article>
+        )
+      }
+
+      {(sede.servicesHeading || sede.servicesIntro || sede.services || sede.serviceGroups) && (
+        <article class="scroll-mt-28">
+          <h2 class="section-title text-xl">
+            {sede.servicesHeading ?? 'Servicios'}
+          </h2>
+          {sede.servicesIntro && (
+            <p class="mt-3 text-sm font-semibold uppercase tracking-wide text-brand-blue md:text-base">
+              {sede.servicesIntro}
+            </p>
+          )}
+          {sede.serviceGroups ? (
+            <div class="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {sede.serviceGroups.map((group) => (
+                <ul class="m-0 list-none space-y-2 p-0">
+                  {group.items.map((service) => (
+                    <li class="flex items-start gap-2 text-sm text-slate-700">
+                      <Icon name="shield-check" size={16} class="mt-0.5 shrink-0 text-brand-green" />
+                      {service}
+                    </li>
+                  ))}
+                </ul>
+              ))}
+            </div>
+          ) : (
+            sede.services && (
+              <ul class="mt-4 grid gap-2 sm:grid-cols-2">
+                {sede.services.map((service) => (
+                  <li class="flex items-start gap-2 text-sm text-slate-700">
+                    <Icon name="shield-check" size={18} class="mt-0.5 shrink-0 text-brand-green" />
+                    {service}
+                  </li>
+                ))}
+              </ul>
+            )
+          )}
+        </article>
+      )}
+
+      <div class="flex flex-wrap gap-3 border-t border-slate-200 pt-8">
+        <a class="btn btn--primary" href="/citas">
+          <Icon name="calendar" size={18} />
+          Solicitar cita
+        </a>
+        <a class="btn btn--outline" href={`tel:${deptPhone.tel}`}>
+          <Icon name="phone" size={18} />
+          Línea {deptLabel}: {deptPhone.label}
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,46 @@
+---
+import Icon from '@/components/icons/Icon.astro';
+import type { NavLink } from '@/data/navigation';
+
+type Props = {
+  links: NavLink[];
+  nested?: boolean;
+};
+
+const { links, nested = false } = Astro.props;
+---
+
+<ul
+  class:list={[
+    'm-0 list-none p-2',
+    nested
+      ? 'invisible absolute left-full top-0 z-30 min-w-[12rem] translate-x-1 rounded-xl border border-slate-200 bg-white opacity-0 shadow-brand transition group-focus-within/sub:visible group-focus-within/sub:translate-x-0 group-focus-within/sub:opacity-100 group-hover/sub:visible group-hover/sub:translate-x-0 group-hover/sub:opacity-100'
+      : 'invisible absolute left-0 top-full z-20 min-w-[14rem] translate-y-1 rounded-xl border border-slate-200 bg-white opacity-0 shadow-brand transition group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100',
+  ]}
+>
+  {
+    links.map((link) =>
+      link.children?.length ? (
+        <li class="group/sub relative">
+          <span class="flex cursor-default items-center justify-between gap-2 rounded-lg px-4 py-2 text-sm font-semibold text-brand-blue">
+            {link.label}
+            <Icon name="arrow-right" size={14} class="opacity-50" />
+          </span>
+          <Astro.self links={link.children} nested />
+        </li>
+      ) : (
+        <li>
+          <a
+            href={link.href ?? '#'}
+            target={link.external ? '_blank' : undefined}
+            rel={link.external ? 'noopener noreferrer' : undefined}
+            class="flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium text-brand-blue no-underline hover:bg-brand-green/10 hover:text-brand-green-dark"
+          >
+            {link.label}
+            {link.external && <Icon name="external" size={14} class="opacity-60" />}
+          </a>
+        </li>
+      ),
+    )
+  }
+</ul>

@@ -2,6 +2,7 @@
 import Logo from '@/components/brand/Logo.astro';
 import Icon from '@/components/icons/Icon.astro';
 import SocialLinks from '@/components/layout/SocialLinks.astro';
+import NavDropdown from '@/components/layout/NavDropdown.astro';
 import MobileMenu from '@/components/react/MobileMenu';
 import { mainNavigation } from '@/data/navigation';
 import { site } from '@/data/site';
@@ -43,27 +44,22 @@ import { site } from '@/data/site';
             mainNavigation.map((item) =>
               item.children ? (
                 <li class="group relative">
-                  <button
-                    type="button"
-                    class="cursor-pointer rounded-md border-0 bg-transparent px-3 py-2 font-semibold text-brand-blue transition hover:bg-brand-green/10 hover:text-brand-green-dark"
-                  >
-                    {item.label}
-                  </button>
-                  <ul class="invisible absolute left-0 top-full z-20 m-0 min-w-[14rem] translate-y-1 list-none rounded-xl border border-slate-200 bg-white p-2 opacity-0 shadow-brand transition group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
-                    {item.children.map((child) => (
-                      <li>
-                        <a
-                          href={child.href}
-                          target={child.external ? '_blank' : undefined}
-                          rel={child.external ? 'noopener noreferrer' : undefined}
-                          class="flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium text-brand-blue no-underline hover:bg-brand-green/10 hover:text-brand-green-dark"
-                        >
-                          {child.label}
-                          {child.external && <Icon name="external" size={14} class="opacity-60" />}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
+                  {item.href ? (
+                    <a
+                      href={item.href}
+                      class="block rounded-md px-3 py-2 font-semibold text-brand-blue no-underline transition hover:bg-brand-green/10 hover:text-brand-green-dark"
+                    >
+                      {item.label}
+                    </a>
+                  ) : (
+                    <button
+                      type="button"
+                      class="cursor-pointer rounded-md border-0 bg-transparent px-3 py-2 font-semibold text-brand-blue transition hover:bg-brand-green/10 hover:text-brand-green-dark"
+                    >
+                      {item.label}
+                    </button>
+                  )}
+                  <NavDropdown links={item.children} />
                 </li>
               ) : (
                 <li>
