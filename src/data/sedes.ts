@@ -20,6 +20,13 @@ export type SedeSchedule = {
 export type SedeLocation = {
   name: string;
   address?: string;
+  image?: string;
+  imageAlt?: string;
+  mapEmbedUrl?: string;
+  /** Enlace para abrir la ubicación en Google Maps. */
+  mapsHref?: string;
+  whatsappHref?: string;
+  appointmentHref?: string;
   contacts: SedeContact[];
   schedules?: SedeSchedule[];
   services?: string[];
@@ -225,6 +232,15 @@ export const sedesBySlug: Record<string, Sede> = {
     locations: [
       {
         name: 'NEIVA SEDE',
+        address: 'Calle 8 # 10-45, Neiva, Huila',
+        image: '/images/sedes/neiva.jpg',
+        imageAlt: 'Edificio sede EMCOSALUD Neiva',
+        mapEmbedUrl:
+          'https://maps.google.com/maps?q=calle+8+%2310-45+neiva&t=m&z=15&output=embed&iwloc=near',
+        mapsHref:
+          'https://www.google.com/maps/search/?api=1&query=Calle+8+%2310-45+Neiva+Huila',
+        whatsappHref: 'https://wa.me/573053353786',
+        appointmentHref: '/citas',
         contacts: [
           { label: 'Fijo', value: '(608) 863 2041', href: 'tel:+576088632041' },
           defaultHuilaCitas,

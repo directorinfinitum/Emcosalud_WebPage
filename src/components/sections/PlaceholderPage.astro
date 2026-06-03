@@ -2,21 +2,20 @@
 interface Props {
   title: string;
   description?: string;
+  showBackLink?: boolean;
 }
 
-const { title, description } = Astro.props;
+const { title, description, showBackLink = true } = Astro.props;
 ---
 
 <section class="section-block">
   <div class="container-page max-w-3xl">
     <h1 class="section-title">{title}</h1>
     {description && <p class="section-lead">{description}</p>}
-    <div class="card-base">
-      <p class="mb-4 text-slate-600">
-        Esta sección está preparada en la nueva plataforma Astro. Comparte capturas o
-        contenido del sitio actual para completar formularios, PDFs y flujos.
-      </p>
-      <a class="btn btn--primary" href="/">Volver al inicio</a>
-    </div>
+    {showBackLink && (
+      <a class="btn btn--primary mt-8" href="/">
+        Volver al inicio
+      </a>
+    )}
   </div>
 </section>

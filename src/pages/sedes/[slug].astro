@@ -1,5 +1,6 @@
 ---
 import Icon from '@/components/icons/Icon.astro';
+import SedeLocationBlock from '@/components/sections/SedeLocationBlock.astro';
 import { getSede, sedeIndex } from '@/data/sedes';
 import { site } from '@/data/site';
 import BaseLayout from '@/layouts/BaseLayout.astro';
@@ -50,52 +51,7 @@ const deptLabel = sede.department === 'huila' ? 'Huila' : 'Tolima';
 
       {
         sede.locations?.length ? (
-          sede.locations.map((location) => (
-            <article class="card-base space-y-4">
-              <h2 class="section-title m-0 text-xl">{location.name}</h2>
-              {location.address && (
-                <p class="m-0 flex items-start gap-2 text-slate-600">
-                  <Icon name="location" size={18} class="mt-0.5 shrink-0 text-brand-blue" />
-                  {location.address}
-                </p>
-              )}
-              {location.contacts.length > 0 && (
-                <ul class="m-0 list-none space-y-2 p-0">
-                  {location.contacts.map((c) => (
-                    <li class="text-sm text-slate-700">
-                      <span class="font-semibold text-brand-blue">{c.label}: </span>
-                      {c.href ? (
-                        <a href={c.href} class="text-brand-blue no-underline hover:text-brand-green-dark">
-                          {c.value}
-                        </a>
-                      ) : (
-                        c.value
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              )}
-              {location.schedules?.map((block) => (
-                <div>
-                  <h3 class="m-0 text-sm font-bold uppercase tracking-wide text-brand-blue">
-                    {block.title}
-                  </h3>
-                  <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-600">
-                    {block.lines.map((line) => (
-                      <li>{line}</li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-              {location.services && (
-                <ul class="m-0 list-disc space-y-1 pl-5 text-sm text-slate-600">
-                  {location.services.map((s) => (
-                    <li>{s}</li>
-                  ))}
-                </ul>
-              )}
-            </article>
-          ))
+          sede.locations.map((location) => <SedeLocationBlock location={location} />)
         ) : (
           <article class="card-base space-y-6">
             {sede.contacts && (
