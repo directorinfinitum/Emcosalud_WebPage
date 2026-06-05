@@ -8,6 +8,11 @@ interface Props {
 
 const { variant = 'header', showTagline = variant === 'header' } = Astro.props;
 
+const logoSrc =
+  variant === 'footer'
+    ? site.assets.logofooter
+    : site.assets.logo;
+
 const imgClass =
   variant === 'footer'
     ? 'h-12 w-auto max-w-[220px] object-contain'
@@ -21,7 +26,7 @@ const taglineClass =
 
 <a href="/" class="inline-flex flex-col items-start gap-0.5 no-underline text-inherit hover:opacity-90">
   <img
-    src={site.assets.logo}
+    src={logoSrc}
     alt={site.assets.logoAlt}
     width="200"
     height="56"

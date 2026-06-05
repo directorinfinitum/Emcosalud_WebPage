@@ -17,7 +17,7 @@ export const heroBanners: HeroBanner[] = [
     href: '/sedes',
   },
   {
-    src: '/images/banners/sedes-huila.png',
+    src: '/images/banners/sedes-huila1.png',
     alt: 'Sedes en el departamento del Huila',
     href: '/sedes',
   },
