@@ -235,6 +235,31 @@ const neivaSedeImages: SedeImage[] = [
   { src: '/images/sedes/neiva/neiva-04-atencion.jpg', alt: 'Punto de atención sede Neiva' },
 ];
 
+/** Galería sede Campoalegre — emcosalud.com.co/campoalegre/ */
+const campoalegreSedeImages: SedeImage[] = [
+  {
+    src: '/images/sedes/campoalegre/campoalegre-01-portafolio.jpg',
+    alt: 'Instalaciones sede EMCOSALUD Campoalegre',
+  },
+];
+
+const campoalegreServiceGroups: SedeServiceGroup[] = [
+  {
+    items: [
+      'Medicina general',
+      'Odontología',
+      'Medicina familiar',
+      'Medicina interna',
+      'Ginecología',
+      'Enfermería',
+      'Nutrición',
+      'Psicología',
+      'Pediatría',
+      'Toma de muestras',
+    ],
+  },
+];
+
 /** Contenido por municipio (alineado con emcosalud.com.co). */
 export const sedesBySlug: Record<string, Sede> = {
   neiva: {
@@ -288,39 +313,52 @@ export const sedesBySlug: Record<string, Sede> = {
     slug: 'campoalegre',
     name: 'Campoalegre',
     department: 'huila',
-    headline: 'Campoalegre',
-    contacts: [
-      { label: 'Teléfono', value: '(608) 838 1961 ext. 5812', href: 'tel:+576088381961' },
-      { label: 'Celular', value: '302 438 1142', href: 'tel:+573024381142' },
+    headline: 'Campoalegre sede',
+    locations: [
       {
-        label: 'Correo',
-        value: 'emcosalud.farmacia.campoalegre@gmail.com',
-        href: 'mailto:emcosalud.farmacia.campoalegre@gmail.com',
-      },
-    ],
-    schedules: [
-      {
-        title: 'Horario de atención',
-        lines: [
-          'Lunes a viernes: 7:00 a.m. a 12:00 m. y 2:00 p.m. a 5:00 p.m.',
-          'Sábados: 8:00 a.m. a 12:00 m.',
+        name: 'CAMPOALEGRE SEDE',
+        address: 'Carrera 6 # 19-23, Campoalegre, Huila',
+        images: campoalegreSedeImages,
+        mapEmbedUrl:
+          'https://maps.google.com/maps?q=carrera+6+%23+19-23+campoalegre&t=m&z=16&output=embed&iwloc=near',
+        mapsHref:
+          'https://www.google.com/maps/search/?api=1&query=Carrera+6+%2319-23+Campoalegre+Huila',
+        appointmentHref: '/citas',
+        contacts: [
+          {
+            label: 'Teléfono',
+            value: '(608) 838 1961 ext. 5812',
+            href: 'tel:+576088381961',
+          },
+          { label: 'Celular', value: '302 438 1142', href: 'tel:+573024381142' },
+          {
+            label: 'Correo',
+            value: 'emcosalud.farmacia.campoalegre@gmail.com',
+            href: 'mailto:emcosalud.farmacia.campoalegre@gmail.com',
+          },
+        ],
+        schedules: [
+          {
+            title: 'Horario de atención',
+            lines: [
+              'Lunes a viernes: 7:00 a.m. a 12:00 m. y 2:00 p.m. a 5:00 p.m.',
+              'Sábados: 8:00 a.m. a 12:00 m.',
+            ],
+          },
+          {
+            title: 'Horario de asignación de citas',
+            lines: [
+              'Lunes a viernes: 8:00 a.m. a 12:00 m. y 2:00 p.m. a 5:00 p.m.',
+              'Sábados: 8:00 a.m. a 12:00 m.',
+            ],
+          },
         ],
       },
-      {
-        title: 'Horario de asignación de citas',
-        lines: [
-          'Lunes a viernes: 8:00 a.m. a 12:00 m. y 2:00 p.m. a 5:00 p.m.',
-          'Sábados: 8:00 a.m. a 12:00 m.',
-        ],
-      },
     ],
+    servicesHeading: 'Somos tu IPS de confianza',
     servicesIntro:
-      'Medicina de primer nivel, odontología, especialidades, servicio farmacéutico y programas de PyP.',
-    services: [
-      'Medicina general y familiar',
-      'Ginecología, pediatría, psicología y nutrición',
-      'Odontología y toma de muestras',
-    ],
+      'Medicina de primer nivel, odontología, especialidades básicas, especialidades, servicio farmacéutico y programas de PyP. Medicina general: lunes a viernes 2:00 a 5:00 p.m.',
+    serviceGroups: campoalegreServiceGroups,
   },
   garzon: {
     slug: 'garzon',
