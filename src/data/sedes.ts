@@ -260,6 +260,45 @@ const campoalegreServiceGroups: SedeServiceGroup[] = [
   },
 ];
 
+/** Galería sede Garzón — emcosalud.com.co/garzon/ */
+const garzonSedeImages: SedeImage[] = [
+  {
+    src: '/images/sedes/garzon/garzon-01-portafolio.jpg',
+    alt: 'Instalaciones sede EMCOSALUD Garzón',
+  },
+];
+
+const garzonServiceGroups: SedeServiceGroup[] = [
+  {
+    items: [
+      'Cirugía general',
+      'Enfermería',
+      'Fisioterapia',
+      'Fonoaudiología y/o terapia del lenguaje',
+      'Ginecobstetricia',
+      'Medicina familiar',
+    ],
+  },
+  {
+    items: [
+      'Medicina general',
+      'Medicina interna',
+      'Nutrición y dietética',
+      'Odontología general',
+      'Pediatría',
+      'Psicología',
+    ],
+  },
+  {
+    items: [
+      'Servicio farmacéutico',
+      'Ortopedia y/o traumatología',
+      'Toma de muestras de cuello uterino y ginecológicas',
+      'Toma de muestras de laboratorio clínico',
+    ],
+  },
+];
+
 /** Contenido por municipio (alineado con emcosalud.com.co). */
 export const sedesBySlug: Record<string, Sede> = {
   neiva: {
@@ -364,10 +403,53 @@ export const sedesBySlug: Record<string, Sede> = {
     slug: 'garzon',
     name: 'Garzón',
     department: 'huila',
-    headline: 'Garzón',
-    contacts: [defaultHuilaCitas],
-    schedules: [standardAttention, standardCitas],
-    services: basicServices,
+    headline: 'Garzón sede',
+    locations: [
+      {
+        name: 'GARZÓN SEDE',
+        address: 'Calle 9 # 5-95, Garzón, Huila',
+        images: garzonSedeImages,
+        mapEmbedUrl:
+          'https://maps.google.com/maps?q=calle+9+%23+5+95+Garzon&t=m&z=16&output=embed&iwloc=near',
+        mapsHref:
+          'https://www.google.com/maps/search/?api=1&query=Calle+9+%235-95+Garzón+Huila',
+        whatsappHref: 'https://wa.me/573158193551',
+        appointmentHref: '/citas',
+        contacts: [
+          {
+            label: 'Teléfono',
+            value: '320 350 9873 ext. 5831',
+            href: 'tel:+573203509873',
+          },
+          {
+            label: 'Correo',
+            value: 'garzon@emcosalud.com',
+            href: 'mailto:garzon@emcosalud.com',
+          },
+        ],
+        schedules: [
+          {
+            title: 'Horario de atención',
+            lines: [
+              'Lunes a viernes: 6:30 a.m. a 6:00 p.m.',
+              'Sábados: 8:00 a.m. a 11:30 a.m.',
+            ],
+          },
+          {
+            title: 'Horario de asignación de citas',
+            lines: ['Desde las 7:30 a.m.'],
+          },
+          {
+            title: 'Horario de toma de muestras',
+            lines: ['Lunes a viernes: 6:30 a.m. a 9:00 a.m.'],
+          },
+        ],
+      },
+    ],
+    servicesHeading: 'Somos tu IPS de confianza',
+    servicesIntro:
+      'Medicina de primer nivel, odontología, especialidades básicas, especialidades, servicio farmacéutico y programas de PyP.',
+    serviceGroups: garzonServiceGroups,
   },
   gigante: {
     slug: 'gigante',
