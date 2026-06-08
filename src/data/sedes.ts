@@ -227,6 +227,14 @@ const basicServices = [
   'Toma de muestras de laboratorio',
 ];
 
+/** Galería sede Neiva — imágenes de emcosalud.com.co/neiva/ */
+const neivaSedeImages: SedeImage[] = [
+  { src: '/images/sedes/neiva/neiva-03-banner.png', alt: 'Sede exclusiva Neiva' },
+  { src: '/images/sedes/neiva/neiva-01-edificio.jpg', alt: 'Fachada sede EMCOSALUD Neiva' },
+  { src: '/images/sedes/neiva/neiva-02-instalaciones.jpeg', alt: 'Instalaciones y atención — sede Neiva' },
+  { src: '/images/sedes/neiva/neiva-04-atencion.jpg', alt: 'Punto de atención sede Neiva' },
+];
+
 /** Contenido por municipio (alineado con emcosalud.com.co). */
 export const sedesBySlug: Record<string, Sede> = {
   neiva: {
@@ -238,16 +246,7 @@ export const sedesBySlug: Record<string, Sede> = {
       {
         name: 'NEIVA SEDE',
         address: 'Calle 8 # 10-45, Neiva, Huila',
-        images: [
-          {
-            src: '/images/sedes/neiva-edificio.jpg',
-            alt: 'Fachada sede EMCOSALUD Neiva',
-          },
-          {
-            src: '/images/sedes/neiva-instalaciones.jpg',
-            alt: 'Instalaciones y atención al usuario — sede Neiva',
-          },
-        ],
+        images: neivaSedeImages,
         mapEmbedUrl:
           'https://maps.google.com/maps?q=calle+8+%2310-45+neiva&t=m&z=15&output=embed&iwloc=near',
         mapsHref:

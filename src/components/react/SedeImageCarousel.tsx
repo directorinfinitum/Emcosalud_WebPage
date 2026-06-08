@@ -50,7 +50,7 @@ export default function SedeImageCarousel({ images, intervalMs = 5000 }: Props) 
       onFocus={() => setPaused(true)}
       onBlur={() => setPaused(false)}
     >
-      <div className="relative aspect-[3/4] w-full max-h-[32rem] sm:aspect-[4/5]">
+      <div className="relative aspect-[4/3] w-full max-h-[32rem] md:aspect-[3/4] md:max-h-[36rem]">
         {images.map((image, index) => {
           const isActive = index === active;
           return (
