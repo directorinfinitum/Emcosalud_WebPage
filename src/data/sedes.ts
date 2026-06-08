@@ -299,6 +299,124 @@ const garzonServiceGroups: SedeServiceGroup[] = [
   },
 ];
 
+const giganteSedeImages: SedeImage[] = [
+  { src: '/images/sedes/gigante/gigante-01-portafolio.jpg', alt: 'Instalaciones sede EMCOSALUD Gigante' },
+];
+
+const giganteServiceGroups: SedeServiceGroup[] = [
+  {
+    items: [
+      'Medicina general',
+      'Odontología',
+      'Ginecología',
+      'Pediatría',
+      'Medicina familiar',
+      'Medicina interna',
+      'Nutrición',
+      'Psicología',
+      'PyP',
+    ],
+  },
+];
+
+const guadalupeSedeImages: SedeImage[] = [
+  { src: '/images/sedes/guadalupe/guadalupe-01-portafolio.jpg', alt: 'Instalaciones sede EMCOSALUD Guadalupe' },
+];
+
+const guadalupeServiceGroups: SedeServiceGroup[] = [
+  {
+    items: [
+      'Enfermería',
+      'Ginecobstetricia',
+      'Medicina familiar',
+      'Medicina general',
+      'Medicina interna',
+      'Nutrición y dietética',
+      'Pediatría',
+      'Psicología',
+      'Servicio farmacéutico',
+      'Toma de muestras de cuello uterino y ginecológicas',
+    ],
+  },
+];
+
+const laPlataSedeImages: SedeImage[] = [
+  { src: '/images/sedes/la-plata/la-plata-01-sede.jpeg', alt: 'Instalaciones sede EMCOSALUD La Plata' },
+];
+
+const laPlataServiceGroups: SedeServiceGroup[] = [
+  {
+    items: [
+      'Enfermería',
+      'Fisioterapia',
+      'Ginecobstetricia',
+      'Medicina familiar',
+      'Medicina general',
+    ],
+  },
+  {
+    items: [
+      'Medicina interna',
+      'Nutrición y dietética',
+      'Odontología general',
+      'Pediatría',
+      'Psicología',
+    ],
+  },
+  {
+    items: [
+      'Servicio farmacéutico',
+      'Terapia respiratoria',
+      'Toma de muestras de cuello uterino y ginecológicas',
+      'Toma de muestras de laboratorio clínico',
+    ],
+  },
+];
+
+const pitalitoSedeImages: SedeImage[] = [
+  { src: '/images/sedes/pitalito/pitalito-01-fachada.png', alt: 'Fachada sede EMCOSALUD Pitalito' },
+];
+
+const pitalitoServiceGroups: SedeServiceGroup[] = [
+  {
+    items: [
+      'Consulta externa',
+      'Odontología',
+      'Farmacia',
+      'Enfermería',
+      'Medicina interna',
+      'Ginecología',
+    ],
+  },
+  {
+    items: [
+      'Pediatría',
+      'Medicina familiar',
+      'Psicología',
+      'Nutrición',
+      'Toma de muestras',
+    ],
+  },
+];
+
+const sanAgustinSedeImages: SedeImage[] = [
+  { src: '/images/sedes/san-agustin/san-agustin-01-sede.jpeg', alt: 'Instalaciones sede EMCOSALUD San Agustín' },
+];
+
+const sanAgustinServiceGroups: SedeServiceGroup[] = [
+  {
+    items: [
+      'Medicina general',
+      'Odontología',
+      'Medicina familiar',
+      'Farmacia',
+      'Enfermería',
+      'Psicología',
+      'Toma de muestras de laboratorio',
+    ],
+  },
+];
+
 /** Contenido por municipio (alineado con emcosalud.com.co). */
 export const sedesBySlug: Record<string, Sede> = {
   neiva: {
@@ -455,46 +573,266 @@ export const sedesBySlug: Record<string, Sede> = {
     slug: 'gigante',
     name: 'Gigante',
     department: 'huila',
-    headline: 'Gigante',
-    contacts: [defaultHuilaCitas],
-    schedules: [standardAttention, standardCitas],
-    services: basicServices,
+    headline: 'Gigante sede',
+    locations: [
+      {
+        name: 'GIGANTE SEDE',
+        address: 'Calle 2 # 6-69, Gigante, Huila',
+        images: giganteSedeImages,
+        mapEmbedUrl:
+          'https://maps.google.com/maps?q=calle+2+%23+6+69+gigante&t=m&z=17&output=embed&iwloc=near',
+        mapsHref:
+          'https://www.google.com/maps/search/?api=1&query=Calle+2+%236-69+Gigante+Huila',
+        appointmentHref: '/citas',
+        contacts: [
+          {
+            label: 'Teléfono',
+            value: '320 350 9873 ext. 5833',
+            href: 'tel:+573203509873',
+          },
+          {
+            label: 'Correo citas',
+            value: 'care.gigante@gmail.com',
+            href: 'mailto:care.gigante@gmail.com',
+          },
+        ],
+        schedules: [
+          {
+            title: 'Horario de atención',
+            lines: [
+              'Lunes a viernes: 7:00 a.m. a 12:30 m. y 1:00 p.m. a 6:00 p.m.',
+              'Sábados: 8:00 a.m. a 12:00 m.',
+            ],
+          },
+        ],
+      },
+    ],
+    servicesHeading: 'Somos tu IPS de confianza',
+    servicesIntro:
+      'Medicina de primer nivel, odontología, especialidades básicas, especialidades, servicio farmacéutico y programas de PyP.',
+    serviceGroups: giganteServiceGroups,
   },
   guadalupe: {
     slug: 'guadalupe',
     name: 'Guadalupe',
     department: 'huila',
-    headline: 'Guadalupe',
-    contacts: [defaultHuilaCitas],
-    schedules: [standardAttention, standardCitas],
-    services: basicServices,
+    headline: 'Guadalupe sede',
+    locations: [
+      {
+        name: 'GUADALUPE SEDE',
+        address: 'Carrera 4 # 2-62, Guadalupe, Huila',
+        images: guadalupeSedeImages,
+        mapEmbedUrl:
+          'https://maps.google.com/maps?q=carrera+4+%23+2-62+guadalupe&t=m&z=17&output=embed&iwloc=near',
+        mapsHref:
+          'https://www.google.com/maps/search/?api=1&query=Carrera+4+%232-62+Guadalupe+Huila',
+        appointmentHref: '/citas',
+        contacts: [
+          {
+            label: 'Teléfono',
+            value: '(608) 863 2041 ext. 5847',
+            href: 'tel:+576088632041',
+          },
+          {
+            label: 'Correo citas',
+            value: 'guadalupe@emcosalud.com',
+            href: 'mailto:guadalupe@emcosalud.com',
+          },
+        ],
+        schedules: [
+          {
+            title: 'Horario de atención',
+            lines: [
+              'Lunes a viernes: 6:00 a.m. a 6:00 p.m.',
+              'Sábados: 8:00 a.m. a 11:30 a.m.',
+            ],
+          },
+        ],
+      },
+    ],
+    servicesHeading: 'Somos tu IPS de confianza',
+    servicesIntro:
+      'Medicina de primer nivel, especialidades básicas, especialidades, servicio farmacéutico y programas de PyP.',
+    serviceGroups: guadalupeServiceGroups,
   },
   'la-plata': {
     slug: 'la-plata',
     name: 'La Plata',
     department: 'huila',
-    headline: 'La Plata',
-    contacts: [defaultHuilaCitas],
-    schedules: [standardAttention, standardCitas],
-    services: basicServices,
+    headline: 'La Plata sede',
+    locations: [
+      {
+        name: 'LA PLATA SEDE',
+        address: 'La Plata, Huila',
+        images: laPlataSedeImages,
+        mapEmbedUrl:
+          'https://www.google.com/maps/embed?pb=!4v1768572173594!6m8!1m7!1siQjuwfEaZDUftvdnhDBoYA!2m2!1d2.388692321166709!2d-75.89326941106188!3f315.3053025081399!4f-6.767976537559264!5f0.7820865974627469',
+        mapsHref:
+          'https://www.google.com/maps/search/?api=1&query=2.388692,-75.893269',
+        whatsappHref: 'https://wa.me/573158193552',
+        appointmentHref: '/citas',
+        contacts: [
+          {
+            label: 'Teléfono',
+            value: '315 819 3552',
+            href: 'tel:+573158193552',
+          },
+          {
+            label: 'Correo',
+            value: 'laplata@emcosalud.com',
+            href: 'mailto:laplata@emcosalud.com',
+          },
+        ],
+        schedules: [
+          {
+            title: 'Horario de atención',
+            lines: [
+              'Lunes a viernes: 6:30 a.m. a 6:00 p.m.',
+              'Sábados: 8:00 a.m. a 12:00 m.',
+            ],
+          },
+          {
+            title: 'Horario de asignación de citas',
+            lines: ['Desde las 8:00 a.m.'],
+          },
+          {
+            title: 'Horario de toma de muestras',
+            lines: ['Lunes a viernes: 6:30 a.m. a 8:00 a.m.'],
+          },
+        ],
+      },
+    ],
+    servicesHeading: 'Somos tu IPS de confianza',
+    servicesIntro:
+      'Medicina de primer nivel, odontología, especialidades básicas, especialidades, servicio farmacéutico y programas de PyP.',
+    serviceGroups: laPlataServiceGroups,
   },
   pitalito: {
     slug: 'pitalito',
     name: 'Pitalito',
     department: 'huila',
-    headline: 'Pitalito',
-    contacts: [defaultHuilaCitas],
-    schedules: [standardAttention, standardCitas],
-    services: [...basicServices, 'Terapias'],
+    headline: 'Pitalito sede',
+    locations: [
+      {
+        name: 'PITALITO SEDE',
+        address: 'Carrera 5 # 2-30, Pitalito, Huila',
+        images: pitalitoSedeImages,
+        mapEmbedUrl:
+          'https://maps.google.com/maps?q=carrera+5+%23+2-30+pitalito&t=m&z=16&output=embed&iwloc=near',
+        mapsHref:
+          'https://www.google.com/maps/search/?api=1&query=Carrera+5+%232-30+Pitalito+Huila',
+        whatsappHref: 'https://wa.me/573158703108',
+        appointmentHref: '/citas',
+        contacts: [
+          {
+            label: 'Teléfono',
+            value: '(608) 863 2041 ext. 5842',
+            href: 'tel:+576088632041',
+          },
+          { label: 'Celular', value: '315 870 3108', href: 'tel:+573158703108' },
+          {
+            label: 'Correo citas',
+            value: 'pitalito@emcosalud.com',
+            href: 'mailto:pitalito@emcosalud.com',
+          },
+          {
+            label: 'Coordinación',
+            value: 'coordinacion.pitalito@emcosalud.com',
+            href: 'mailto:coordinacion.pitalito@emcosalud.com',
+          },
+          {
+            label: 'Atención al usuario',
+            value: 'atus.pitalito@gmail.com',
+            href: 'mailto:atus.pitalito@gmail.com',
+          },
+        ],
+        schedules: [
+          {
+            title: 'Horario de atención',
+            lines: [
+              'Lunes a viernes: 7:00 a.m. a 12:00 m. y 2:00 p.m. a 6:00 p.m.',
+              'Sábados: 8:00 a.m. a 12:00 m.',
+            ],
+          },
+        ],
+      },
+      {
+        name: 'Terapias',
+        whatsappHref: 'https://wa.me/573144662870',
+        appointmentHref: '/citas',
+        contacts: [
+          { label: 'Celular', value: '314 466 2870', href: 'tel:+573144662870' },
+          {
+            label: 'Teléfono',
+            value: '(608) 863 2041 ext. 5841',
+            href: 'tel:+576088632041',
+          },
+          {
+            label: 'Correo citas',
+            value: 'emcoterapiaspitalito@gmail.com',
+            href: 'mailto:emcoterapiaspitalito@gmail.com',
+          },
+        ],
+        schedules: [
+          {
+            title: 'Horario de atención',
+            lines: [
+              'Lunes a viernes: 7:00 a.m. a 12:00 m. y 2:00 p.m. a 5:00 p.m.',
+              'Sábados: 8:00 a.m. a 12:00 m.',
+            ],
+          },
+        ],
+      },
+    ],
+    servicesHeading: 'Somos tu IPS de confianza',
+    servicesIntro:
+      'Medicina de primer nivel, odontología, especialidades básicas, especialidades, servicio farmacéutico y programas de PyP.',
+    serviceGroups: pitalitoServiceGroups,
   },
   'san-agustin': {
     slug: 'san-agustin',
     name: 'San Agustín',
     department: 'huila',
-    headline: 'San Agustín',
-    contacts: [defaultHuilaCitas],
-    schedules: [standardAttention, standardCitas],
-    services: basicServices,
+    headline: 'San Agustín sede',
+    locations: [
+      {
+        name: 'SAN AGUSTÍN SEDE',
+        address: 'San Agustín, Huila',
+        images: sanAgustinSedeImages,
+        mapEmbedUrl:
+          'https://www.google.com/maps/embed?pb=!4v1768574429413!6m8!1m7!1sviY2IPlJWkKnCcwxUYqfqQ!2m2!1d1.882389044376133!2d-76.27334712792593!3f337.9309746152079!4f-1.6325617897128666!5f0.7820865974627469',
+        mapsHref:
+          'https://www.google.com/maps/search/?api=1&query=1.882389,-76.273347',
+        whatsappHref: 'https://wa.me/573102799661',
+        appointmentHref: '/citas',
+        contacts: [
+          {
+            label: 'Teléfono fijo',
+            value: '(608) 863 2041 ext. 5843',
+            href: 'tel:+576088632041',
+          },
+          { label: 'Celular', value: '310 279 9661', href: 'tel:+573102799661' },
+          {
+            label: 'Correo',
+            value: 'emcosalud.farmacia.sanagustin@gmail.com',
+            href: 'mailto:emcosalud.farmacia.sanagustin@gmail.com',
+          },
+        ],
+        schedules: [
+          {
+            title: 'Horario de atención',
+            lines: [
+              'Lunes a viernes: 6:00 a.m. a 12:00 m. y 2:00 p.m. a 6:00 p.m.',
+              'Sábados: 8:00 a.m. a 10:00 a.m.',
+            ],
+          },
+        ],
+      },
+    ],
+    servicesHeading: 'Somos tu IPS de confianza',
+    servicesIntro:
+      'Medicina de primer nivel, odontología, especialidades básicas, especialidades, servicio farmacéutico y programas de PyP.',
+    serviceGroups: sanAgustinServiceGroups,
   },
   ibague: {
     slug: 'ibague',
