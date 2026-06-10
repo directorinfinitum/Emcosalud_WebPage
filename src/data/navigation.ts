@@ -1,4 +1,5 @@
 import type { IconName, QuickAccessItem } from './icons';
+import { buildNEmpresasNavChildren } from './empresas';
 import { buildSedesNavChildren } from './sedes';
 
 export type NavLink = {
@@ -34,7 +35,6 @@ export function buildServiciosNavChildren(): NavLink[] {
           label: 'Descargar tu Certificado de Retenciones',
           href: '/documentos',
         },
-        { label: 'Tramitar PQR', href: '/pqrs' },
       ],
     },
     {
@@ -64,6 +64,10 @@ export const mainNavigation: NavItem[] = [
     label: 'Servicios',
     href: '/servicios',
     children: buildServiciosNavChildren(),
+  },
+  {
+    label: 'N/Empresas',
+    children: buildNEmpresasNavChildren(),
   },
   { label: 'Blog', href: '/blog' },
   { label: 'Contacto', href: '/contacto' },
@@ -126,8 +130,10 @@ export const footerNavigation = {
     { label: 'Blog', href: '/blog' },
   ],
   enlaces: [
+    { label: 'Grupo empresarial', href: 'https://portal.emcosalud.org', external: true },
     { label: 'Clínica Emcosalud', href: 'https://clinicaemcosalud.com', external: true },
     { label: 'Emcofarma', href: 'https://emcofarma.com', external: true },
+    { label: 'Emcofarma Plus', href: 'https://portal.emcosalud.org', external: true },
     { label: 'Escuela Emcosalud', href: 'https://escuelaemcosalud.com', external: true },
   ],
 } as const;

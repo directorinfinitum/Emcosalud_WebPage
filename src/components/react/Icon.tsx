@@ -24,6 +24,8 @@ const navIcons: Record<string, IconName> = {
   Nosotros: 'users',
   Sedes: 'building',
   Servicios: 'stethoscope',
+  'N/Empresas': 'building',
+  Emcosalud: 'hospital',
   Huila: 'building',
   Tolima: 'building',
   Blog: 'blog',
