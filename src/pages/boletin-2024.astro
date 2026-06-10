@@ -1,0 +1,13 @@
+---
+import AtencionUsuarioHero from '@/components/sections/AtencionUsuarioHero.astro';
+import BoletinEditions from '@/components/sections/BoletinEditions.astro';
+import { boletinesByYear } from '@/data/atencion-usuario';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+const year = '2024';
+---
+
+<BaseLayout title={`Boletín ${year}`} description={`Boletines institucionales ${year} — EMCOSALUD.`}>
+  <AtencionUsuarioHero title={`Boletín ${year}`} lead="Consulta y descarga las ediciones del boletín institucional." />
+  <BoletinEditions year={year} issues={boletinesByYear[year] ?? []} />
+</BaseLayout>

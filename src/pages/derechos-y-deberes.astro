@@ -1,0 +1,38 @@
+---
+import Icon from '@/components/icons/Icon.astro';
+import AtencionUsuarioHero from '@/components/sections/AtencionUsuarioHero.astro';
+import { atencionUsuarioAssets } from '@/data/atencion-usuario';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Derechos y Deberes"
+  description="Documento oficial de derechos y deberes de los usuarios — EMCOSALUD."
+>
+  <AtencionUsuarioHero
+    title="Derechos y Deberes"
+    lead="Conoce tus derechos y deberes como usuario de los servicios de salud de EMCOSALUD."
+  />
+
+  <section class="section-block">
+    <div class="container-page max-w-3xl">
+      <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <h2 class="m-0 text-lg font-bold text-brand-blue">Documento oficial</h2>
+        <p class="mt-2 text-slate-700">
+          Descarga el documento institucional con la información sobre derechos, deberes y
+          responsabilidades de los usuarios.
+        </p>
+        <a
+          href={atencionUsuarioAssets.derechosDeberesPdf}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn btn--primary mt-6 inline-flex items-center gap-2 no-underline"
+        >
+          <Icon name="document" size={18} />
+          Ver o descargar PDF
+          <Icon name="external" size={14} />
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

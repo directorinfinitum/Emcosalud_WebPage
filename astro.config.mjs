@@ -12,6 +12,7 @@ export default defineConfig({
     '/huila-medicamentos': '/medicamentos-huila',
     '/tolima-medicamentos': '/medicamentos-tolima',
     '/document-search': '/documentos',
+    '/humanizacion-2': '/humanizacion',
     '/neiva': '/sedes/neiva',
     '/campoalegre': '/sedes/campoalegre',
     '/garzon': '/sedes/garzon',

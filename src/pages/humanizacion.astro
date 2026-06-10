@@ -1,0 +1,15 @@
+---
+import AtencionUsuarioHero from '@/components/sections/AtencionUsuarioHero.astro';
+import { humanizacionIntro } from '@/data/atencion-usuario';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Humanización" description="Compromiso institucional con la atención humanizada — EMCOSALUD.">
+  <AtencionUsuarioHero title={humanizacionIntro.title} lead={humanizacionIntro.lead} />
+
+  <section class="section-block">
+    <div class="container-page max-w-3xl space-y-4 text-slate-700 leading-relaxed">
+      {humanizacionIntro.paragraphs.map((paragraph) => <p class="m-0">{paragraph}</p>)}
+    </div>
+  </section>
+</BaseLayout>

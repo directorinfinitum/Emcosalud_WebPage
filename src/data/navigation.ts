@@ -1,4 +1,5 @@
 import type { IconName, QuickAccessItem } from './icons';
+import { buildAtencionUsuarioNavChildren } from './atencion-usuario';
 import { buildNEmpresasNavChildren } from './empresas';
 import { buildSedesNavChildren } from './sedes';
 
@@ -68,6 +69,10 @@ export const mainNavigation: NavItem[] = [
   {
     label: 'N/Empresas',
     children: buildNEmpresasNavChildren(),
+  },
+  {
+    label: 'Atención al Usuario',
+    children: buildAtencionUsuarioNavChildren(),
   },
   { label: 'Blog', href: '/blog' },
   { label: 'Contacto', href: '/contacto' },

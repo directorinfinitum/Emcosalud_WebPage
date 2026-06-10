@@ -1,0 +1,47 @@
+---
+import Icon from '@/components/icons/Icon.astro';
+import AtencionUsuarioHero from '@/components/sections/AtencionUsuarioHero.astro';
+import { canalesAtencion } from '@/data/atencion-usuario';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Canales y Puntos de Atención"
+  description="Líneas telefónicas, horarios y sedes de atención al usuario — EMCOSALUD."
+>
+  <AtencionUsuarioHero title={canalesAtencion.title} lead={canalesAtencion.lead} />
+
+  <section class="section-block">
+    <div class="container-page max-w-4xl">
+      <div class="grid gap-4 sm:grid-cols-2">
+        {
+          canalesAtencion.channels.map((channel) => (
+            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+              <p class="m-0 flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-brand-blue">
+                <Icon name="phone" size={18} class="text-brand-green" />
+                {channel.title}
+              </p>
+              <p class="mt-3 mb-1 text-2xl font-bold text-brand-blue">
+                <a href={`tel:${channel.tel}`} class="text-brand-blue no-underline hover:text-brand-green-dark">
+                  {channel.detail}
+                </a>
+              </p>
+              <p class="m-0 text-sm text-slate-600">{channel.note}</p>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="mt-10 rounded-2xl border border-brand-green/30 bg-brand-green/5 p-6">
+        <h2 class="m-0 text-lg font-bold text-brand-blue">Puntos de atención presencial</h2>
+        <p class="mt-2 mb-4 text-slate-700">
+          Consulta direcciones, horarios y servicios disponibles en cada municipio.
+        </p>
+        <a href="/sedes" class="btn btn--primary inline-flex items-center gap-2 no-underline">
+          <Icon name="location" size={18} />
+          Ver nuestras sedes
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
