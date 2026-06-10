@@ -1,5 +1,6 @@
 import type { IconName, QuickAccessItem } from './icons';
 import { buildAtencionUsuarioNavChildren } from './atencion-usuario';
+import { buildLaboratorioClinicoNavChildren } from './laboratorio-clinico';
 import { buildNEmpresasNavChildren } from './empresas';
 import { buildSedesNavChildren } from './sedes';
 
@@ -75,7 +76,10 @@ export const mainNavigation: NavItem[] = [
     children: buildAtencionUsuarioNavChildren(),
   },
   { label: 'Blog', href: '/blog' },
-  { label: 'Contacto', href: '/contacto' },
+  {
+    label: 'Laboratorio Clínico',
+    children: buildLaboratorioClinicoNavChildren(),
+  },
 ];
 
 export const quickAccessLinks: QuickAccessItem[] = [
@@ -105,10 +109,11 @@ export const quickAccessLinks: QuickAccessItem[] = [
     description: 'Urgencias, hospitalización y cirugía',
   },
   {
-    label: 'Resultados y portales',
-    href: '/portales',
+    label: 'Consulta de resultados',
+    href: 'http://emcolab.vpls.emcosalud.net:38080/EclipseWeb/login',
+    external: true,
     icon: 'lab',
-    description: 'Laboratorio e imágenes diagnósticas',
+    description: 'Portal de resultados de laboratorio clínico',
   },
   {
     label: 'Estados financieros',

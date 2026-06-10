@@ -1,8 +1,38 @@
 ---
-import PlaceholderPage from '@/components/sections/PlaceholderPage.astro';
+import Icon from '@/components/icons/Icon.astro';
+import LaboratorioClinicoHero from '@/components/sections/LaboratorioClinicoHero.astro';
+import { laboratorioResultadosUrl } from '@/data/laboratorio-clinico';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="Portales de usuario">
-  <PlaceholderPage title="Resultados y portales" description="Laboratorio, imágenes diagnósticas y portales externos." />
+<BaseLayout
+  title="Consulta de Resultados"
+  description="Portal de resultados de laboratorio clínico — EMCOSALUD."
+>
+  <LaboratorioClinicoHero
+    title="Consulta de Resultados"
+    lead="Accede al portal de laboratorio clínico para consultar tus resultados en línea."
+  />
+
+  <section class="section-block">
+    <div class="container-page max-w-2xl text-center">
+      <a
+        href={laboratorioResultadosUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn btn--primary inline-flex items-center gap-2 no-underline"
+      >
+        <Icon name="lab" size={18} />
+        Ir al portal de resultados
+        <Icon name="external" size={14} />
+      </a>
+      <p class="mt-6 text-sm text-slate-600">
+        También puedes ver las{' '}
+        <a href="/recomendaciones-laboratorio" class="font-semibold text-brand-blue no-underline">
+          preparaciones para exámenes
+        </a>{' '}
+        antes de tu toma de muestra.
+      </p>
+    </div>
+  </section>
 </BaseLayout>

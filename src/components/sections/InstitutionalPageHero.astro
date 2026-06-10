@@ -1,0 +1,42 @@
+---
+export type InstitutionalCrumb = {
+  label: string;
+  href?: string;
+};
+
+type Props = {
+  title: string;
+  crumbs: InstitutionalCrumb[];
+};
+
+const { title, crumbs } = Astro.props;
+---
+
+<section
+  class="relative bg-brand-blue-dark bg-cover bg-center py-14 md:py-20"
+  style="background-image: url('/images/banners/page-banner.png')"
+>
+  <div class="absolute inset-0 bg-brand-blue-dark/70" aria-hidden="true" />
+  <div class="container-page relative text-center">
+    <h1 class="m-0 text-3xl font-bold text-white md:text-4xl lg:text-5xl">{title}</h1>
+  </div>
+</section>
+
+<nav class="border-b border-slate-200 bg-white py-3" aria-label="Miga de pan">
+  <div class="container-page text-sm text-slate-600">
+    {
+      crumbs.map((crumb, index) => (
+        <>
+          {index > 0 && <span class="mx-2 text-slate-400">/</span>}
+          {crumb.href ? (
+            <a href={crumb.href} class="font-medium text-brand-blue no-underline hover:text-brand-green-dark">
+              {crumb.label}
+            </a>
+          ) : (
+            <span class="font-semibold text-slate-800">{crumb.label}</span>
+          )}
+        </>
+      ))
+    }
+  </div>
+</nav>

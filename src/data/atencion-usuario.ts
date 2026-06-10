@@ -74,15 +74,16 @@ export const promocionCampaigns: PromocionCampaign[] = [
   },
 ];
 
-export const humanizacionIntro = {
+export const humanizacionContent = {
   title: 'Humanización',
-  lead:
-    'En EMCOSALUD entendemos que la atención en salud va más allá del tratamiento de enfermedades: buscamos una experiencia cercana, respetuosa y centrada en la dignidad de cada persona.',
-  paragraphs: [
-    'La humanización del cuidado comienza desde el primer contacto con el usuario y su familia, a través de una comunicación fluida, cálida y efectiva.',
-    'Promovemos un trato empático y personalizado, cuidando el lenguaje verbal y no verbal, que impacta directamente en el bienestar emocional.',
-    'Reafirmamos nuestro compromiso con una atención humanizada en todos los procesos de la cooperativa.',
-  ],
+  description:
+    'En EMCOSALUD tenemos un compromiso firme con la humanización en la atención de salud; por eso hemos implementado nuestra política institucional.',
+  image: '/images/humanizacion/Humanizacion.jpeg',
+  imageAlt: 'Política de Humanización en Atención en Salud — EMCOSALUD',
+  resolucion: {
+    label: 'RESOLUCIÓN 004',
+    href: '/images/humanizacion/RESOLUCION-004-DE-2025_POLITICA-DE-HUMANIZACION-EN-ATENCION-EN-SALUD-EMCOSALUD.pdf',
+  },
 } as const;
 
 export const politicaEnfoqueDiferencial = {
@@ -185,19 +186,50 @@ export const mejoremosJuntosContent = {
   regions: [
     {
       name: 'Huila',
-      office:
-        'Neiva: Calle 8 N. 10-45, piso 2 (Altico). Pitalito: Carrera 5 N. 2-30, piso 3 (Centro).',
-      schedule:
-        'Neiva: lun–vie 7:30 a.m.–11:00 a.m. y 2:00 p.m.–5:00 p.m. Pitalito: lun–jue 7:00 a.m.–12:00 m. y 2:00 p.m.–6:00 p.m.; vie 7:00 a.m.–12:00 m. y 2:00 p.m.–6:00 p.m.; sáb 8:00 a.m.–10:00 a.m.',
-      phone: '608-863 2041 opción 4',
-      pqrsHref: '/pqrs',
+      phone: { label: '608-863 2041 opción 4', href: 'tel:+576088632041' },
+      email: {
+        label: 'atencionalusuario@emcosalud.com',
+        href: 'mailto:atencionalusuario@emcosalud.com',
+      },
+      offices: [
+        {
+          city: 'Neiva',
+          address: 'Calle 8 N. 10-45, piso 2 (Altico)',
+          schedules: [
+            'Lunes a viernes: 7:30 a.m. – 11:00 a.m.',
+            'Lunes a viernes: 2:00 p.m. – 5:00 p.m.',
+          ],
+        },
+        {
+          city: 'Pitalito',
+          address: 'Carrera 5 N. 2-30, piso 3 (Centro)',
+          schedules: [
+            'Lunes a jueves: 7:00 a.m. – 12:00 m.',
+            'Lunes a jueves: 2:00 p.m. – 6:00 p.m.',
+            'Viernes: 7:00 a.m. – 12:00 m.',
+            'Viernes: 2:00 p.m. – 6:00 p.m.',
+            'Sábados: 8:00 a.m. – 10:00 a.m.',
+          ],
+        },
+      ],
     },
     {
       name: 'Tolima',
-      office: 'Ibagué: Carrera 5 N. 25-26, piso 1 (Barrio Hipódromo).',
-      schedule: 'Lun–vie 7:00 a.m.–11:00 a.m. y 2:00 p.m.–5:00 p.m.',
-      phone: '608-277 1669 Ext. 5104',
-      pqrsHref: '/pqrs',
+      phone: { label: '608-277 1669 Ext. 5104', href: 'tel:+576082771669' },
+      email: {
+        label: 'atencion.usuario.tolima@emcosalud.com',
+        href: 'mailto:atencion.usuario.tolima@emcosalud.com',
+      },
+      offices: [
+        {
+          city: 'Ibagué',
+          address: 'Carrera 5 N. 25-26, piso 1 (Barrio Hipódromo)',
+          schedules: [
+            'Lunes a viernes: 7:00 a.m. – 11:00 a.m.',
+            'Lunes a viernes: 2:00 p.m. – 5:00 p.m.',
+          ],
+        },
+      ],
     },
   ],
 } as const;
