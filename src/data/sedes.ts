@@ -17,6 +17,12 @@ export type SedeSchedule = {
   lines: string[];
 };
 
+/** Horarios por servicio o grupo de servicios (p. ej. sede Chaparral). */
+export type SedeServiceSchedule = {
+  service: string;
+  lines: string[];
+};
+
 export type SedeImage = {
   src: string;
   alt: string;
@@ -41,6 +47,30 @@ export type SedeServiceGroup = {
   items: string[];
 };
 
+export type SedeProcedureContact = {
+  paragraphs: string[];
+  email?: SedeContact;
+  phone?: SedeContact;
+};
+
+export type SedeProcedureSection = {
+  title: string;
+  items?: string[];
+  paragraph?: string;
+  alert?: string;
+  contact?: SedeProcedureContact;
+};
+
+/** Procedimiento FOMAG / ferrocarriles (p. ej. sede Ibagué). */
+export type SedeSupplyProcedure = {
+  title: string;
+  audience: string;
+  appliesIntro: string;
+  convenios: string[];
+  purpose: string;
+  sections: SedeProcedureSection[];
+};
+
 export type Sede = {
   slug: string;
   name: string;
@@ -55,6 +85,8 @@ export type Sede = {
   serviceGroups?: SedeServiceGroup[];
   servicesHeading?: string;
   servicesIntro?: string;
+  supplyProcedure?: SedeSupplyProcedure;
+  serviceSchedules?: SedeServiceSchedule[];
 };
 
 const neivaServiceGroups: SedeServiceGroup[] = [
@@ -413,6 +445,336 @@ const sanAgustinServiceGroups: SedeServiceGroup[] = [
       'Enfermería',
       'Psicología',
       'Toma de muestras de laboratorio',
+    ],
+  },
+];
+
+const ibagueHipodromoImages: SedeImage[] = [
+  { src: '/images/sedes/ibague/ibague-01-hipodromo.png', alt: 'Sede Hipódromo EMCOSALUD Ibagué' },
+];
+const ibagueInterlakenImages: SedeImage[] = [
+  { src: '/images/sedes/ibague/ibague-02-interlaken.jpg', alt: 'Sede Interlaken EMCOSALUD Ibagué' },
+];
+const ibagueAsistencialImages: SedeImage[] = [
+  { src: '/images/sedes/ibague/ibague-03-asistencial.jpg', alt: 'Sede asistencial EMCOSALUD Ibagué' },
+];
+
+const ibagueSupplyProcedure: SedeSupplyProcedure = {
+  title:
+    'Procedimiento para el acceso a servicios de suministro de medicamentos, dispositivos médicos e insumos',
+  audience: 'Usuarios Convenios FOMAG (Magisterio) y Fondo Nacional de Ferrocarriles Nacionales',
+  appliesIntro: 'El presente procedimiento aplica para los usuarios afiliados a los siguientes convenios:',
+  convenios: [
+    'Fondo Nacional de Prestaciones Sociales del Magisterio (FOMAG) – Población del Magisterio.',
+    'Fondo Nacional de Ferrocarriles Nacionales de Colombia.',
+  ],
+  purpose:
+    'Con el fin de garantizar un adecuado acceso a los servicios de suministro de medicamentos, dispositivos médicos e insumos prescritos por los profesionales de la red, tenga en cuenta la siguiente información:',
+  sections: [
+    {
+      title: '1. Requisitos para la entrega',
+      items: [
+        'Presentar fórmula médica vigente expedida por los profesionales de la red autorizada.',
+        'La fórmula podrá tener una fecha de expedición no mayor a 30 días; sin embargo, se aceptarán fórmulas con fecha mayor a 30 días cuando el médico tratante haya indicado explícitamente que la prescripción corresponde a tratamiento para 2 o 3 meses.',
+        'Acercarse a uno de los puntos de dispensación autorizados relacionados en la página web.',
+        'Asistir dentro de los horarios de atención establecidos.',
+        'Presentar la fórmula médica original para la validación de derechos y la dispensación conforme a las indicaciones prescritas.',
+      ],
+    },
+    {
+      title: '2. Condiciones de dispensación',
+      items: [
+        'La dispensación de medicamentos se realizará de acuerdo con la Denominación Común Internacional (DCI).',
+        'Cuando el médico tratante justifique el uso de un medicamento comercial, esta justificación deberá encontrarse registrada en el formato correspondiente.',
+        'En ausencia de dicha justificación, el medicamento será dispensado en su forma genérica.',
+      ],
+    },
+    {
+      title: '3. Retiro de medicamentos por un tercero',
+      items: [
+        'Autorización escrita y firmada por el paciente.',
+        'Copia del documento de identidad del paciente.',
+        'Copia del documento de identidad de la persona autorizada.',
+      ],
+      alert:
+        'Recuerde que está prohibida cualquier forma de asesoría clínica por parte del personal encargado de la dispensación.',
+    },
+    {
+      title: '4. Envío de medicamentos a domicilio para las sedes de Ibagué',
+      contact: {
+        paragraphs: [
+          'El usuario podrá solicitar el envío de los medicamentos a su domicilio mediante solicitud previa al correo electrónico institucional:',
+          'La solicitud será tramitada en un tiempo no mayor a 48 horas hábiles, de acuerdo con las condiciones establecidas para cada convenio.',
+          'Para mayor información, puede comunicarse a la línea telefónica indicada.',
+        ],
+        email: {
+          label: 'Correo',
+          value: 'domicilios.medicamentos.tolima@emcosalud.com',
+          href: 'mailto:domicilios.medicamentos.tolima@emcosalud.com',
+        },
+        phone: {
+          label: 'Teléfono',
+          value: '(608) 277 1669',
+          href: 'tel:+576082771669',
+        },
+      },
+    },
+    {
+      title: '5. Medicamentos de radioquimioterapia y uso institucional',
+      paragraph:
+        'Los medicamentos relacionados con radioquimioterapia o aquellos que deban ser administrados en una IPS serán enviados directamente a la institución prestadora del servicio, con el fin de garantizar la trazabilidad del medicamento, el cumplimiento de la cadena de frío y la mitigación de riesgos asociados a su manejo.',
+    },
+  ],
+};
+
+const tolimaAttentionSchedule: SedeSchedule = {
+  title: 'Horario de atención',
+  lines: [
+    'Lunes a viernes: 7:00 a.m. a 12:00 m. y 2:00 p.m. a 5:00 p.m.',
+    'Sábados: 8:00 a.m. a 12:00 m.',
+  ],
+};
+const tolimaSamplesSchedule: SedeSchedule = {
+  title: 'Horario de toma de muestras',
+  lines: ['Lunes a viernes: 7:00 a.m. a 8:30 a.m.'],
+};
+const tolimaCitasSchedule: SedeSchedule = {
+  title: 'Horario de asignación de citas',
+  lines: ['Lunes a viernes: 7:00 a.m. a 12:00 m. y 2:00 p.m. a 5:00 p.m.'],
+};
+
+const espinalSedeImages: SedeImage[] = [
+  { src: '/images/sedes/espinal/espinal-01-sede.png', alt: 'Sede EMCOSALUD Espinal' },
+];
+const espinalServiceGroups: SedeServiceGroup[] = [
+  {
+    items: [
+      'Medicina general',
+      'Odontología',
+      'Especialidades médicas',
+      'Servicio farmacéutico',
+      'Programas de PyP',
+    ],
+  },
+];
+
+const chaparralSedeImages: SedeImage[] = [
+  { src: '/images/sedes/chaparral/chaparral-01-sede.png', alt: 'Sede EMCOSALUD Chaparral' },
+];
+const chaparralServiceGroups: SedeServiceGroup[] = [
+  {
+    items: [
+      'Medicina general',
+      'Odontología',
+      'Enfermería PyP',
+      'Pediatría',
+      'Ginecología',
+      'Ortopedia',
+      'Cirugía general',
+    ],
+  },
+  {
+    items: [
+      'Nutrición',
+      'Higiene oral',
+      'Medicina familiar',
+      'Medicina interna',
+      'Psicología',
+      'Fisioterapia',
+    ],
+  },
+  {
+    items: [
+      'Toma de citologías',
+      'Toma de muestras de laboratorio',
+      'Servicio farmacéutico',
+    ],
+  },
+];
+
+const chaparralServiceSchedules: SedeServiceSchedule[] = [
+  {
+    service: 'Fisioterapia',
+    lines: [
+      'Lunes a miércoles: 11:00 a.m. a 5:00 p.m.',
+      'Jueves y viernes: 10:00 a.m. a 5:00 p.m.',
+      'Sábados: 8:00 a.m. a 12:00 m.',
+    ],
+  },
+  {
+    service: 'Medicina general, odontología, farmacia, enfermería y laboratorio',
+    lines: [
+      'Lunes a viernes: 7:00 a.m. a 12:00 m. y 2:00 p.m. a 5:00 p.m.',
+      'Sábados: 8:00 a.m. a 12:00 m.',
+    ],
+  },
+  {
+    service: 'Medicina familiar',
+    lines: ['Lunes: 7:00 a.m. a 12:00 m.'],
+  },
+  {
+    service: 'Psicología',
+    lines: [
+      'Lunes: 7:00 a.m. a 12:00 m.',
+      'Viernes: 1:00 p.m. a 5:00 p.m.',
+    ],
+  },
+  {
+    service: 'Ortopedia',
+    lines: ['Miércoles: 2:00 p.m. a 4:00 p.m.'],
+  },
+  {
+    service: 'Nutrición',
+    lines: [
+      'Martes: 1:00 p.m. a 5:00 p.m.',
+      'Viernes: 7:00 a.m. a 12:00 m.',
+    ],
+  },
+  {
+    service: 'Cirugía general',
+    lines: ['Cada 15 días, jueves: 10:00 a.m. a 1:00 p.m.'],
+  },
+  {
+    service: 'Medicina interna',
+    lines: ['Miércoles: 7:00 a.m. a 10:00 a.m.'],
+  },
+];
+
+const libanoSedeImages: SedeImage[] = [
+  { src: '/images/sedes/libano/libano-01-portafolio.jpg', alt: 'Sede EMCOSALUD Líbano' },
+];
+const libanoServiceGroups: SedeServiceGroup[] = [
+  {
+    items: [
+      'Medicina general',
+      'Odontología',
+      'Ortopedia y traumatología',
+      'Cirugía general',
+      'Enfermería PyP',
+      'Pediatría',
+    ],
+  },
+  {
+    items: [
+      'Ginecología',
+      'Nutrición',
+      'Higiene oral',
+      'Medicina familiar',
+      'Medicina interna',
+      'Psicología',
+    ],
+  },
+  {
+    items: ['Fisioterapia', 'Toma de citologías', 'Toma de muestras de laboratorio', 'Servicio farmacéutico'],
+  },
+];
+
+const mariquitaSedeImages: SedeImage[] = [
+  { src: '/images/sedes/mariquita/mariquita-01-portafolio.jpg', alt: 'Sede EMCOSALUD Mariquita' },
+];
+const mariquitaServiceGroups: SedeServiceGroup[] = [
+  {
+    items: [
+      'Medicina general',
+      'Odontología',
+      'Enfermería PyP',
+      'Pediatría',
+      'Ginecología',
+      'Nutrición',
+    ],
+  },
+  {
+    items: [
+      'Higiene oral',
+      'Medicina familiar',
+      'Medicina interna',
+      'Psicología',
+      'Toma de citologías',
+      'Toma de muestras de laboratorio',
+      'Servicio farmacéutico',
+    ],
+  },
+];
+
+const ortegaSedeImages: SedeImage[] = [
+  { src: '/images/sedes/ortega/ortega-01-portafolio.jpg', alt: 'Sede EMCOSALUD Ortega' },
+];
+const ortegaServiceGroups: SedeServiceGroup[] = [
+  {
+    items: [
+      'Medicina general',
+      'Odontología',
+      'Enfermería PyP',
+      'Pediatría',
+      'Ginecología',
+      'Nutrición',
+    ],
+  },
+  {
+    items: [
+      'Higiene oral',
+      'Medicina familiar',
+      'Medicina interna',
+      'Psicología',
+      'Toma de citologías',
+      'Toma de muestras de laboratorio',
+      'Servicio farmacéutico',
+    ],
+  },
+];
+
+const hondaSedeImages: SedeImage[] = [
+  { src: '/images/sedes/honda/honda-01-sede.jpeg', alt: 'Sede EMCOSALUD Honda' },
+];
+const hondaServiceGroups: SedeServiceGroup[] = [
+  {
+    items: [
+      'Medicina general',
+      'Odontología',
+      'Enfermería PyP',
+      'Pediatría',
+      'Ginecología',
+      'Cirugía general',
+    ],
+  },
+  {
+    items: [
+      'Nutrición',
+      'Higiene oral',
+      'Medicina familiar',
+      'Medicina interna',
+      'Psicología',
+      'Fisioterapia',
+    ],
+  },
+  {
+    items: ['Toma de citologías', 'Toma de muestras de laboratorio'],
+  },
+];
+
+const fresnoSedeImages: SedeImage[] = [
+  { src: '/images/sedes/fresno/fresno-01-portafolio.jpg', alt: 'Sede EMCOSALUD Fresno' },
+];
+const fresnoServiceGroups: SedeServiceGroup[] = [
+  {
+    items: [
+      'Medicina general',
+      'Odontología',
+      'Enfermería PyM',
+      'Pediatría',
+      'Ginecología',
+      'Nutrición',
+    ],
+  },
+  {
+    items: [
+      'Higiene oral',
+      'Medicina familiar',
+      'Medicina interna',
+      'Psicología',
+      'Toma de citologías',
+      'Toma de muestras de laboratorio',
+      'Servicio farmacéutico',
     ],
   },
 ];
@@ -841,9 +1203,16 @@ export const sedesBySlug: Record<string, Sede> = {
     headline: 'Ibagué sedes',
     locations: [
       {
-        name: 'Hipódromo',
+        name: 'HIPÓDROMO',
+        address: 'Carrera 5 # 25-26, Ibagué, Tolima',
+        images: ibagueHipodromoImages,
+        mapEmbedUrl:
+          'https://maps.google.com/maps?q=Carrera+5+%23+25-26+ibague&t=m&z=15&output=embed&iwloc=near',
+        mapsHref:
+          'https://www.google.com/maps/search/?api=1&query=Carrera+5+%2325-26+Ibagué+Tolima',
+        appointmentHref: '/citas',
         contacts: [
-          { label: 'Teléfono fijo', value: '(608) 277 1669', href: 'tel:+576082771669' },
+          { label: 'Fijo', value: '(608) 277 1669', href: 'tel:+576082771669' },
           { label: 'Ext. 1', value: 'Citas generales básicas' },
           { label: 'Ext. 2', value: 'Citas especializadas' },
           { label: 'Ext. 3', value: 'Farmacia' },
@@ -853,55 +1222,82 @@ export const sedesBySlug: Record<string, Sede> = {
         ],
         schedules: [
           {
-            title: 'Horarios',
-            lines: [
-              'Atención sede: 6:00 a.m. a 7:00 p.m.',
-              'Asignación de citas: 7:00 a.m. a 5:00 p.m.',
-            ],
+            title: 'Horario de atención',
+            lines: ['Lunes a viernes: 6:00 a.m. a 7:00 p.m.'],
+          },
+          {
+            title: 'Horario de asignación de citas',
+            lines: ['Lunes a viernes: 7:00 a.m. a 5:00 p.m.'],
           },
         ],
         services: [
           'Consulta externa',
-          'Medicina general y especializada',
+          'Medicina general',
+          'Medicina especializada',
           'Odontología',
         ],
       },
       {
-        name: 'Interlaken',
+        name: 'INTERLAKEN',
+        address: 'Carrera 8 No. 17-10, Ibagué, Tolima',
+        images: ibagueInterlakenImages,
+        mapEmbedUrl:
+          'https://maps.google.com/maps?q=carrera+8+NO.+17-10+ibague&t=m&z=15&output=embed&iwloc=near',
+        mapsHref:
+          'https://www.google.com/maps/search/?api=1&query=Carrera+8+No.+17-10+Ibagué+Tolima',
+        appointmentHref: '/citas',
+        contacts: [defaultTolimaCitas],
         schedules: [
           {
-            title: 'Horarios',
-            lines: [
-              'Atención sede: 6:00 a.m. a 7:00 p.m.',
-              'Asignación de citas: 7:00 a.m. a 5:00 p.m.',
-            ],
+            title: 'Horario de atención',
+            lines: ['Lunes a viernes: 6:00 a.m. a 7:00 p.m.'],
+          },
+          {
+            title: 'Horario de asignación de citas',
+            lines: ['Lunes a viernes: 7:00 a.m. a 5:00 p.m.'],
           },
         ],
-        contacts: [defaultTolimaCitas],
         services: [
-          'Medicina general y especializada',
-          'Odontología',
-          'Dispensación FOMAG y Ferrocarriles',
+          'Medicina general',
+          'Medicina especializada',
+          'Consulta odontología',
+          'Dispensación de medicamentos usuarios magisterio y ferrocarriles',
           'Oficinas administrativas',
         ],
       },
       {
         name: 'Sede asistencial (terapias y laboratorio)',
+        address: 'Carrera 8 # 18-15, Ibagué, Tolima',
+        images: ibagueAsistencialImages,
+        mapEmbedUrl:
+          'https://maps.google.com/maps?q=carrera+8+%23+18-15+ibague&t=m&z=15&output=embed&iwloc=near',
+        mapsHref:
+          'https://www.google.com/maps/search/?api=1&query=Carrera+8+%2318-15+Ibagué+Tolima',
+        appointmentHref: '/citas',
+        contacts: [defaultTolimaCitas],
         schedules: [
           {
-            title: 'Horarios',
-            lines: [
-              'Atención: 6:00 a.m. a 7:00 p.m.',
-              'Toma de muestras: 6:00 a.m. a 8:30 a.m.',
-              'Citas: 7:00 a.m. a 12:00 m. y 2:00 p.m. a 5:00 p.m.',
-            ],
+            title: 'Horario de atención',
+            lines: ['Lunes a viernes: 6:00 a.m. a 7:00 p.m.'],
+          },
+          {
+            title: 'Horario de toma de muestras',
+            lines: ['Lunes a viernes: 6:00 a.m. a 8:30 a.m.'],
+          },
+          {
+            title: 'Horario de asignación de citas',
+            lines: ['Lunes a viernes: 7:00 a.m. a 12:00 m. y 2:00 p.m. a 5:00 p.m.'],
           },
         ],
-        contacts: [defaultTolimaCitas],
         services: ['Terapias', 'Laboratorio', 'Consulta externa'],
       },
       {
         name: 'Edificio Pijao 3 — Barrio El Carmen',
+        address: 'Carrera 5 # 22-38, Ibagué, Tolima',
+        mapEmbedUrl:
+          'https://maps.google.com/maps?q=carrera+5+22-38+ibague&t=m&z=15&output=embed&iwloc=near',
+        mapsHref:
+          'https://www.google.com/maps/search/?api=1&query=Carrera+5+%2322-38+Ibagué+Tolima',
         contacts: [
           { label: 'Teléfono', value: '(608) 263 7009', href: 'tel:+576082637009' },
           {
@@ -913,70 +1309,260 @@ export const sedesBySlug: Record<string, Sede> = {
         services: ['Dispensación de medicamentos — usuarios Magisterio (FOMAG)'],
       },
     ],
-    servicesIntro: 'Somos tu IPS de confianza en el Tolima con varios puntos de atención en Ibagué.',
+    servicesHeading: 'Somos tu IPS de confianza',
+    servicesIntro: 'Varios puntos de atención en Ibagué, capital del Tolima.',
+    supplyProcedure: ibagueSupplyProcedure,
   },
   espinal: {
     slug: 'espinal',
     name: 'Espinal',
     department: 'tolima',
-    headline: 'Espinal',
-    contacts: [defaultTolimaCitas],
-    schedules: [standardAttention, standardCitas],
-    services: basicServices,
+    headline: 'Espinal sede',
+    locations: [
+      {
+        name: 'ESPINAL SEDE',
+        address: 'Carrera 5 # 11-58, Espinal, Tolima',
+        images: espinalSedeImages,
+        mapEmbedUrl:
+          'https://maps.google.com/maps?q=carrera+5+11-58+espinal&t=m&z=16&output=embed&iwloc=near',
+        mapsHref:
+          'https://www.google.com/maps/search/?api=1&query=Carrera+5+%2311-58+Espinal+Tolima',
+        whatsappHref: 'https://wa.me/573164728801',
+        appointmentHref: '/citas',
+        contacts: [
+          { label: 'Teléfono', value: '316 472 8801', href: 'tel:+573164728801' },
+          {
+            label: 'Correo citas',
+            value: 'espinal@emcosalud.com',
+            href: 'mailto:espinal@emcosalud.com',
+          },
+        ],
+        schedules: [tolimaAttentionSchedule, tolimaSamplesSchedule, tolimaCitasSchedule],
+      },
+    ],
+    servicesHeading: 'Somos tu IPS de confianza',
+    servicesIntro:
+      'Medicina de primer nivel, odontología, especialidades básicas, especialidades, servicio farmacéutico y programas de PyP.',
+    serviceGroups: espinalServiceGroups,
   },
   chaparral: {
     slug: 'chaparral',
     name: 'Chaparral',
     department: 'tolima',
-    headline: 'Chaparral',
-    contacts: [defaultTolimaCitas],
-    schedules: [standardAttention, standardCitas],
-    services: basicServices,
+    headline: 'Chaparral sede',
+    locations: [
+      {
+        name: 'CHAPARRAL SEDE',
+        address: 'Calle 8 # 9-60, Chaparral, Tolima',
+        images: chaparralSedeImages,
+        mapEmbedUrl:
+          'https://maps.google.com/maps?q=calle+8+%23+9+60+chaparral&t=m&z=16&output=embed&iwloc=near',
+        mapsHref:
+          'https://www.google.com/maps/search/?api=1&query=Calle+8+%239-60+Chaparral+Tolima',
+        whatsappHref: 'https://wa.me/573164728802',
+        appointmentHref: '/citas',
+        contacts: [
+          { label: 'Teléfono', value: '316 472 8802', href: 'tel:+573164728802' },
+          {
+            label: 'Correo citas',
+            value: 'chaparral@emcosalud.com',
+            href: 'mailto:chaparral@emcosalud.com',
+          },
+        ],
+        schedules: [tolimaAttentionSchedule, tolimaSamplesSchedule, tolimaCitasSchedule],
+      },
+    ],
+    servicesHeading: 'Somos tu IPS de confianza',
+    servicesIntro:
+      'Medicina de primer nivel, odontología, especialidades básicas, especialidades, servicio farmacéutico y programas de PyP.',
+    serviceGroups: chaparralServiceGroups,
+    serviceSchedules: chaparralServiceSchedules,
   },
   libano: {
     slug: 'libano',
     name: 'Líbano',
     department: 'tolima',
-    headline: 'Líbano',
-    contacts: [defaultTolimaCitas],
-    schedules: [standardAttention, standardCitas],
-    services: basicServices,
+    headline: 'Líbano sede',
+    locations: [
+      {
+        name: 'LÍBANO SEDE',
+        address: 'Carrera 9 # 3-18, Líbano, Tolima',
+        images: libanoSedeImages,
+        mapEmbedUrl:
+          'https://maps.google.com/maps?q=carrera+9+%23+3+18+libano&t=m&z=16&output=embed&iwloc=near',
+        mapsHref:
+          'https://www.google.com/maps/search/?api=1&query=Carrera+9+%233-18+Líbano+Tolima',
+        appointmentHref: '/citas',
+        contacts: [
+          { label: 'Teléfono', value: '(608) 277 0544', href: 'tel:+576082770544' },
+          {
+            label: 'Correo citas',
+            value: 'sede.libano@emcosalud.com',
+            href: 'mailto:sede.libano@emcosalud.com',
+          },
+        ],
+        schedules: [
+          {
+            title: 'Horario de atención',
+            lines: [
+              'Lunes a viernes: 7:00 a.m. a 12:00 m. y 2:00 p.m. a 5:00 p.m.',
+              'Sábados: 8:00 a.m. a 11:00 a.m.',
+            ],
+          },
+          {
+            title: 'Horario de toma de muestras',
+            lines: ['Lunes a viernes: 6:00 a.m. a 8:30 a.m.'],
+          },
+          tolimaCitasSchedule,
+        ],
+      },
+    ],
+    servicesHeading: 'Somos tu IPS de confianza',
+    servicesIntro:
+      'Medicina de primer nivel, especialidades básicas, especialidades, servicio farmacéutico y programas de PyP.',
+    serviceGroups: libanoServiceGroups,
   },
   mariquita: {
     slug: 'mariquita',
     name: 'Mariquita',
     department: 'tolima',
-    headline: 'Mariquita',
-    contacts: [defaultTolimaCitas],
-    schedules: [standardAttention, standardCitas],
-    services: basicServices,
+    headline: 'Mariquita sede',
+    locations: [
+      {
+        name: 'MARIQUITA SEDE',
+        address: 'Carrera 2a # 6-60, Barrio Santa Lucía, Mariquita, Tolima',
+        images: mariquitaSedeImages,
+        mapEmbedUrl:
+          'https://www.google.com/maps/embed?pb=!4v1768575501626!6m8!1m7!1sixCDy80NdcPAFCOX39Ljlw!2m2!1d5.197326063329605!2d-74.89785706713396!3f210.12465707824302!4f4.691055358375621!5f0.7820865974627469',
+        mapsHref:
+          'https://www.google.com/maps/search/?api=1&query=Carrera+2a+%236-60+Mariquita+Tolima',
+        whatsappHref: 'https://wa.me/573164728805',
+        appointmentHref: '/citas',
+        contacts: [
+          { label: 'Teléfono', value: '316 472 8805', href: 'tel:+573164728805' },
+          {
+            label: 'Correo citas',
+            value: 'mariquita@emcosalud.com',
+            href: 'mailto:mariquita@emcosalud.com',
+          },
+        ],
+        schedules: [tolimaAttentionSchedule, tolimaSamplesSchedule, tolimaCitasSchedule],
+      },
+    ],
+    servicesHeading: 'Somos tu IPS de confianza',
+    servicesIntro:
+      'Medicina de primer nivel, odontología, especialidades básicas, especialidades, servicio farmacéutico y programas de PyP.',
+    serviceGroups: mariquitaServiceGroups,
   },
   ortega: {
     slug: 'ortega',
     name: 'Ortega',
     department: 'tolima',
-    headline: 'Ortega',
-    contacts: [defaultTolimaCitas],
-    schedules: [standardAttention, standardCitas],
-    services: basicServices,
+    headline: 'Ortega sede',
+    locations: [
+      {
+        name: 'ORTEGA SEDE',
+        address: 'Calle 6 # 3-71, Ortega, Tolima',
+        images: ortegaSedeImages,
+        mapEmbedUrl:
+          'https://maps.google.com/maps?q=calle+6+%23+3+71+ortega&t=m&z=16&output=embed&iwloc=near',
+        mapsHref:
+          'https://www.google.com/maps/search/?api=1&query=Calle+6+%233-71+Ortega+Tolima',
+        whatsappHref: 'https://wa.me/573176455702',
+        appointmentHref: '/citas',
+        contacts: [
+          { label: 'Teléfono', value: '317 645 5702', href: 'tel:+573176455702' },
+          {
+            label: 'Correo citas',
+            value: 'sede.ortega@emcosalud.com',
+            href: 'mailto:sede.ortega@emcosalud.com',
+          },
+        ],
+        schedules: [
+          {
+            title: 'Horario de atención',
+            lines: [
+              'Lunes a viernes: 7:00 a.m. a 12:00 m. y 2:00 p.m. a 5:00 p.m.',
+              'Sábados: 7:00 a.m. a 11:00 a.m.',
+            ],
+          },
+          tolimaSamplesSchedule,
+          tolimaCitasSchedule,
+        ],
+      },
+    ],
+    servicesHeading: 'Somos tu IPS de confianza',
+    servicesIntro:
+      'Medicina de primer nivel, odontología, especialidades básicas, especialidades, servicio farmacéutico y programas de PyP.',
+    serviceGroups: ortegaServiceGroups,
   },
   honda: {
     slug: 'honda',
     name: 'Honda',
     department: 'tolima',
-    headline: 'Honda',
-    contacts: [defaultTolimaCitas],
-    schedules: [standardAttention, standardCitas],
-    services: basicServices,
+    headline: 'Honda sede',
+    locations: [
+      {
+        name: 'HONDA SEDE',
+        address: 'Calle 7 # 22a-40, Honda, Tolima',
+        images: hondaSedeImages,
+        mapEmbedUrl:
+          'https://maps.google.com/maps?q=calle+7+%23+22a+40+honda&t=m&z=16&output=embed&iwloc=near',
+        mapsHref:
+          'https://www.google.com/maps/search/?api=1&query=Calle+7+%2322a-40+Honda+Tolima',
+        whatsappHref: 'https://wa.me/573224047313',
+        appointmentHref: '/citas',
+        contacts: [
+          { label: 'Teléfono', value: '322 404 7313', href: 'tel:+573224047313' },
+          { label: 'Teléfono', value: '322 894 3020', href: 'tel:+573228943020' },
+          {
+            label: 'Correo citas',
+            value: 'sede.honda@emcosalud.com',
+            href: 'mailto:sede.honda@emcosalud.com',
+          },
+        ],
+        schedules: [tolimaAttentionSchedule, tolimaSamplesSchedule, tolimaCitasSchedule],
+      },
+    ],
+    servicesHeading: 'Somos tu IPS de confianza',
+    servicesIntro:
+      'Medicina de primer nivel, odontología, especialidades básicas, especialidades, servicio farmacéutico y programas de PyP.',
+    serviceGroups: hondaServiceGroups,
   },
   fresno: {
     slug: 'fresno',
     name: 'Fresno',
     department: 'tolima',
-    headline: 'Fresno',
-    contacts: [defaultTolimaCitas],
-    schedules: [standardAttention, standardCitas],
-    services: basicServices,
+    headline: 'Fresno sede',
+    locations: [
+      {
+        name: 'FRESNO SEDE',
+        address: 'Calle 4 # 7-53, Fresno, Tolima',
+        images: fresnoSedeImages,
+        mapEmbedUrl:
+          'https://maps.google.com/maps?q=Cl.+4+%23+7-53,+Fresno,+Tolima&t=m&z=16&output=embed&iwloc=near',
+        mapsHref:
+          'https://www.google.com/maps/search/?api=1&query=Calle+4+%237-53+Fresno+Tolima',
+        appointmentHref: '/citas',
+        contacts: [
+          {
+            label: 'Teléfono',
+            value: '320 350 9873 opc. 1 ext. 5941',
+            href: 'tel:+573203509873',
+          },
+          {
+            label: 'Correo citas',
+            value: 'sede.fresno@emcosalud.com',
+            href: 'mailto:sede.fresno@emcosalud.com',
+          },
+        ],
+        schedules: [tolimaAttentionSchedule, tolimaSamplesSchedule, tolimaCitasSchedule],
+      },
+    ],
+    servicesHeading: 'Somos tu IPS de confianza',
+    servicesIntro:
+      'Medicina de primer nivel, odontología, especialidades básicas, especialidades, servicio farmacéutico y programas de PyP.',
+    serviceGroups: fresnoServiceGroups,
   },
 };
 

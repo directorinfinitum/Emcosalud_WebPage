@@ -2,6 +2,7 @@
 import Icon from '@/components/icons/Icon.astro';
 import SedeLocationBlock from '@/components/sections/SedeLocationBlock.astro';
 import SedePageHero from '@/components/sections/SedePageHero.astro';
+import SedeSupplyProcedure from '@/components/sections/SedeSupplyProcedure.astro';
 import { getSede, sedeIndex } from '@/data/sedes';
 import { site } from '@/data/site';
 import BaseLayout from '@/layouts/BaseLayout.astro';
@@ -119,6 +120,31 @@ const deptLabel = sede.department === 'huila' ? 'Huila' : 'Tolima';
           )}
         </article>
       )}
+
+      {sede.serviceSchedules && sede.serviceSchedules.length > 0 && (
+        <article class="scroll-mt-28">
+          <h2 class="section-title text-xl">Horarios por servicio</h2>
+          <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {sede.serviceSchedules.map((block) => (
+              <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+                <h3 class="m-0 text-sm font-bold uppercase tracking-wide text-brand-blue">
+                  {block.service}
+                </h3>
+                <ul class="mt-3 m-0 list-none space-y-2 p-0 text-sm text-slate-600">
+                  {block.lines.map((line) => (
+                    <li class="flex gap-2">
+                      <Icon name="clock" size={16} class="mt-0.5 shrink-0 text-brand-green" />
+                      {line}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </article>
+      )}
+
+      {sede.supplyProcedure && <SedeSupplyProcedure procedure={sede.supplyProcedure} />}
 
       <div class="flex flex-wrap gap-3 border-t border-slate-200 pt-8">
         <a class="btn btn--primary" href="/citas">
