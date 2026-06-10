@@ -1,0 +1,61 @@
+---
+import Icon from '@/components/icons/Icon.astro';
+import {
+  medicamentosTolimaInfographics,
+  medicamentosTolimaIntro,
+  medicamentosTolimaPdfHref,
+  medicamentosTolimaPharmaciesIntro,
+} from '@/data/medicamentos-tolima';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Medicamentos Tolima"
+  description="Entrega de medicamentos a domicilio y puntos de dispensación en el departamento del Tolima — EMCOSALUD."
+>
+  <section class="bg-brand-blue-dark py-12 text-white md:py-14">
+    <div class="container-page">
+      <p class="mb-2 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-brand-green-light">
+        <Icon name="pharmacy" size={18} />
+        Servicios
+      </p>
+      <h1 class="m-0 text-3xl font-bold md:text-4xl">Tolima Medicamentos</h1>
+      <p class="mt-4 max-w-3xl text-base leading-relaxed text-white/90 md:text-lg">
+        {medicamentosTolimaIntro}
+      </p>
+    </div>
+  </section>
+
+  <section class="section-block">
+    <div class="container-page max-w-3xl space-y-10">
+      <div class="space-y-8">
+        {
+          medicamentosTolimaInfographics.map((image) => (
+            <figure class="m-0 overflow-hidden rounded-2xl border border-slate-200 shadow-brand-sm">
+              <img
+                src={image.src}
+                alt={image.alt}
+                class="block h-auto w-full"
+                loading="lazy"
+                decoding="async"
+              />
+            </figure>
+          ))
+        }
+      </div>
+
+      <article class="card-base space-y-5 text-center">
+        <p class="m-0 text-slate-700 leading-relaxed">{medicamentosTolimaPharmaciesIntro}</p>
+        <a
+          href={medicamentosTolimaPdfHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn btn--primary mx-auto inline-flex"
+        >
+          <Icon name="document" size={18} />
+          Ver farmacias
+        </a>
+      </article>
+    </div>
+  </section>
+</BaseLayout>

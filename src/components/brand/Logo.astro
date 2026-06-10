@@ -10,8 +10,11 @@ const { variant = 'header', showTagline = variant === 'header' } = Astro.props;
 
 const imgClass =
   variant === 'footer'
-    ? 'h-12 w-auto max-w-[220px] object-contain'
+    ? 'block h-12 w-auto max-w-[220px] object-contain'
     : 'h-11 w-auto max-w-[min(200px,42vw)] object-contain md:h-12';
+
+const footerLogoWrapperClass =
+  'inline-block overflow-hidden rounded-2xl bg-white px-2 py-1.5 shadow-sm';
 
 const taglineClass =
   variant === 'footer'
@@ -20,14 +23,30 @@ const taglineClass =
 ---
 
 <a href="/" class="inline-flex flex-col items-start gap-0.5 no-underline text-inherit hover:opacity-90">
-  <img
-    src={site.assets.logo}
-    alt={site.assets.logoAlt}
-    width="200"
-    height="56"
-    loading="eager"
-    decoding="async"
-    class={imgClass}
-  />
+  {
+    variant === 'footer' ? (
+      <span class={footerLogoWrapperClass}>
+        <img
+          src={site.assets.logo}
+          alt={site.assets.logoAlt}
+          width="200"
+          height="56"
+          loading="eager"
+          decoding="async"
+          class={imgClass}
+        />
+      </span>
+    ) : (
+      <img
+        src={site.assets.logo}
+        alt={site.assets.logoAlt}
+        width="200"
+        height="56"
+        loading="eager"
+        decoding="async"
+        class={imgClass}
+      />
+    )
+  }
   {showTagline && <span class={taglineClass}>{site.tagline}</span>}
 </a>
