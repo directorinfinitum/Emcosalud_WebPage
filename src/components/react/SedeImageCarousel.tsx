@@ -4,9 +4,14 @@ import type { SedeImage } from '@/data/sedes';
 type Props = {
   images: SedeImage[];
   intervalMs?: number;
+  galleryAspect?: '3/2' | '3/4';
 };
 
-export default function SedeImageCarousel({ images, intervalMs = 5000 }: Props) {
+export default function SedeImageCarousel({
+  images,
+  intervalMs = 5000,
+  galleryAspect = '3/2',
+}: Props) {
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
   const total = images.length;
@@ -50,7 +55,11 @@ export default function SedeImageCarousel({ images, intervalMs = 5000 }: Props) 
       onFocus={() => setPaused(true)}
       onBlur={() => setPaused(false)}
     >
-      <div className="relative aspect-[4/3] w-full max-h-[32rem] md:aspect-[3/4] md:max-h-[36rem]">
+      <div
+        className={`relative w-full max-h-[32rem] ${
+          galleryAspect === '3/4' ? 'aspect-[3/4]' : 'aspect-[3/2] max-h-[28rem] md:max-h-[32rem]'
+        }`}
+      >
         {images.map((image, index) => {
           const isActive = index === active;
           return (

@@ -21,7 +21,11 @@ const hasPlace = hasGallery || Boolean(location.mapEmbedUrl);
     hasPlace && (
       <div class="grid items-start gap-8 lg:grid-cols-2 lg:gap-10">
         {hasGallery && (
-          <SedeImageCarousel client:visible images={galleryImages} />
+          <SedeImageCarousel
+            client:visible
+            images={galleryImages}
+            galleryAspect={location.galleryAspect}
+          />
         )}
 
         <div class="space-y-5">

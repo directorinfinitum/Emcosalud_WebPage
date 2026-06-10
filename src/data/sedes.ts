@@ -41,6 +41,8 @@ export type SedeLocation = {
   contacts: SedeContact[];
   schedules?: SedeSchedule[];
   services?: string[];
+  /** Proporción del carrusel: horizontal `3/2` (defecto) o vertical `3/4`. */
+  galleryAspect?: '3/2' | '3/4';
 };
 
 export type SedeServiceGroup = {
@@ -559,7 +561,7 @@ const espinalServiceGroups: SedeServiceGroup[] = [
 ];
 
 const chaparralSedeImages: SedeImage[] = [
-  { src: '/images/sedes/chaparral/chaparral-01-sede.png', alt: 'Sede EMCOSALUD Chaparral' },
+  { src: '/images/sedes/chaparral/chaparral-01-sede.png', alt: 'Fachada sede EMCOSALUD Chaparral' },
 ];
 const chaparralServiceGroups: SedeServiceGroup[] = [
   {
@@ -670,7 +672,7 @@ const libanoServiceGroups: SedeServiceGroup[] = [
 ];
 
 const mariquitaSedeImages: SedeImage[] = [
-  { src: '/images/sedes/mariquita/mariquita-01-portafolio.jpg', alt: 'Sede EMCOSALUD Mariquita' },
+  { src: '/images/sedes/mariquita/mariquita-01-sede.jpeg', alt: 'Fachada sede EMCOSALUD Mariquita' },
 ];
 const mariquitaServiceGroups: SedeServiceGroup[] = [
   {
@@ -697,7 +699,7 @@ const mariquitaServiceGroups: SedeServiceGroup[] = [
 ];
 
 const ortegaSedeImages: SedeImage[] = [
-  { src: '/images/sedes/ortega/ortega-01-portafolio.jpg', alt: 'Sede EMCOSALUD Ortega' },
+  { src: '/images/sedes/ortega/ortega-01-sede.jpeg', alt: 'Fachada sede EMCOSALUD Ortega' },
 ];
 const ortegaServiceGroups: SedeServiceGroup[] = [
   {
@@ -753,7 +755,7 @@ const hondaServiceGroups: SedeServiceGroup[] = [
 ];
 
 const fresnoSedeImages: SedeImage[] = [
-  { src: '/images/sedes/fresno/fresno-01-portafolio.jpg', alt: 'Sede EMCOSALUD Fresno' },
+  { src: '/images/sedes/fresno/fresno-01-sede.jpeg', alt: 'Fachada sede EMCOSALUD Fresno' },
 ];
 const fresnoServiceGroups: SedeServiceGroup[] = [
   {
@@ -1464,6 +1466,7 @@ export const sedesBySlug: Record<string, Sede> = {
         name: 'ORTEGA SEDE',
         address: 'Calle 6 # 3-71, Ortega, Tolima',
         images: ortegaSedeImages,
+        galleryAspect: '3/4',
         mapEmbedUrl:
           'https://maps.google.com/maps?q=calle+6+%23+3+71+ortega&t=m&z=16&output=embed&iwloc=near',
         mapsHref:
@@ -1539,6 +1542,7 @@ export const sedesBySlug: Record<string, Sede> = {
         name: 'FRESNO SEDE',
         address: 'Calle 4 # 7-53, Fresno, Tolima',
         images: fresnoSedeImages,
+        galleryAspect: '3/4',
         mapEmbedUrl:
           'https://maps.google.com/maps?q=Cl.+4+%23+7-53,+Fresno,+Tolima&t=m&z=16&output=embed&iwloc=near',
         mapsHref:
