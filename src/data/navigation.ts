@@ -46,6 +46,8 @@ export const mainNavigation: NavItem[] = [
     label: 'Trámites',
     children: [
       { label: 'Solicitar cita', href: '/citas' },
+      { label: 'Citas Huila', href: '/citas-huila' },
+      { label: 'Citas Tolima', href: '/citas-tolima' },
       { label: 'Consulta de documentos', href: '/documentos' },
       { label: 'Citas SOAT', href: '/citas-soat' },
       { label: 'Tramitar PQR', href: '/pqrs' },

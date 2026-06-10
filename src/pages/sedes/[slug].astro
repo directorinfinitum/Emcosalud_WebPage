@@ -3,6 +3,7 @@ import Icon from '@/components/icons/Icon.astro';
 import SedeLocationBlock from '@/components/sections/SedeLocationBlock.astro';
 import SedePageHero from '@/components/sections/SedePageHero.astro';
 import SedeSupplyProcedure from '@/components/sections/SedeSupplyProcedure.astro';
+import { getCitasHref } from '@/data/citas';
 import { getSede, sedeIndex } from '@/data/sedes';
 import { site } from '@/data/site';
 import BaseLayout from '@/layouts/BaseLayout.astro';
@@ -147,7 +148,7 @@ const deptLabel = sede.department === 'huila' ? 'Huila' : 'Tolima';
       {sede.supplyProcedure && <SedeSupplyProcedure procedure={sede.supplyProcedure} />}
 
       <div class="flex flex-wrap gap-3 border-t border-slate-200 pt-8">
-        <a class="btn btn--primary" href="/citas">
+        <a class="btn btn--primary" href={getCitasHref(sede.department)}>
           <Icon name="calendar" size={18} />
           Solicitar cita
         </a>

@@ -4,6 +4,7 @@ import Icon from '@/components/icons/Icon.astro';
 import SocialLinks from '@/components/layout/SocialLinks.astro';
 import NavDropdown from '@/components/layout/NavDropdown.astro';
 import MobileMenu from '@/components/react/MobileMenu';
+import SolicitarCitaButton from '@/components/react/SolicitarCitaButton';
 import { mainNavigation } from '@/data/navigation';
 import { site } from '@/data/site';
 ---
@@ -77,10 +78,7 @@ import { site } from '@/data/site';
       </nav>
 
       <div class="flex items-center gap-3">
-        <a class="btn btn--primary hidden text-sm lg:inline-flex" href="/citas">
-          <Icon name="calendar" size={18} />
-          Solicitar cita
-        </a>
+        <SolicitarCitaButton client:load />
         <div class="lg:hidden">
           <MobileMenu client:load items={mainNavigation} />
         </div>

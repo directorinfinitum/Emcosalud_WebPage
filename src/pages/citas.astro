@@ -1,8 +1,48 @@
 ---
-import PlaceholderPage from '@/components/sections/PlaceholderPage.astro';
+import Icon from '@/components/icons/Icon.astro';
+import { citasDepartmentOptions } from '@/data/citas';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="Solicitar cita">
-  <PlaceholderPage title="Solicitar cita médica" />
+<BaseLayout
+  title="Solicitar cita"
+  description="Solicita tu cita médica en EMCOSALUD — selecciona Huila o Tolima."
+>
+  <section class="bg-brand-blue-dark py-12 text-white md:py-14">
+    <div class="container-page">
+      <p class="mb-2 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-brand-green-light">
+        <Icon name="calendar" size={18} />
+        Trámites
+      </p>
+      <h1 class="m-0 text-3xl font-bold md:text-4xl">Solicitar cita médica</h1>
+      <p class="mt-4 max-w-3xl text-base leading-relaxed text-white/90 md:text-lg">
+        Selecciona el departamento donde deseas agendar tu cita. Cada sede tiene su propio
+        formulario de solicitud.
+      </p>
+    </div>
+  </section>
+
+  <section class="section-block">
+    <div class="container-page max-w-3xl">
+      <div class="grid gap-5 sm:grid-cols-2">
+        {
+          citasDepartmentOptions.map((option) => (
+            <a
+              href={option.href}
+              class="card-base group flex flex-col gap-3 no-underline transition hover:border-brand-green hover:shadow-brand"
+            >
+              <span class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-brand-green/15 text-brand-blue transition group-hover:bg-brand-green group-hover:text-brand-blue-dark">
+                <Icon name="calendar" size={24} />
+              </span>
+              <h2 class="m-0 text-xl font-bold text-brand-blue">{option.label}</h2>
+              <p class="m-0 text-sm text-slate-600">
+                Solicitar cita en el departamento del {option.label}.
+              </p>
+              <span class="text-sm font-semibold text-brand-green-dark">Ir al formulario →</span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
 </BaseLayout>
