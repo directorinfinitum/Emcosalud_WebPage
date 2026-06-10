@@ -16,6 +16,38 @@ export type NavItem = {
   children?: NavLink[];
 };
 
+/** Servicios → sedes, medicamentos, trámites y citas (como emcosalud.com.co). */
+export function buildServiciosNavChildren(): NavLink[] {
+  return [
+    ...buildSedesNavChildren(),
+    {
+      label: 'Dis/Medicamentos',
+      children: [
+        { label: 'Dis/Huila', href: '/medicamentos-huila' },
+        { label: 'Dis/Tolima', href: '/medicamentos-tolima' },
+      ],
+    },
+    {
+      label: 'Trámites y Servicios',
+      children: [
+        {
+          label: 'Descargar tu Certificado de Retenciones',
+          href: '/documentos',
+        },
+        { label: 'Tramitar PQR', href: '/pqrs' },
+      ],
+    },
+    {
+      label: 'Solicita tu Cita',
+      children: [
+        { label: 'Huila', href: '/citas-huila' },
+        { label: 'Tolima', href: '/citas-tolima' },
+        { label: 'SOAT', href: '/citas-soat' },
+      ],
+    },
+  ];
+}
+
 /** Estructura base alineada con emcosalud.com.co (expandible con secciones de clínica). */
 export const mainNavigation: NavItem[] = [
   { label: 'Inicio', href: '/' },
@@ -29,29 +61,9 @@ export const mainNavigation: NavItem[] = [
     ],
   },
   {
-    label: 'Sedes',
-    href: '/sedes',
-    children: buildSedesNavChildren(),
-  },
-  {
     label: 'Servicios',
-    children: [
-      { label: 'Portafolio de servicios', href: '/servicios' },
-      { label: 'Promoción y mantenimiento', href: '/servicios#promocion' },
-      { label: 'Medicamentos Huila', href: '/medicamentos-huila' },
-      { label: 'Medicamentos Tolima', href: '/medicamentos-tolima' },
-    ],
-  },
-  {
-    label: 'Trámites',
-    children: [
-      { label: 'Solicitar cita', href: '/citas' },
-      { label: 'Citas Huila', href: '/citas-huila' },
-      { label: 'Citas Tolima', href: '/citas-tolima' },
-      { label: 'Consulta de documentos', href: '/documentos' },
-      { label: 'Citas SOAT', href: '/citas-soat' },
-      { label: 'Tramitar PQR', href: '/pqrs' },
-    ],
+    href: '/servicios',
+    children: buildServiciosNavChildren(),
   },
   { label: 'Blog', href: '/blog' },
   { label: 'Contacto', href: '/contacto' },
@@ -105,7 +117,10 @@ export const footerNavigation = {
     { label: 'SICOF', href: '/sicof' },
   ],
   servicios: [
+    { label: 'Nuestras sedes', href: '/sedes' },
     { label: 'Servicios médicos', href: '/servicios' },
+    { label: 'Medicamentos Huila', href: '/medicamentos-huila' },
+    { label: 'Medicamentos Tolima', href: '/medicamentos-tolima' },
     { label: 'Citas médicas', href: '/citas' },
     { label: 'PQR', href: '/pqrs' },
     { label: 'Blog', href: '/blog' },

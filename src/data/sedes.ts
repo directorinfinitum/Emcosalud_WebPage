@@ -1578,7 +1578,7 @@ export function sedesForDepartment(department: SedeDepartment): typeof sedeIndex
   return sedeIndex.filter((s) => s.department === department);
 }
 
-/** Menú Sedes → Huila / Tolima → municipios (como emcosalud.com.co). */
+/** Menú Servicios → Huila / Tolima → municipios (como emcosalud.com.co). */
 export function buildSedesNavChildren(): SedesNavLink[] {
   return sedeDepartments.map((dept) => ({
     label: dept.label,

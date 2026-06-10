@@ -1,0 +1,26 @@
+---
+import Icon from '@/components/icons/Icon.astro';
+import CitasSoatContent from '@/components/sections/CitasSoatContent.astro';
+import { citasSoatMeta } from '@/data/citas-soat';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout title={citasSoatMeta.title} description={citasSoatMeta.description}>
+  <section class="bg-brand-blue-dark py-12 text-white md:py-14">
+    <div class="container-page">
+      <p class="mb-2 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-brand-green-light">
+        <Icon name="calendar" size={18} />
+        Servicios
+      </p>
+      <h1 class="m-0 text-3xl font-bold md:text-4xl">{citasSoatMeta.pageTitle}</h1>
+      <p class="mt-4 max-w-3xl text-base leading-relaxed text-white/90 md:text-lg">
+        Solicita tu cita SOAT en EMCOSALUD. La asignación se realiza en orden de llegada y la
+        respuesta se envía a tu correo electrónico.
+      </p>
+    </div>
+  </section>
+
+  <section class="section-block">
+    <CitasSoatContent />
+  </section>
+</BaseLayout>
