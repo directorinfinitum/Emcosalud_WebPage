@@ -1,0 +1,36 @@
+---
+import Icon from '@/components/icons/Icon.astro';
+import type { BoletinIssue } from '@/data/atencion-usuario';
+
+interface Props {
+  year: string;
+  issues: BoletinIssue[];
+}
+
+const { year, issues } = Astro.props;
+---
+
+<section class="section-block">
+  <div class="container-page max-w-3xl">
+    <h2 class="m-0 text-xl font-bold text-brand-blue">Ediciones {year}</h2>
+    {issues.length ? (
+      <ul class="mt-6 grid gap-3 sm:grid-cols-2">
+        {issues.map((issue) => (
+          <li>
+            <a
+              href={issue.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-brand-blue no-underline shadow-sm transition hover:border-brand-green/40 hover:bg-brand-green/5"
+            >
+              {issue.label}
+              <Icon name="external" size={16} class="shrink-0 opacity-60" />
+            </a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="mt-4 text-slate-600">Próximamente se publicarán las ediciones de este año.</p>
+    )}
+  </div>
+</section>

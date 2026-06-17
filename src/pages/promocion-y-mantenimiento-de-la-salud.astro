@@ -1,0 +1,50 @@
+---
+import AtencionUsuarioHero from '@/components/sections/AtencionUsuarioHero.astro';
+import { promocionCampaigns } from '@/data/atencion-usuario';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Promoción y Mantenimiento de la Salud"
+  description="Campañas de promoción, prevención y mantenimiento de la salud — EMCOSALUD."
+>
+  <AtencionUsuarioHero
+    title="Promoción y Mantenimiento de la Salud"
+    lead="En EMCOSALUD promovemos el bienestar integral a través de campañas enfocadas en la prevención, el autocuidado y los hábitos de vida saludables."
+  />
+
+  <section class="section-block">
+    <div class="container-page">
+      <h2 class="m-0 text-2xl font-bold text-brand-blue">Campañas de Promoción y Mantenimiento de la Salud</h2>
+      <div class="mt-8 grid gap-6 md:grid-cols-2">
+        {
+          promocionCampaigns.map((campaign) => (
+            <article class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-brand-sm transition hover:-translate-y-1 hover:shadow-brand">
+              <img
+                src={campaign.image}
+                alt={campaign.imageAlt}
+                class="h-44 w-full object-cover"
+                loading="lazy"
+                decoding="async"
+              />
+              <div class="space-y-3 p-5">
+                <h3 class="m-0 text-lg font-bold text-brand-blue">{campaign.title}</h3>
+                {campaign.description && (
+                  <p class="m-0 text-sm leading-relaxed text-slate-600">{campaign.description}</p>
+                )}
+                <a
+                  href={campaign.detailHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex rounded-lg bg-brand-green px-4 py-2 text-sm font-semibold text-white no-underline transition hover:bg-brand-green-dark"
+                >
+                  Ver más
+                </a>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>

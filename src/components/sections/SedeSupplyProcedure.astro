@@ -1,0 +1,90 @@
+---
+import Icon from '@/components/icons/Icon.astro';
+import type { SedeSupplyProcedure } from '@/data/sedes';
+
+type Props = {
+  procedure: SedeSupplyProcedure;
+};
+
+const { procedure } = Astro.props;
+---
+
+<article class="scroll-mt-28 border-t border-slate-200 pt-10">
+  <h2 class="section-title border-b-2 border-brand-blue pb-3 text-xl md:text-2xl">
+    {procedure.title}
+  </h2>
+
+  <p class="mt-4 text-sm font-semibold text-brand-blue md:text-base">{procedure.audience}</p>
+
+  <p class="mt-3 text-sm text-slate-700">{procedure.appliesIntro}</p>
+  <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-700">
+    {procedure.convenios.map((item) => (
+      <li>{item}</li>
+    ))}
+  </ul>
+
+  <p class="mt-4 text-sm text-slate-700">{procedure.purpose}</p>
+
+  <div class="mt-8 space-y-8">
+    {
+      procedure.sections.map((section) => (
+        <div>
+          <h3 class="m-0 text-base font-bold text-brand-green-dark md:text-lg">{section.title}</h3>
+
+          {section.items && (
+            <ul class="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700">
+              {section.items.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          )}
+
+          {section.paragraph && (
+            <p class="mt-3 text-sm leading-relaxed text-slate-700">{section.paragraph}</p>
+          )}
+
+          {section.alert && (
+            <div class="mt-4 rounded-xl border-l-4 border-red-500 bg-slate-50 px-4 py-3 text-sm text-slate-700">
+              <strong class="text-slate-900">Importante:</strong> {section.alert}
+            </div>
+          )}
+
+          {section.contact && (
+            <div class="mt-4 rounded-xl border-l-4 border-brand-blue bg-sky-50 px-4 py-4 text-sm text-slate-700">
+              {section.contact.paragraphs.map((text, index) => (
+                <p class:list={['m-0 leading-relaxed', index > 0 && 'mt-2']}>{text}</p>
+              ))}
+              {section.contact.email && (
+                <p class="mt-3 m-0">
+                  <strong>{section.contact.email.label}: </strong>
+                  <a
+                    href={section.contact.email.href}
+                    class="font-medium text-brand-blue no-underline hover:text-brand-green-dark"
+                  >
+                    {section.contact.email.value}
+                  </a>
+                </p>
+              )}
+              {section.contact.phone && (
+                <p class="mt-2 m-0">
+                  <strong>{section.contact.phone.label}: </strong>
+                  <a
+                    href={section.contact.phone.href}
+                    class="font-medium text-brand-blue no-underline hover:text-brand-green-dark"
+                  >
+                    {section.contact.phone.value}
+                  </a>
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+      ))
+    }
+  </div>
+
+  <p class="mt-6 flex items-start gap-2 text-xs text-slate-500">
+    <Icon name="document" size={16} class="mt-0.5 shrink-0" />
+    Información orientada a usuarios FOMAG y Fondo Nacional de Ferrocarriles en sedes de Ibagué.
+  </p>
+</article>

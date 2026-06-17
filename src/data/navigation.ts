@@ -1,4 +1,7 @@
 import type { IconName, QuickAccessItem } from './icons';
+import { buildAtencionUsuarioNavChildren } from './atencion-usuario';
+import { buildLaboratorioClinicoNavChildren } from './laboratorio-clinico';
+import { buildNEmpresasNavChildren } from './empresas';
 import { buildSedesNavChildren } from './sedes';
 
 export type NavLink = {
@@ -16,6 +19,37 @@ export type NavItem = {
   children?: NavLink[];
 };
 
+/** Servicios → sedes, medicamentos, trámites y citas (como emcosalud.com.co). */
+export function buildServiciosNavChildren(): NavLink[] {
+  return [
+    ...buildSedesNavChildren(),
+    {
+      label: 'Dis/Medicamentos',
+      children: [
+        { label: 'Dis/Huila', href: '/medicamentos-huila' },
+        { label: 'Dis/Tolima', href: '/medicamentos-tolima' },
+      ],
+    },
+    {
+      label: 'Trámites y Servicios',
+      children: [
+        {
+          label: 'Descargar tu Certificado de Retenciones',
+          href: '/documentos',
+        },
+      ],
+    },
+    {
+      label: 'Solicita tu Cita',
+      children: [
+        { label: 'Huila', href: '/citas-huila' },
+        { label: 'Tolima', href: '/citas-tolima' },
+        { label: 'SOAT', href: '/citas-soat' },
+      ],
+    },
+  ];
+}
+
 /** Estructura base alineada con emcosalud.com.co (expandible con secciones de clínica). */
 export const mainNavigation: NavItem[] = [
   { label: 'Inicio', href: '/' },
@@ -29,30 +63,23 @@ export const mainNavigation: NavItem[] = [
     ],
   },
   {
-    label: 'Sedes',
-    href: '/sedes',
-    children: buildSedesNavChildren(),
-  },
-  {
     label: 'Servicios',
-    children: [
-      { label: 'Portafolio de servicios', href: '/servicios' },
-      { label: 'Promoción y mantenimiento', href: '/servicios#promocion' },
-      { label: 'Medicamentos Huila', href: '/medicamentos-huila' },
-      { label: 'Medicamentos Tolima', href: '/medicamentos-tolima' },
-    ],
+    href: '/servicios',
+    children: buildServiciosNavChildren(),
   },
   {
-    label: 'Trámites',
-    children: [
-      { label: 'Solicitar cita', href: '/citas' },
-      { label: 'Consulta de documentos', href: '/documentos' },
-      { label: 'Citas SOAT', href: '/citas-soat' },
-      { label: 'Tramitar PQR', href: '/pqrs' },
-    ],
+    label: 'N/Empresas',
+    children: buildNEmpresasNavChildren(),
+  },
+  {
+    label: 'Atención al Usuario',
+    children: buildAtencionUsuarioNavChildren(),
   },
   { label: 'Blog', href: '/blog' },
-  { label: 'Contacto', href: '/contacto' },
+  {
+    label: 'Laboratorio Clínico',
+    children: buildLaboratorioClinicoNavChildren(),
+  },
 ];
 
 export const quickAccessLinks: QuickAccessItem[] = [
@@ -82,10 +109,11 @@ export const quickAccessLinks: QuickAccessItem[] = [
     description: 'Urgencias, hospitalización y cirugía',
   },
   {
-    label: 'Resultados y portales',
-    href: '/portales',
+    label: 'Consulta de resultados',
+    href: 'http://emcolab.vpls.emcosalud.net:38080/EclipseWeb/login',
+    external: true,
     icon: 'lab',
-    description: 'Laboratorio e imágenes diagnósticas',
+    description: 'Portal de resultados de laboratorio clínico',
   },
   {
     label: 'Estados financieros',
@@ -103,14 +131,19 @@ export const footerNavigation = {
     { label: 'SICOF', href: '/sicof' },
   ],
   servicios: [
+    { label: 'Nuestras sedes', href: '/sedes' },
     { label: 'Servicios médicos', href: '/servicios' },
+    { label: 'Medicamentos Huila', href: '/medicamentos-huila' },
+    { label: 'Medicamentos Tolima', href: '/medicamentos-tolima' },
     { label: 'Citas médicas', href: '/citas' },
     { label: 'PQR', href: '/pqrs' },
     { label: 'Blog', href: '/blog' },
   ],
   enlaces: [
+    { label: 'Grupo empresarial', href: 'https://portal.emcosalud.org', external: true },
     { label: 'Clínica Emcosalud', href: 'https://clinicaemcosalud.com', external: true },
     { label: 'Emcofarma', href: 'https://emcofarma.com', external: true },
+    { label: 'Emcofarma Plus', href: 'https://portal.emcosalud.org', external: true },
     { label: 'Escuela Emcosalud', href: 'https://escuelaemcosalud.com', external: true },
   ],
 } as const;

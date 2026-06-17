@@ -1,0 +1,26 @@
+---
+import AtencionUsuarioHero from '@/components/sections/AtencionUsuarioHero.astro';
+import { atencionUsuarioAssets } from '@/data/atencion-usuario';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Asociación de Usuarios"
+  description="Información sobre la Asociación de Usuarios de EMCOSALUD."
+>
+  <AtencionUsuarioHero
+    title="Asociación de Usuarios"
+    lead="Conoce la información institucional de la Asociación de Usuarios de EMCOSALUD."
+  />
+
+  <section class="section-block">
+    <div class="container-page max-w-4xl">
+      <img
+        src={atencionUsuarioAssets.asociacionUsuariosImg}
+        alt="Asociación de Usuarios — EMCOSALUD"
+        class="mx-auto w-full max-w-3xl rounded-2xl border border-slate-200 shadow-sm"
+        loading="lazy"
+      />
+    </div>
+  </section>
+</BaseLayout>

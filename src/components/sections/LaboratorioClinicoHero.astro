@@ -1,0 +1,21 @@
+---
+import Icon from '@/components/icons/Icon.astro';
+
+interface Props {
+  title: string;
+  lead?: string;
+}
+
+const { title, lead } = Astro.props;
+---
+
+<section class="bg-brand-blue-dark py-12 text-white md:py-14">
+  <div class="container-page">
+    <p class="mb-2 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-brand-green-light">
+      <Icon name="lab" size={18} />
+      Laboratorio Clínico
+    </p>
+    <h1 class="m-0 text-3xl font-bold md:text-4xl">{title}</h1>
+    {lead && <p class="mt-4 max-w-3xl text-base leading-relaxed text-white/90 md:text-lg">{lead}</p>}
+  </div>
+</section>
