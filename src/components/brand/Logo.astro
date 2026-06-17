@@ -29,31 +29,16 @@ const taglineClass =
 
 <a href="/" class="inline-flex flex-col items-start gap-0.5 no-underline text-inherit hover:opacity-90">
 
-  {
-    variant === 'footer' ? (
-      <span class={footerLogoWrapperClass}>
-        <img
-          src={site.assets.logo}
-          alt={site.assets.logoAlt}
-          width="200"
-          height="56"
-          loading="eager"
-          decoding="async"
-          class={imgClass}
-        />
-      </span>
-    ) : (
-      <img
-        src={site.assets.logo}
-        alt={site.assets.logoAlt}
-        width="200"
-        height="56"
-        loading="eager"
-        decoding="async"
-        class={imgClass}
-      />
-    )
-  }
+  <img
+    src={logoSrc}
+    alt={site.assets.logoAlt}
+    width="200"
+    height="56"
+    loading="eager"
+    decoding="async"
+    class={imgClass}
+  />
+
 
   {showTagline && <span class={taglineClass}>{site.tagline}</span>}
 </a>
