@@ -136,6 +136,11 @@ const neivaServiceGroups: SedeServiceGroup[] = [
       'Neumología',
       'Neurocirugía',
       'Neurología',
+      
+    ],
+  },
+  {
+    items: [
       'Neuropediatría',
       'Nutrición y dietética',
       'Odontología general',
@@ -143,10 +148,6 @@ const neivaServiceGroups: SedeServiceGroup[] = [
       'Ortopedia y/o traumatología',
       'Otorrinolaringología',
       'Gastro pediatría',
-    ],
-  },
-  {
-    items: [
       'Pediatría',
       'Periodoncia',
       'Psicología',
@@ -272,7 +273,7 @@ const neivaSedeImages: SedeImage[] = [
 /** Galería sede Campoalegre — emcosalud.com.co/campoalegre/ */
 const campoalegreSedeImages: SedeImage[] = [
   {
-    src: '/images/sedes/campoalegre/campoalegre-01-portafolio.jpg',
+    src: '/images/sedes/campoalegre/campoalegre-01-fachada.png',
     alt: 'Instalaciones sede EMCOSALUD Campoalegre',
   },
 ];
@@ -297,7 +298,7 @@ const campoalegreServiceGroups: SedeServiceGroup[] = [
 /** Galería sede Garzón — emcosalud.com.co/garzon/ */
 const garzonSedeImages: SedeImage[] = [
   {
-    src: '/images/sedes/garzon/garzon-01-portafolio.jpg',
+    src: '/images/sedes/garzon/garzon-01-fachada.png',
     alt: 'Instalaciones sede EMCOSALUD Garzón',
   },
 ];
@@ -334,7 +335,7 @@ const garzonServiceGroups: SedeServiceGroup[] = [
 ];
 
 const giganteSedeImages: SedeImage[] = [
-  { src: '/images/sedes/gigante/gigante-01-portafolio.jpg', alt: 'Instalaciones sede EMCOSALUD Gigante' },
+  { src: '/images/sedes/gigante/gigante-01-fachada.png', alt: 'Instalaciones sede EMCOSALUD Gigante' },
 ];
 
 const giganteServiceGroups: SedeServiceGroup[] = [
@@ -354,7 +355,7 @@ const giganteServiceGroups: SedeServiceGroup[] = [
 ];
 
 const guadalupeSedeImages: SedeImage[] = [
-  { src: '/images/sedes/guadalupe/guadalupe-01-portafolio.jpg', alt: 'Instalaciones sede EMCOSALUD Guadalupe' },
+  { src: '/images/sedes/guadalupe/guadalupe-01-fachada.png', alt: 'Instalaciones sede EMCOSALUD Guadalupe' },
 ];
 
 const guadalupeServiceGroups: SedeServiceGroup[] = [
@@ -408,7 +409,7 @@ const laPlataServiceGroups: SedeServiceGroup[] = [
 ];
 
 const pitalitoSedeImages: SedeImage[] = [
-  { src: '/images/sedes/pitalito/pitalito-01-fachada.png', alt: 'Fachada sede EMCOSALUD Pitalito' },
+  { src: '/images/sedes/pitalito/pitalito-01-fachada.png', alt: 'Fachada sede EMCOSALUD Pitalito'},
 ];
 
 const pitalitoServiceGroups: SedeServiceGroup[] = [
@@ -433,6 +434,10 @@ const pitalitoServiceGroups: SedeServiceGroup[] = [
   },
 ];
 
+const pitalitoSedeTImages: SedeImage[] = [
+  { src: '/images/sedes/pitalito/pitalito 01 terapias.jpeg', alt: 'Fachada sede EMCOSALUD Pitalito Terapias', },
+];
+
 const sanAgustinSedeImages: SedeImage[] = [
   { src: '/images/sedes/san-agustin/san-agustin-01-sede.jpeg', alt: 'Instalaciones sede EMCOSALUD San Agustín' },
 ];
@@ -453,12 +458,17 @@ const sanAgustinServiceGroups: SedeServiceGroup[] = [
 
 const ibagueHipodromoImages: SedeImage[] = [
   { src: '/images/sedes/ibague/ibague-01-hipodromo.png', alt: 'Sede Hipódromo EMCOSALUD Ibagué' },
+  { src: '/images/sedes/ibague/ibague-02-interlaken.jpg', alt: 'banner' },
+  { src: '/images/sedes/ibague/ibague-03-asistencial.jpg', alt: 'banner' },
 ];
 const ibagueInterlakenImages: SedeImage[] = [
-  { src: '/images/sedes/ibague/ibague-02-interlaken.jpg', alt: 'Sede Interlaken EMCOSALUD Ibagué' },
+  { src: '/images/sedes/ibague/ibague-02-fachada.png', alt: 'Sede Interlaken EMCOSALUD Ibagué' },
 ];
 const ibagueAsistencialImages: SedeImage[] = [
-  { src: '/images/sedes/ibague/ibague-03-asistencial.jpg', alt: 'Sede asistencial EMCOSALUD Ibagué' },
+  { src: '/images/sedes/ibague/ibague-01-terapia.png', alt: 'Sede asistencial EMCOSALUD Ibagué' },
+];
+const ibaguePijaoImages: SedeImage[] = [
+  { src: '/images/sedes/ibague/pijao3-01-fachada.jpeg', alt: 'Sede asistencial EMCOSALUD Ibagué' },
 ];
 
 const ibagueSupplyProcedure: SedeSupplyProcedure = {
@@ -643,7 +653,7 @@ const chaparralServiceSchedules: SedeServiceSchedule[] = [
 ];
 
 const libanoSedeImages: SedeImage[] = [
-  { src: '/images/sedes/libano/libano-01-portafolio.jpg', alt: 'Sede EMCOSALUD Líbano' },
+  { src: '/images/sedes/libano/libano-01-fachada.png', alt: 'Sede EMCOSALUD Líbano' },
 ];
 const libanoServiceGroups: SedeServiceGroup[] = [
   {
@@ -1030,7 +1040,7 @@ export const sedesBySlug: Record<string, Sede> = {
         address: 'La Plata, Huila',
         images: laPlataSedeImages,
         mapEmbedUrl:
-          'https://www.google.com/maps/embed?pb=!4v1768572173594!6m8!1m7!1siQjuwfEaZDUftvdnhDBoYA!2m2!1d2.388692321166709!2d-75.89326941106188!3f315.3053025081399!4f-6.767976537559264!5f0.7820865974627469',
+          'https://www.google.com/maps?q=2.388692321166709,-75.89326941106188&z=17&output=embed',
         mapsHref:
           'https://www.google.com/maps/search/?api=1&query=2.388692,-75.893269',
         whatsappHref: 'https://wa.me/573158193552',
@@ -1122,6 +1132,12 @@ export const sedesBySlug: Record<string, Sede> = {
       },
       {
         name: 'Terapias',
+        address: 'Carrera 1 # 3-22, Pitalito, Huila',
+        images: pitalitoSedeTImages,
+        mapEmbedUrl:
+        'https://www.google.com/maps?q=1.84733002358899,-76.0444937240372&z=17&output=embed',
+        mapsHref:
+          'https://www.google.com/maps/search/?api=1&query=Carrera+5+%232-30+Pitalito+Huila',
         whatsappHref: 'https://wa.me/573144662870',
         appointmentHref: '/citas',
         contacts: [
@@ -1164,7 +1180,7 @@ export const sedesBySlug: Record<string, Sede> = {
         address: 'San Agustín, Huila',
         images: sanAgustinSedeImages,
         mapEmbedUrl:
-          'https://www.google.com/maps/embed?pb=!4v1768574429413!6m8!1m7!1sviY2IPlJWkKnCcwxUYqfqQ!2m2!1d1.882389044376133!2d-76.27334712792593!3f337.9309746152079!4f-1.6325617897128666!5f0.7820865974627469',
+        'https://www.google.com/maps?q=1.882389044376133,-76.27334712792593&z=17&output=embed',
         mapsHref:
           'https://www.google.com/maps/search/?api=1&query=1.882389,-76.273347',
         whatsappHref: 'https://wa.me/573102799661',
@@ -1244,7 +1260,7 @@ export const sedesBySlug: Record<string, Sede> = {
         address: 'Carrera 8 No. 17-10, Ibagué, Tolima',
         images: ibagueInterlakenImages,
         mapEmbedUrl:
-          'https://maps.google.com/maps?q=carrera+8+NO.+17-10+ibague&t=m&z=15&output=embed&iwloc=near',
+          'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d837.3014447633641!2d-75.2343785749723!3d4.445159872732394!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e38c5f396f2f671%3A0x265c994139e32862!2sTolihuila%20EMCOSALUD%20(Calle%2017)!5e0!3m2!1ses!2sco!4v1781791958085!5m2!1ses!2sco',
         mapsHref:
           'https://www.google.com/maps/search/?api=1&query=Carrera+8+No.+17-10+Ibagué+Tolima',
         appointmentHref: '/citas',
@@ -1272,7 +1288,7 @@ export const sedesBySlug: Record<string, Sede> = {
         address: 'Carrera 8 # 18-15, Ibagué, Tolima',
         images: ibagueAsistencialImages,
         mapEmbedUrl:
-          'https://maps.google.com/maps?q=carrera+8+%23+18-15+ibague&t=m&z=15&output=embed&iwloc=near',
+          'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d774.948298182699!2d-75.23249050817314!3d4.4449075635684165!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e38c50055a5883d%3A0xdb46e99f9f0d8b8c!2sTOLIHUILA%20EMCOSALUD%20LABORATORIO%20CL%C3%8DNICO!5e0!3m2!1ses!2sco!4v1781792140042!5m2!1ses!2sco',
         mapsHref:
           'https://www.google.com/maps/search/?api=1&query=Carrera+8+%2318-15+Ibagué+Tolima',
         appointmentHref: '/citas',
@@ -1296,6 +1312,7 @@ export const sedesBySlug: Record<string, Sede> = {
       {
         name: 'Edificio Pijao 3 — Barrio El Carmen',
         address: 'Carrera 5 # 22-38, Ibagué, Tolima',
+        images: ibaguePijaoImages,
         mapEmbedUrl:
           'https://maps.google.com/maps?q=carrera+5+22-38+ibague&t=m&z=15&output=embed&iwloc=near',
         mapsHref:
@@ -1435,7 +1452,7 @@ export const sedesBySlug: Record<string, Sede> = {
         address: 'Carrera 2a # 6-60, Barrio Santa Lucía, Mariquita, Tolima',
         images: mariquitaSedeImages,
         mapEmbedUrl:
-          'https://www.google.com/maps/embed?pb=!4v1768575501626!6m8!1m7!1sixCDy80NdcPAFCOX39Ljlw!2m2!1d5.197326063329605!2d-74.89785706713396!3f210.12465707824302!4f4.691055358375621!5f0.7820865974627469',
+          'https://www.google.com/maps?q=5.197326063329605,-74.89785706713396&z=17&output=embed',
         mapsHref:
           'https://www.google.com/maps/search/?api=1&query=Carrera+2a+%236-60+Mariquita+Tolima',
         whatsappHref: 'https://wa.me/573164728805',

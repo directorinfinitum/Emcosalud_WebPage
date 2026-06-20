@@ -3,9 +3,13 @@ import type { CitasDepartment } from '@/data/citas';
 import {
   citasDocumentTypes,
   citasEnfermeriaDescriptions,
+  citasConsultaporCursodeVida,
   citasJornadas,
   citasSedes,
   citasServices,
+  citasMedicos,
+  citasGinecologia,
+  citasPediatria,
 } from '@/data/citas';
 
 type Props = {
@@ -26,6 +30,10 @@ type FormState = {
   nursingDescription: string;
   serviceDescription: string;
   acceptsPrivacy: boolean;
+  medico: string;
+  consultavida: string;
+  serviceginecologia: string;
+  servicePediatria: string;
 };
 
 const initialState: FormState = {
@@ -42,7 +50,13 @@ const initialState: FormState = {
   nursingDescription: '',
   serviceDescription: '',
   acceptsPrivacy: false,
+  medico:'',
+  consultavida: '',
+  serviceginecologia: '',
+  servicePediatria: '',
 };
+
+
 
 const fieldClass =
   'w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none transition focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/15';
@@ -81,8 +95,24 @@ export default function CitasRequestForm({ department }: Props) {
       </div>
     );
   }
+  const serviciosDisponibles =
+  citasServices?.[department]?.[form.sede] ?? [];
 
   const showNursingDescription = form.service === 'ENFERMERIA';
+
+  const showserviceginecologia = form.service === 'GINECOLOGIA';
+
+  const showconsultavida = form.nursingDescription ==='CONSULTA POR CURSO DE VIDA';
+
+  const showservicepediatria = form.service === 'PEDIATRIA';
+  
+  const medicosDisponibles =
+  citasMedicos?.[form.sede]?.[
+    form.service.replace(/\s+/g, '_')
+  ] ?? [];
+
+  const showMedicos =
+    medicosDisponibles.length > 0;
 
   return (
     <form className="space-y-4" onSubmit={handleSubmit}>
@@ -238,22 +268,61 @@ export default function CitasRequestForm({ department }: Props) {
         <div>
           <label className={labelClass} htmlFor={`service-${department}`}>
             Servicio *
-          </label>
+          </label>      
           <select
             id={`service-${department}`}
             className={fieldClass}
             required
             value={form.service}
             onChange={(event) => update('service', event.target.value)}
+            disabled={!form.sede}
           >
-            <option value="">— Por favor, elige una opción —</option>
-            {citasServices[department].map((service) => (
+            <option value="">
+              — Por favor, elige una opción —
+            </option>
+
+            {serviciosDisponibles.map((service) => (
               <option key={service} value={service}>
                 {service}
               </option>
             ))}
-          </select>
+          </select> 
+
         </div>
+
+        {showMedicos && (
+          <div>
+            <label
+              className={labelClass}
+              htmlFor={`medico-${department}`}
+            >
+              Médico *
+            </label>
+
+            <select
+              id={`medico-${department}`}
+              className={fieldClass}
+              required
+              value={form.medico}
+              onChange={(event) =>
+                update('medico', event.target.value)
+              }
+            >
+              <option value="">
+                — Por favor, elige una opción —
+              </option>
+
+              {medicosDisponibles.map((medico) => (
+                <option
+                  key={medico}
+                  value={medico}
+                >
+                  {medico}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         {showNursingDescription && (
           <div>
@@ -268,6 +337,69 @@ export default function CitasRequestForm({ department }: Props) {
             >
               <option value="">— Por favor, elige una opción —</option>
               {citasEnfermeriaDescriptions.map((description) => (
+                <option key={description} value={description}>
+                  {description}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {showconsultavida && (
+          <div>
+            <label className={labelClass} htmlFor={`consultavida-${department}`}>
+              Consulta Por:
+            </label>
+            <select
+              id={`consultavida-${department}`}
+              className={fieldClass}
+              value={form.consultavida}
+              onChange={(event) => update('consultavida', event.target.value)}
+            >
+              <option value="">— Por favor, elige una opción —</option>
+              {citasConsultaporCursodeVida.map((description) => (
+                <option key={description} value={description}>
+                  {description}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {showserviceginecologia && (
+          <div>
+            <label className={labelClass} htmlFor={`serviceginecologia-${department}`}>
+              Consulta Por:
+            </label>
+            <select
+              id={`serviceginecologia-${department}`}
+              className={fieldClass}
+              value={form.serviceginecologia}
+              onChange={(event) => update('serviceginecologia', event.target.value)}
+            >
+              <option value="">— Por favor, elige una opción —</option>
+              {citasGinecologia.map((description) => (
+                <option key={description} value={description}>
+                  {description}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {showservicepediatria && (
+          <div>
+            <label className={labelClass} htmlFor={`servicepediatria-${department}`}>
+              Consulta Por:
+            </label>
+            <select
+              id={`servicepediatria-${department}`}
+              className={fieldClass}
+              value={form.servicePediatria}
+              onChange={(event) => update('servicePediatria', event.target.value)}
+            >
+              <option value="">— Por favor, elige una opción —</option>
+              {citasPediatria.map((description) => (
                 <option key={description} value={description}>
                   {description}
                 </option>
