@@ -22,6 +22,31 @@ export const sicofGeneralConcepts: { title: string; description: string }[] = [
   },
 ];
 
+export const incidentes = [
+  "Cibercrimen", 
+  "Cohecho", 
+  "Colusión", 
+  "Concusión", 
+  "Conducta irregular", 
+  "Conflicto de interés", 
+  "Corrupción", 
+  "Estafa", 
+  "Favoritismo", 
+  "Fraude", 
+  "Hurto", 
+  "Opacidad", 
+  "Peculado", 
+  "Piratería", 
+  "Prevaricato por acción", 
+  "Prevaricato por omisión", 
+  "Soborno", 
+  "Soborno transnacional", 
+  "Trafico de influencias", 
+  "Vandalismo", 
+  "Debida diligencia", 
+  "Omisión de reporte a la UIAF"
+]
+
 export type SicofSubsystemConcept = {
   title: string;
   description: string;

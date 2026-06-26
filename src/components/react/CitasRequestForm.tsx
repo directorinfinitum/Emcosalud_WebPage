@@ -77,6 +77,11 @@ export default function CitasRequestForm({ department }: Props) {
     setForm(initialState);
   };
 
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  const minDate = tomorrow.toISOString().split('T')[0];
+
   if (submitted) {
     return (
       <div className="space-y-4 rounded-xl border border-brand-green/30 bg-brand-green/5 p-5 text-center">
@@ -95,8 +100,11 @@ export default function CitasRequestForm({ department }: Props) {
       </div>
     );
   }
+ /* const serviciosDisponibles =
+  citasServices?.[department]?.[form.sede] ?? [];*/
+
   const serviciosDisponibles =
-  citasServices?.[department]?.[form.sede] ?? [];
+  citasServices?.[department]?.[form.sede.replace(/\s+/g, '_')] ?? [];
 
   const showNursingDescription = form.service === 'ENFERMERIA';
 
@@ -215,11 +223,13 @@ export default function CitasRequestForm({ department }: Props) {
           <label className={labelClass} htmlFor={`appointmentDate-${department}`}>
             Fecha aproximada para la cita *
           </label>
+
           <input
             id={`appointmentDate-${department}`}
             className={fieldClass}
             type="date"
             required
+            min={minDate}
             value={form.appointmentDate}
             onChange={(event) => update('appointmentDate', event.target.value)}
           />
@@ -420,6 +430,33 @@ export default function CitasRequestForm({ department }: Props) {
           />
         </div>
       </div>
+
+      <div>
+          <label className={labelClass} htmlFor="OrdenFomag">
+            ANEXAR ORDEN DEL FOMAG (SI APLICA)
+          </label>
+          <input
+            id="OrdenFomag"
+            className="block w-full text-sm text-slate-700 file:mr-3 file:rounded-lg file:border-0 file:bg-brand-blue file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-brand-blue-light"
+            type="file"
+            accept=".pdf,image/*"
+            
+          />
+      </div>
+
+      <div>
+          <label className={labelClass} htmlFor="MedicalOrden">
+            ANEXAR ORDEN MÉDICA (SI APLICA)
+          </label>
+          <input
+            id="MedicalOrden"
+            className="block w-full text-sm text-slate-700 file:mr-3 file:rounded-lg file:border-0 file:bg-brand-blue file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-brand-blue-light"
+            type="file"
+            accept=".pdf,image/*"
+            
+          />
+      </div>
+
 
       <label className="flex items-start gap-3 text-sm text-slate-700">
         <input
