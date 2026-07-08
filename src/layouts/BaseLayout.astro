@@ -1,8 +1,10 @@
 ---
-import Footer from '@/components/layout/Footer.astro';
-import Header from '@/components/layout/Header.astro';
-import { site } from '@/data/site';
-import '@/styles/global.css';
+import Footer from "@/components/layout/Footer.astro";
+import Header from "@/components/layout/Header.astro";
+import { site } from "@/data/site";
+import "@/styles/global.css";
+import CookieBanner from "../components/cookies/CookieBanner.astro";
+
 
 interface Props {
   title?: string;
@@ -11,6 +13,17 @@ interface Props {
 
 const { title = site.name, description = site.description } = Astro.props;
 const pageTitle = title === site.name ? title : `${title} | ${site.name}`;
+
+
+
+const consentCookie = Astro.cookies.get('cookies-consent');
+
+// Intentamos parsear la cookie de forma segura utilizando el método .json() de Astro
+const permisos = consentCookie ? consentCookie.json() : null;
+
+// Creamos banderas lógicas listas para usar en el HTML
+const permitirAnalitica = permisos?.analitica === true;
+const permitirPublicidad = permisos?.publicidad === true;
 ---
 
 <!doctype html>
@@ -32,5 +45,26 @@ const pageTitle = title === site.name ? title : `${title} | ${site.name}`;
       </main>
       <Footer />
     </div>
+
+    <CookieBanner />
+    {/* CONSULTA: Si se permitió la analítica, inyectamos el script correspondiente */}
+      {permitirAnalitica && (
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-XXXXX-Y"></script>
+        <script is:inline>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'UA-XXXXX-Y');
+        </script>
+      )}
+
+<!--     {/* CONSULTA: Si se permitió la publicidad, inyectamos el píxel */}
+      {permitirPublicidad && (
+        <script is:inline>
+          console.log("Script de marketing/publicidad inicializado");
+        </script>
+      )}
+-->
+    <script src="https://cdn.userway.org/widget.js" data-account="jY03tOl3dk"></script>
   </body>
 </html>

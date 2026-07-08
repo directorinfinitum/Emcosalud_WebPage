@@ -467,9 +467,9 @@ export default function CitasRequestForm({ department }: Props) {
           onChange={(event) => update('acceptsPrivacy', event.target.checked)}
         />
         <span>
-          Acepto la{' '}
+          Autorizo{' '}
           <a href="/politica-privacidad" className="font-semibold text-brand-blue">
-            política de tratamiento de datos
+            el tratamiento de datos
           </a>
           .
         </span>

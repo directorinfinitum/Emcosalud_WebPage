@@ -99,7 +99,7 @@ export const quickAccessLinks: QuickAccessItem[] = [
     label: 'Consulta de documentos',
     href: '/documentos',
     icon: 'document',
-    description: 'Trámites y certificados en línea',
+    description: 'Descarga tu Certificado de Retenciones',
   },
   {
     label: 'Clínica Emcosalud',

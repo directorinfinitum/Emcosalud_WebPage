@@ -3,11 +3,16 @@ import { fileURLToPath } from 'node:url';
 import react from '@astrojs/react';
 import tailwind from '@astrojs/tailwind';
 import { defineConfig } from 'astro/config';
+import node from '@astrojs/node'; // 👈 1. Importamos el adaptador de Node que instalamos
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   site: 'https://emcosalud.com.co',
+  output: 'server', // 👈 2. Activamos el modo servidor para que funcionen las cookies
+  adapter: node({
+    mode: 'standalone', // 👈 3. Conectamos el adaptador de Node
+  }),
   redirects: {
     '/huila-medicamentos': '/medicamentos-huila',
     '/tolima-medicamentos': '/medicamentos-tolima',
