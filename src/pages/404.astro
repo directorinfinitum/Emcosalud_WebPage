@@ -1,0 +1,37 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Página no encontrada">
+  <section class="section-block flex min-h-[60vh] items-center justify-center py-16 text-center">
+    <div class="container-page max-w-lg">
+      <div class="mb-6 inline-flex h-20 w-20 items-center justify-center rounded-full bg-slate-100 text-brand-blue">
+        <span class="text-4xl font-black">404</span>
+      </div>
+
+      <h1 class="text-3xl font-extrabold text-brand-blue sm:text-4xl">
+        Página no encontrada
+      </h1>
+
+      <p class="mt-4 text-slate-600">
+        Lo sentimos, la página o publicación que estás buscando no existe, ha sido movida o eliminada.
+      </p>
+
+      <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a
+          href="/"
+          class="w-full sm:w-auto rounded-xl bg-brand-blue px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-blue/90 text-center"
+        >
+          Ir al Inicio
+        </a>
+        
+        <a
+          href="/blog"
+          class="w-full sm:w-auto rounded-xl border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 text-center"
+        >
+          Ver el Blog
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

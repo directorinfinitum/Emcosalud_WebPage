@@ -1,6 +1,72 @@
 ---
-import { blogPosts } from '@/data/services';
 import BaseLayout from '@/layouts/BaseLayout.astro';
+
+// Desactivar el prerenderizado si necesitas capturar la query string `?page=X` en cada petición
+export const prerender = false;
+
+// Obtener el número de página actual desde la URL (?page=1 por defecto)
+const pageParam = Astro.url.searchParams.get('page');
+const currentPage = pageParam ? Math.max(1, parseInt(pageParam, 10) || 1) : 1;
+const PER_PAGE = 9;
+
+let posts: any[] = [];
+let totalPages = 1;
+
+try {
+  // 1. Obtener el ID de la categoría cuyo slug es "blog"
+  const catResponse = await fetch(`https://emcosalud.com.co/wp-json/wp/v2/categories?slug=blog`);
+
+  if (catResponse.ok) {
+    const categories = await catResponse.json();
+
+    if (categories.length > 0) {
+      const blogCategoryId = categories[0].id;
+
+      // 2. Pedir las publicaciones paginadas a WordPress mediante `page` y `per_page`
+      const WP_API = `https://emcosalud.com.co/wp-json/wp/v2/posts?categories=${blogCategoryId}&per_page=${PER_PAGE}&page=${currentPage}&_embed`;
+      const response = await fetch(WP_API);
+
+      if (response.ok) {
+        // WordPress devuelve el número total de páginas en los Headers HTTP
+        const totalPagesHeader = response.headers.get('X-WP-TotalPages');
+        if (totalPagesHeader) {
+          totalPages = parseInt(totalPagesHeader, 10);
+        }
+
+        const rawPosts = await response.json();
+
+        posts = rawPosts.map((post: any) => {
+          let imageUrl = post._embedded?.['wp:featuredmedia']?.[0]?.source_url || '';
+
+          if (!imageUrl && post.content?.rendered) {
+            const match = post.content.rendered.match(/<img[^>]+src=["']([^"']+)["']/i);
+            if (match) imageUrl = match[1];
+          }
+
+          if (!imageUrl) {
+            imageUrl = 'https://emcosalud.com.co/wp-content/uploads/2025/01/logo-emcosalud.png';
+          }
+
+          const cleanExcerpt = post.excerpt?.rendered
+            ? post.excerpt.rendered.replace(/<[^>]+>/g, '').trim()
+            : '';
+
+          return {
+            id: post.id,
+            title: post.title.rendered,
+            excerpt: cleanExcerpt,
+            date: post.date,
+            slug: post.slug,
+            imageUrl,
+          };
+        });
+      }
+    }
+  }
+} catch (error) {
+  console.error('Error al obtener las publicaciones del blog:', error);
+  posts = [];
+}
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('es-CO', {
@@ -12,26 +78,79 @@ function formatDate(iso: string) {
 ---
 
 <BaseLayout title="Blog">
-  <section class="section-block">
+  <section class="section-block py-10 sm:py-16">
     <div class="container-page">
-      <h1 class="section-title">Blog</h1>
-      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {
-          blogPosts.map((post) => (
-            <article class="card-base">
-              <time class="text-xs font-bold text-brand-green-dark" datetime={post.date}>
-                {formatDate(post.date)}
-              </time>
-              <h2 class="my-2 text-lg font-bold">
-                <a href={`/blog/${post.slug}`} class="text-brand-blue no-underline hover:text-brand-green-dark">
-                  {post.title}
+      <h1 class="section-title mb-8">Blog</h1>
+
+      {posts.length > 0 ? (
+        <>
+          <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {posts.map((post) => (
+              <article class="card-base flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:shadow-lg">
+                <!-- Imagen del post -->
+                <a href={`/blog/${post.slug}`} class="block aspect-video overflow-hidden bg-slate-100">
+                  <img
+                    src={post.imageUrl}
+                    alt={post.title}
+                    class="h-full w-full object-cover transition duration-300 hover:scale-105"
+                    loading="lazy"
+                  />
                 </a>
-              </h2>
-              <p class="m-0 text-sm text-slate-600">{post.excerpt}</p>
-            </article>
-          ))
-        }
-      </div>
+
+                <!-- Contenido -->
+                <div class="flex flex-1 flex-col p-5">
+                  <time class="mb-2 block text-xs font-bold text-brand-green-dark" datetime={post.date}>
+                    {formatDate(post.date)}
+                  </time>
+                  <h2 class="m-0 mb-3 text-lg font-bold leading-tight">
+                    <a href={`/blog/${post.slug}`} class="text-brand-blue no-underline hover:text-brand-green-dark">
+                      <Fragment set:html={post.title} />
+                    </a>
+                  </h2>
+                  <p class="m-0 text-sm text-slate-600 line-clamp-3">{post.excerpt}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <!-- Controles de Paginación -->
+          {totalPages > 1 && (
+            <nav class="mt-12 flex items-center justify-center gap-4" aria-label="Navegación del blog">
+              {currentPage > 1 ? (
+                <a
+                  href={`/blog?page=${currentPage - 1}`}
+                  class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50"
+                >
+                  &larr; Anteriores
+                </a>
+              ) : (
+                <span class="cursor-not-allowed rounded-lg border border-slate-200 bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-400">
+                  &larr; Anteriores
+                </span>
+              )}
+
+              <span class="text-sm font-medium text-slate-600">
+                Página {currentPage} de {totalPages}
+              </span>
+
+              {currentPage < totalPages ? (
+                <a
+                  href={`/blog?page=${currentPage + 1}`}
+                  class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50"
+                >
+                  Siguientes &rarr;
+                </a>
+              ) : (
+                <span class="cursor-not-allowed rounded-lg border border-slate-200 bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-400">
+                  Siguientes &rarr;
+                </span>
+              )}
+            </nav>
+          )}
+        </>
+      ) : (
+        <p class="text-center text-slate-600">No hay entradas publicadas en esta categoría actualmente.</p>
+      )}
     </div>
   </section>
 </BaseLayout>

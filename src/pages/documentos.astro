@@ -1,8 +1,117 @@
 ---
-import PlaceholderPage from '@/components/sections/PlaceholderPage.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title="Consulta de documentos">
-  <PlaceholderPage title="Consulta de documentos" />
+  <section class="max-w-2xl mx-auto px-4 py-12">
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">Consulta de Documentos</h1>
+      <p class="text-gray-600">Ingresa tu número de cédula o NIT para descargar tu certificado.</p>
+    </div>
+
+    <!-- Formulario de Búsqueda -->
+    <form id="form-busqueda" class="flex flex-col sm:flex-row gap-3 mb-8">
+      <input
+        type="text"
+        id="documento"
+        name="documento"
+        placeholder="Ej. 93390866"
+        required
+        class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+      />
+      <button
+        type="submit"
+        id="btn-buscar"
+        class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+      >
+        Buscar
+      </button>
+    </form>
+
+    <!-- Estado de carga -->
+    <div id="loading" class="hidden text-center py-4 text-gray-500">
+      Buscando certificados...
+    </div>
+
+    <!-- Contenedor de Resultados -->
+    <div id="resultados" class="space-y-4"></div>
+  </section>
 </BaseLayout>
+
+<script>
+  const form = document.getElementById('form-busqueda') as HTMLFormElement;
+  const inputDocumento = document.getElementById('documento') as HTMLInputElement;
+  const resultadosDiv = document.getElementById('resultados') as HTMLDivElement;
+  const loadingDiv = document.getElementById('loading') as HTMLDivElement;
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const documento = inputDocumento.value.trim();
+
+    if (!documento) return;
+
+    // Limpiar interfaz
+    resultadosDiv.innerHTML = '';
+    loadingDiv?.classList.remove('hidden');
+
+    try {
+      // 1. Consultar la REST API de Medios de WordPress buscando por el número de documento
+      const WP_API = `https://emcosalud.com.co/wp-json/wp/v2/media?search=${documento}&mime_type=application/pdf`;
+      const response = await fetch(WP_API);
+
+      if (!response.ok) throw new Error('Error de conexión con el servidor.');
+
+      const archivos = await response.json();
+      loadingDiv?.classList.add('hidden');
+
+      // 2. Filtrar para asegurar que el documento coincida exactamente al inicio del nombre del archivo
+      const certificadosEncontrados = archivos.filter((item: any) => {
+        const nombreArchivo = item.source_url.split('/').pop() || '';
+        return nombreArchivo.startsWith(documento);
+      });
+
+      if (certificadosEncontrados.length === 0) {
+        resultadosDiv.innerHTML = `
+          <div class="p-4 text-amber-800 bg-amber-50 rounded-lg border border-amber-200 text-center">
+            No se encontraron certificados asociados al documento <strong>${documento}</strong>.
+          </div>
+        `;
+        return;
+      }
+
+      // 3. Mostrar los certificados encontrados
+      resultadosDiv.innerHTML = certificadosEncontrados
+        .map((cert: any) => {
+          const pdfUrl = cert.source_url;
+          // Generar un título limpio a partir del nombre del archivo o del título asignado en WP
+          const titulo = cert.title.rendered || 'Certificado PDF';
+
+          return `
+            <div class="p-5 border border-gray-200 rounded-lg shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white">
+              <div>
+                <h3 class="font-semibold text-gray-800 uppercase text-sm">${titulo}</h3>
+                <span class="text-xs text-gray-500">Documento: ${documento}</span>
+              </div>
+              <a 
+                href="${pdfUrl}" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-md transition-colors flex items-center gap-2"
+              >
+                Descargar PDF
+              </a>
+            </div>
+          `;
+        })
+        .join('');
+
+    } catch (error) {
+      loadingDiv?.classList.add('hidden');
+      resultadosDiv.innerHTML = `
+        <div class="p-4 text-red-800 bg-red-50 rounded-lg border border-red-200 text-center">
+          Ocurrió un error al procesar la búsqueda. Por favor intenta de nuevo.
+        </div>
+      `;
+    }
+  });
+</script>

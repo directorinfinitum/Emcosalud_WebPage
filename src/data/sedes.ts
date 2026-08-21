@@ -923,8 +923,8 @@ export const sedesBySlug: Record<string, Sede> = {
           {
             title: 'Horario de atención',
             lines: [
-              'Lunes a viernes: 6:30 a.m. a 6:00 p.m.',
-              'Sábados: 8:00 a.m. a 11:30 a.m.',
+              'Lunes a viernes: 7:00 a.m. a 6:00 p.m.',
+              'Sábados: 7:30 a.m. a 12:00 p.m.',
             ],
           },
           {
@@ -933,7 +933,7 @@ export const sedesBySlug: Record<string, Sede> = {
           },
           {
             title: 'Horario de toma de muestras',
-            lines: ['Lunes a viernes: 6:30 a.m. a 9:00 a.m.'],
+            lines: ['Lunes a viernes: 7:00 a.m. a 9:00 a.m.'],
           },
         ],
       },
@@ -975,8 +975,19 @@ export const sedesBySlug: Record<string, Sede> = {
             title: 'Horario de atención',
             lines: [
               'Lunes a viernes: 7:00 a.m. a 12:30 m. y 1:00 p.m. a 6:00 p.m.',
-              'Sábados: 8:00 a.m. a 12:00 m.',
+              'Sábados: 7:30 a.m. a 12:00 m.',
             ],
+          },
+          {
+            title: 'Horario de asignación de citas',
+            lines: [
+              'Lunes a viernes: 7:00 a.m. a 12:30 m. y 1:00 p.m. a 6:00 p.m.',
+              'Sábados: 7:30 a.m. a 12:00 m.',
+            ],
+          },
+          {
+            title: 'Horario de toma de muestras',
+            lines: ['Según asignación / Horario habitual'],
           },
         ],
       },
@@ -1017,9 +1028,21 @@ export const sedesBySlug: Record<string, Sede> = {
           {
             title: 'Horario de atención',
             lines: [
-              'Lunes a viernes: 6:00 a.m. a 6:00 p.m.',
-              'Sábados: 8:00 a.m. a 11:30 a.m.',
+              'Lunes a viernes: 7:00 a.m. a 9:00 a.m. y de 2:00 p.m a 4:00 p.m',
+              'Sábados: 8:00 a.m. a 12:00 m.',
             ],
+          },
+          
+          {
+            title: 'Horario de asignación de citas',
+            lines: [
+              'Presencial',
+              'Virtual',
+            ],
+          },
+          {
+            title: 'Horario de toma de muestras',
+            lines: ['Según asignación / Horario habitual'],
           },
         ],
       },
@@ -1067,7 +1090,9 @@ export const sedesBySlug: Record<string, Sede> = {
           },
           {
             title: 'Horario de asignación de citas',
-            lines: ['Desde las 8:00 a.m.'],
+            lines: ['Desde las 8:00 a.m.',
+              'Presencial y Virtual'
+            ],
           },
           {
             title: 'Horario de toma de muestras',
@@ -1124,45 +1149,22 @@ export const sedesBySlug: Record<string, Sede> = {
           {
             title: 'Horario de atención',
             lines: [
-              'Lunes a viernes: 7:00 a.m. a 12:00 m. y 2:00 p.m. a 6:00 p.m.',
+              'Lunes a viernes: 6:00 a.m. a 12:00 m. y 2:00 p.m. a 5:30 p.m.',
               'Sábados: 8:00 a.m. a 12:00 m.',
             ],
           },
-        ],
-      },
-      {
-        name: 'Terapias',
-        address: 'Carrera 1 # 3-22, Pitalito, Huila',
-        images: pitalitoSedeTImages,
-        mapEmbedUrl:
-        'https://www.google.com/maps?q=1.84733002358899,-76.0444937240372&z=17&output=embed',
-        mapsHref:
-          'https://www.google.com/maps/search/?api=1&query=Carrera+5+%232-30+Pitalito+Huila',
-        whatsappHref: 'https://wa.me/573144662870',
-        appointmentHref: '/citas',
-        contacts: [
-          { label: 'Celular', value: '314 466 2870', href: 'tel:+573144662870' },
           {
-            label: 'Teléfono',
-            value: '(608) 863 2041 ext. 5841',
-            href: 'tel:+576088632041',
-          },
-          {
-            label: 'Correo citas',
-            value: 'emcoterapiaspitalito@gmail.com',
-            href: 'mailto:emcoterapiaspitalito@gmail.com',
-          },
-        ],
-        schedules: [
-          {
-            title: 'Horario de atención',
-            lines: [
-              'Lunes a viernes: 7:00 a.m. a 12:00 m. y 2:00 p.m. a 5:00 p.m.',
-              'Sábados: 8:00 a.m. a 12:00 m.',
+            title: 'Horario de asignación de citas',
+            lines: ['De 6:00 a 12:00 m. y de 2:00 p.m a 5:30 p.m'
             ],
           },
+          {
+            title: 'Consulta Pediatría',
+            lines: ['Lunes a viernes: 2:00 p.m. a 6:00 p.m.'],
+          },
         ],
-      },
+      }
+      
     ],
     servicesHeading: 'Somos tu IPS de confianza',
     servicesIntro:
@@ -1183,7 +1185,7 @@ export const sedesBySlug: Record<string, Sede> = {
         'https://www.google.com/maps?q=1.882389044376133,-76.27334712792593&z=17&output=embed',
         mapsHref:
           'https://www.google.com/maps/search/?api=1&query=1.882389,-76.273347',
-        whatsappHref: 'https://wa.me/573102799661',
+        whatsappHref: 'https://wa.me/573102061388',
         appointmentHref: '/citas',
         contacts: [
           {
@@ -1191,7 +1193,7 @@ export const sedesBySlug: Record<string, Sede> = {
             value: '(608) 863 2041 ext. 5843',
             href: 'tel:+576088632041',
           },
-          { label: 'Celular', value: '310 279 9661', href: 'tel:+573102799661' },
+          { label: 'Celular', value: '310 206 1388', href: 'tel:+573102061388' },
           {
             label: 'Correo',
             value: 'emcosalud.farmacia.sanagustin@gmail.com',
@@ -1202,9 +1204,20 @@ export const sedesBySlug: Record<string, Sede> = {
           {
             title: 'Horario de atención',
             lines: [
-              'Lunes a viernes: 6:00 a.m. a 12:00 m. y 2:00 p.m. a 6:00 p.m.',
+              'Lunes a viernes: 6:30 a.m. a 12:00 m. y 2:00 p.m. a 5:30 p.m.',
               'Sábados: 8:00 a.m. a 10:00 a.m.',
             ],
+          },
+          {
+            title: 'Horario de asignación de citas',
+            lines: [
+              'Lunes a viernes: 6:30 a.m. a 12:00 m. y 2:00 p.m. a 5:30 p.m.',
+              'Sábados: 8:00 a.m. a 10:00 a.m.',
+            ],
+          },
+          {
+            title: 'Horario de toma de muestras',
+            lines: ['Según asignación / Horario habitual'],
           },
         ],
       },

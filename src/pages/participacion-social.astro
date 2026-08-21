@@ -1,0 +1,163 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '@/components/icons/Icon.astro';
+
+// Datos de la Política de Participación Social en Salud (PPSS)
+const ppssIntro = "En EMCOSALUD reafirmamos nuestro compromiso con la Política de Participación Social en Salud (PPSS), garantizando espacios de diálogo, transparencia y corresponsabilidad con nuestros usuarios y la comunidad.";
+
+
+const ppssDefinition = {
+  title: "Plan de Acción de Participación Social 2026",
+  general: "El Plan de Acción de Participación Social 2026 fue diseñado con el propósito de fortalecer los mecanismos de interacción ciudadana y asegurar la ejecución de actividades que promuevan la participación activa en la gestión de los servicios de salud.",
+  focuses: [
+    "Carga y Validación Nacional: El plan ha sido cargado y validado en la plataforma SISPRO, cumpliendo con los lineamientos nacionales.",
+    "Ejecución y Difusión Periódica: Se han ejecutado las actividades programadas, las cuales se difunden periódicamente a través de nuestros boletines informativos.",
+    "Mejora Continua y Transparencia: El nivel de cumplimiento refleja el compromiso institucional con la mejora continua y la transparencia en la gestión."
+  ],
+  
+};
+
+const ppssSystem = {
+  title: "Estado Oficial de Cumplimiento",
+  compliance: "Se informa que el Plan de Acción de Participación Social 2026 ha sido cargado y validado en SISPRO, y que se ha dado cumplimiento al 100% de las actividades programadas hasta junio de 2026.",
+  scope: "Estas acciones se han ejecutado conforme a lo previsto y se difunden periódicamente a través de nuestros boletines informativos, garantizando transparencia y participación activa de la comunidad."
+};
+
+const ppssElementsIntro = "Indicadores y métricas clave del reporte de cumplimiento del Plan de Acción 2026:";
+const ppssElements = [
+  "100% Cumplimiento a Junio 2026",
+  "Plataforma SISPRO: Cargado y Validado",
+  "Plan de Acción 2026 Vigente",
+  "Paso Satisfactoriamente TXT PPSS"
+];
+
+
+const ppssNormativity = [
+  {
+    title: "Reporte Institucional y Soportes 2026",
+    items: [
+      "Validación de Carga en SISPRO - Vigencia 2026",
+      "Soporte de Ejecución de Actividades a Junio 2026 (100%)",
+      "Boletines Informativos periódicos de Participación Social"
+    ]
+  }
+];
+---
+
+<BaseLayout
+  title="PPSS - Participación Social en Salud"
+  description="Política de Participación Social en Salud (PPSS) — Reporte Institucional de Cumplimiento Vigencia 2026 EMCOSALUD."
+>
+  <section class="bg-brand-blue-dark py-12 text-white md:py-14">
+    <div class="container-page">
+      <p class="mb-2 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-brand-green-light">
+        <Icon name="shield-check" size={18} />
+        Compromiso y Gestión Social en Salud
+      </p>
+      <h1 class="m-0 text-3xl font-bold md:text-4xl">Política de Participación Social en Salud (PPSS)</h1>
+      <p class="mt-4 max-w-3xl text-base leading-relaxed text-white/90 md:text-lg">
+        {ppssIntro}
+      </p>
+    </div>
+  </section>
+
+  <section class="section-block">
+    <div class="container-page max-w-4xl space-y-10">
+      <article>
+        <h2 class="section-title text-xl md:text-2xl">{ppssDefinition.title}</h2>
+        <p class="mt-4 text-slate-700 leading-relaxed">{ppssDefinition.general}</p>
+        <img 
+            src="https://emcosalud.com.co/wp-content/uploads/2026/07/Imagen1.png" 
+            alt="referencia" 
+            class="inline-block h-auto w-auto align-middle mx-1" 
+        />
+        <img 
+            src="https://emcosalud.com.co/wp-content/uploads/2026/07/Imagen2.png" 
+            alt="referencia" 
+            class="inline-block h-auto w-auto align-middle mx-1" 
+        />
+        <h3 class="mt-6 mb-3 text-base font-bold text-brand-blue">Reporte de Cumplimiento</h3>
+        <img 
+            src="https://emcosalud.com.co/wp-content/uploads/2026/07/Imagen3.png" 
+            alt="referencia" 
+            class="inline-block h-auto w-auto align-middle mx-1" 
+        />
+        <p class="mb-3 text-slate-700">Principales ejes de ejecución:</p>
+        <ul class="m-0 list-none space-y-2 p-0">
+          {
+            ppssDefinition.focuses.map((item) => (
+              <li class="flex items-start gap-2 text-slate-700">
+                <Icon name="shield-check" size={16} class="mt-1 shrink-0 text-brand-green-dark" />
+                {item}
+              </li>
+            ))
+          }
+        </ul>
+        
+      </article>
+
+      <article class="card-base border-l-4 border-l-brand-green">
+        <h2 class="section-title mb-3 text-xl">{ppssSystem.title}</h2>
+        <p class="m-0 text-slate-700 leading-relaxed">{ppssSystem.compliance}</p>
+        <p class="mt-4 m-0 text-slate-700 leading-relaxed">{ppssSystem.scope}</p>
+      </article>
+
+      <article>
+        <h2 class="section-title text-xl">Indicadores de Gestión PPSS</h2>
+        <p class="section-lead mb-4">
+          Avances institucionales en el marco del cumplimiento normativo y la participación activa comunitaria.
+        </p>
+        <p class="mb-4 text-slate-700 leading-relaxed">{ppssElementsIntro}</p>
+        <ul class="m-0 grid list-none gap-2 p-0 sm:grid-cols-2">
+          {
+            ppssElements.map((item) => (
+              <li class="flex items-start gap-2 rounded-lg bg-slate-50 px-3 py-2 text-sm text-slate-700 font-semibold">
+                <Icon name="document" size={14} class="mt-0.5 shrink-0 text-brand-blue" />
+                {item}
+              </li>
+            ))
+          }
+        </ul>
+        
+      </article>
+    </div>
+  </section>
+
+  <section class="section-block bg-slate-50 pt-0" id="normatividad">
+    <div class="container-page max-w-4xl">
+      <h2 class="section-title flex items-center gap-2">
+        <Icon name="document" size={28} class="text-brand-green" />
+        Soportes de Cumplimiento
+      </h2>
+
+      <div class="mt-6 space-y-4">
+        {
+          ppssNormativity.map((group) => (
+            <details class="group rounded-xl border border-slate-200 bg-white shadow-brand-sm open:border-brand-green/40" open>
+              <summary class="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 font-bold text-brand-blue marker:content-none [&::-webkit-details-marker]:hidden">
+                {group.title}
+                <Icon
+                  name="arrow-right"
+                  size={18}
+                  class="shrink-0 text-brand-green transition group-open:rotate-90"
+                />
+              </summary>
+              <ul class="m-0 space-y-2 border-t border-slate-100 px-5 py-4 text-sm leading-relaxed text-slate-700">
+                {group.items.map((item) => (
+                  <li class="flex items-start gap-2">
+                    <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-green" aria-hidden="true" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </details>
+          ))
+        }
+      </div>
+
+      <div class="mt-8">
+        
+      </div>
+    </div>
+  </section>
+</BaseLayout>

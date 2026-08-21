@@ -1,0 +1,133 @@
+---
+import Icon from '@/components/icons/Icon.astro';
+
+interface CarteleraIssue {
+  label: string;
+  href: string;
+}
+
+interface Props {
+  year: string;
+  categorySlug?: string;
+}
+
+const { year, categorySlug = 'cartelera' } = Astro.props;
+
+// Consulta a la REST API de WordPress ordenada por fecha (Enero -> Diciembre)
+const WP_API = `https://emcosalud.com.co/wp-json/wp/v2/posts?per_page=100&orderby=date&order=asc&_embed`;
+
+let issues: CarteleraIssue[] = [];
+
+try {
+  const response = await fetch(WP_API);
+
+  if (response.ok) {
+    const posts = await response.json();
+
+    // 1. Filtrar asegurando soporte tanto para 'anio_cartelera_' como 'anio_cartelera'
+    const filteredPosts = posts.filter((post: any) => {
+      const acfYearRaw = post.acf?.anio_cartelera_ ?? post.acf?.anio_cartelera;
+      const acfYear = acfYearRaw ? String(acfYearRaw).trim() : null;
+      const wpYear = post.date ? post.date.substring(0, 4) : null;
+      
+      const postYear = acfYear || wpYear;
+
+      const tieneCategoria = post._embedded?.['wp:term']?.[0]?.some(
+        (term: any) => term.slug === categorySlug
+      );
+
+      return postYear === String(year).trim() && (tieneCategoria ?? true);
+    });
+
+    // 2. Mapeo asíncrono para resolver la URL según el formato de ACF (String, Objeto o ID)
+    issues = await Promise.all(
+      filteredPosts.map(async (post: any) => {
+        let imageUrl = '';
+        const acfFile = post.acf?.archivo_cartelera;
+
+        // Prioridad 1: Obtener desde ACF
+        if (typeof acfFile === 'string' && acfFile.trim() !== '') {
+          // A. Si viene como URL en texto
+          imageUrl = acfFile;
+        } else if (typeof acfFile === 'object' && acfFile !== null) {
+          // B. Si viene como objeto de archivo de ACF
+          imageUrl = acfFile.url || acfFile.link || acfFile.source_url || '';
+        } else if (typeof acfFile === 'number') {
+          // C. Si viene como ID de archivo (Ej: 12069), consultar su URL a la API de Medios
+          try {
+            const mediaRes = await fetch(`https://emcosalud.com.co/wp-json/wp/v2/media/${acfFile}`);
+            if (mediaRes.ok) {
+              const mediaData = await mediaRes.json();
+              imageUrl = mediaData.source_url || mediaData.guid?.rendered || '';
+            }
+          } catch (e) {
+            console.error(`Error consultando media ID ${acfFile}:`, e);
+          }
+        }
+
+        // Prioridad 2: Extraer cualquier imagen o PDF del contenido renderizado
+        if (!imageUrl && post.content?.rendered) {
+          const match = post.content.rendered.match(/https?:\/\/[^\s"'<>]+\.(webp|jpg|jpeg|png|gif|svg|pdf)(\?[^\s"'<>]*)?/i);
+          if (match) {
+            imageUrl = match[0];
+          }
+        }
+
+        // Prioridad 3: Imagen Destacada de WordPress
+        if (!imageUrl && post._embedded?.['wp:featuredmedia']?.[0]?.source_url) {
+          imageUrl = post._embedded['wp:featuredmedia'][0].source_url;
+        }
+
+        // Prioridad 4: Fallback según el slug del mes
+        if (!imageUrl) {
+          const mesSlug = post.slug.replace('cartelera-', '').trim();
+          imageUrl = `https://emcosalud.com.co/wp-content/uploads/cartelera-${mesSlug}.webp`;
+        }
+
+        // Etiqueta del botón (Ejemplo: "FEBRERO")
+        const labelText = post.acf?.mes_cartelera 
+          ? post.acf.mes_cartelera 
+          : post.title.rendered.replace(/cartelera/i, '').replace(year, '').trim();
+
+        return {
+          label: labelText,
+          href: imageUrl,
+        };
+      })
+    );
+  }
+} catch (error) {
+  console.error(`Error al obtener las carteleras del año ${year}:`, error);
+  issues = [];
+}
+---
+
+<section class="section-block">
+  <div class="container-page max-w-3xl">
+    <h2 class="m-0 text-xl font-bold text-brand-blue">Carteleras {year}</h2>
+    {issues.length ? (
+      <ul class="mt-6 grid gap-3 sm:grid-cols-2">
+        {issues.map((issue) => (
+          <li>
+            <a
+              href={issue.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-brand-blue no-underline shadow-sm transition hover:border-brand-green/40 hover:bg-brand-green/5"
+            >
+              {issue.label}
+              <Icon name="external" size={16} class="shrink-0 opacity-60" />
+            </a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="mt-4 text-slate-600">Próximamente se publicarán las carteleras de este año.</p>
+    )}
+  </div>
+</section>
+
+<script>
+  // Avisar al spinner del layout que las carteleras terminaron de cargar
+  window.dispatchEvent(new Event('cartelera-loaded'));
+</script>

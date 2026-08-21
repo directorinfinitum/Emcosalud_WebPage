@@ -4,10 +4,77 @@ import type { BoletinIssue } from '@/data/atencion-usuario';
 
 interface Props {
   year: string;
-  issues: BoletinIssue[];
+  issues?: BoletinIssue[];
+  categorySlug?: string;
 }
 
-const { year, issues } = Astro.props;
+const { year, categorySlug = 'boletines' } = Astro.props;
+
+// Se agregan parámetros orderby=date&order=asc para ordenar de Enero a Diciembre
+const WP_API = `https://emcosalud.com.co/wp-json/wp/v2/posts?per_page=100&orderby=date&order=asc&_embed`;
+
+let issues: BoletinIssue[] = [];
+
+try {
+  const response = await fetch(WP_API);
+
+  if (response.ok) {
+    const posts = await response.json();
+
+    issues = posts
+      .filter((post: any) => {
+        // 1. Obtener el año definido en ACF o en la fecha de WP
+        const acfYear = post.acf?.anio_boletin ? String(post.acf.anio_boletin).trim() : null;
+        const wpYear = post.date ? post.date.substring(0, 4) : null;
+        const postYear = acfYear || wpYear;
+
+        // 2. Verificar categoría 'boletines'
+        const tieneCategoria = post._embedded?.['wp:term']?.[0]?.some(
+          (term: any) => term.slug === categorySlug
+        );
+
+        return postYear === String(year).trim() && (tieneCategoria ?? true);
+      })
+      .map((post: any) => {
+        let pdfUrl = '';
+
+        // Prioridad 1: URL del PDF desde ACF
+        if (typeof post.acf?.archivo_pdf_boletin === 'string' && post.acf.archivo_pdf_boletin.length > 0) {
+          pdfUrl = post.acf.archivo_pdf_boletin;
+        } else if (post.acf?.archivo_pdf_boletin?.url) {
+          pdfUrl = post.acf.archivo_pdf_boletin.url;
+        }
+
+        // Prioridad 2: Buscar cualquier enlace a .pdf en el contenido
+        if (!pdfUrl && post.content?.rendered) {
+          const match = post.content.rendered.match(/https?:\/\/[^\s"'<>]+\.pdf/i);
+          if (match) {
+            pdfUrl = match[0];
+          }
+        }
+
+        // Prioridad 3: Construcción estandarizada
+        if (!pdfUrl) {
+          const wpAnio = post.date.substring(0, 4);
+          const wpMes = post.date.substring(5, 7);
+          const mesSlug = post.slug.replace('boletin-', '');
+          pdfUrl = `https://emcosalud.com.co/wp-content/uploads/boletin-${mesSlug}.pdf`;
+        }
+
+        const labelText = post.acf?.mes_boletin 
+          ? `${post.acf.mes_boletin}` 
+          : post.title.rendered;
+
+        return {
+          label: labelText,
+          href: pdfUrl,
+        };
+      });
+  }
+} catch (error) {
+  console.error(`Error obteniendo boletines del año ${year}:`, error);
+  issues = [];
+}
 ---
 
 <section class="section-block">
@@ -34,3 +101,15 @@ const { year, issues } = Astro.props;
     )}
   </div>
 </section>
+
+<script define:vars={{ WP_API }}>
+  try {
+    // @ts-ignore
+    const response = await fetch(WP_API);
+    // ... tu lógica ...
+  } catch (error) {
+    console.error(error);
+  } finally {
+    window.dispatchEvent(new Event('cartelera-loaded'));
+  }
+</script>

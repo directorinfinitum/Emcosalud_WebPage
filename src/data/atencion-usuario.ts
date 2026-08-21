@@ -120,14 +120,45 @@ export const boletinesByYear: Record<string, BoletinIssue[]> = {
     },
   ],
   '2025': [
+   
     {
-      label: 'Boletín Marzo y Abril',
+      label: 'Boletín Marzo',
+      href: 'https://emcosalud.com.co/wp-content/uploads/2025/05/Boletin-magisterio-Marzo-y-Abril_compressed.pdf',
+    },
+    {
+      label: 'Boletín Abril',
       href: 'https://emcosalud.com.co/wp-content/uploads/2025/05/Boletin-magisterio-Marzo-y-Abril_compressed.pdf',
     },
     {
       label: 'Boletín Mayo',
       href: 'https://emcosalud.com.co/wp-content/uploads/2025/05/Boletin-magisterio-Mayo.pdf_compressed.pdf',
     },
+    {
+      label: 'Boletín Junio',
+      href: 'https://emcosalud.com.co/wp-content/uploads/2025/06/boletin-usuario-magisterio-junio_compressed.pdf',
+    },
+    {
+      label: 'Boletín Julio',
+      href: 'https://emcosalud.com.co/wp-content/uploads/2025/06/boletin-usuario-magisterio-junio_compressed.pdf',
+    },
+    {
+      label: 'Boletín Agosto',
+      href: 'https://clinicaemcosalud.com/wp-content/uploads/2025/09/boletin-usuarios-magisterio-AGOSTO-2025.pdf',
+    },
+    {
+      label: 'Boletín Septiembre',
+      href: 'https://emcosalud.com.co/wp-content/uploads/2025/09/Boletin-al-usuario-magisterio-septiembre.pdf',
+    },
+    {
+      label: 'Boletín Octubre',
+      href: 'https://clinicaemcosalud.com/wp-content/uploads/2025/10/Boletin-usuarios-magisterio-octubre.pdf',
+    },
+    {
+      label: 'Boletín Noviembre',
+      href: 'https://clinicaemcosalud.com/wp-content/uploads/2025/12/Boletin-noviembre.pdf',
+    },
+    
+    
   ],
   '2026': [
     {
@@ -264,6 +295,10 @@ export function buildAtencionUsuarioNavChildren(): NavLink[] {
       label: 'Canales y Puntos de Atención',
       href: '/canales-y-puntos-de-atencion',
     },
+    {
+      label: 'Participación Social',
+      href: '/participacion-social',
+    },
     { label: 'Derechos y Deberes', href: '/derechos-y-deberes' },
     { label: 'Humanización', href: '/humanizacion' },
     {
@@ -271,6 +306,11 @@ export function buildAtencionUsuarioNavChildren(): NavLink[] {
       href: '/politica-con-enfoque-diferencial',
     },
     { label: 'Asociación de Usuarios', href: '/asociacion-de-usuarios' },
+    { label: 'Publicaciones',
+      children: [
+        { label: 'Publicaciones 2026', href: '/publicaciones-2026' },
+      ],
+    },
     {
       label: 'Boletines',
       children: [
