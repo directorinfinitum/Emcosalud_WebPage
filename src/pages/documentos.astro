@@ -12,7 +12,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
     <!-- Formulario de Búsqueda -->
     <form id="form-busqueda" class="flex flex-col sm:flex-row gap-3 mb-8">
       <input
-        type="text"
+        type="number"
         id="documento"
         name="documento"
         placeholder="Ej. 93390866"
@@ -55,7 +55,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
     loadingDiv?.classList.remove('hidden');
 
     try {
-      // 1. Consultar la REST API de Medios de WordPress buscando por el número de documento
+      // 1. Consultar la REST API de Medios de WordPress
       const WP_API = `https://emcosalud.com.co/wp-json/wp/v2/media?search=${documento}&mime_type=application/pdf`;
       const response = await fetch(WP_API);
 
@@ -64,26 +64,33 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
       const archivos = await response.json();
       loadingDiv?.classList.add('hidden');
 
-      // 2. Filtrar para asegurar que el documento coincida exactamente al inicio del nombre del archivo
+      // 2. RegEx para coincidencia EXACTA:
+      // Exige que el número introducido esté rodeado por límites de palabra (\b) 
+      // o separadores comunes como -, _, .
+      const exactRegex = new RegExp(`(?:^|[^0-9])${documento}(?:[^0-9]|$)`);
+
       const certificadosEncontrados = archivos.filter((item: any) => {
         const nombreArchivo = item.source_url.split('/').pop() || '';
-        return nombreArchivo.startsWith(documento);
+        const titulo = item.title?.rendered || '';
+
+        // Comprobar que el número exista exacto tanto en el nombre del archivo como en el título
+        return exactRegex.test(nombreArchivo) || exactRegex.test(titulo);
       });
 
+      // 3. Si no hay coincidencias exactas, mostrar mensaje de "No encontrado"
       if (certificadosEncontrados.length === 0) {
         resultadosDiv.innerHTML = `
           <div class="p-4 text-amber-800 bg-amber-50 rounded-lg border border-amber-200 text-center">
-            No se encontraron certificados asociados al documento <strong>${documento}</strong>.
+            No se encontraron certificados asociados exactamente al documento <strong>${documento}</strong>.
           </div>
         `;
         return;
       }
 
-      // 3. Mostrar los certificados encontrados
+      // 4. Mostrar únicamente los documentos con coincidencia exacta
       resultadosDiv.innerHTML = certificadosEncontrados
         .map((cert: any) => {
           const pdfUrl = cert.source_url;
-          // Generar un título limpio a partir del nombre del archivo o del título asignado en WP
           const titulo = cert.title.rendered || 'Certificado PDF';
 
           return `

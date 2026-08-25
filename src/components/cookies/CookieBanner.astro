@@ -136,22 +136,64 @@ const mostrarBanner = !cookiesConsent;
 )}
 
 <script>
-  // Control de la Ventana Emergente (Modal <dialog>)
+  // Elementos del Modal
   const btnAbrir = document.getElementById('btn-abrir-modal');
   const btnCerrarX = document.getElementById('btn-cerrar-modal');
   const btnCancelar = document.getElementById('btn-cancelar-modal');
   const modal = document.getElementById('modal-preferencias') as HTMLDialogElement | null;
+  
+  // Elementos del Banner
+  const banner = document.getElementById('cookie-banner');
+  const formularios = document.querySelectorAll('form[action="/api/guardar-cookie"]');
 
+  // 1. Manejo del Modal (<dialog>)
   if (btnAbrir && modal) {
-    // Abrir el modal usando la API nativa de JavaScript (.showModal())
-    btnAbrir.addEventListener('click', () => {
-      modal.showModal();
-    });
-
-    // Funciones para cerrar
+    btnAbrir.addEventListener('click', () => modal.showModal());
     const cerrarModal = () => modal.close();
-
     btnCerrarX?.addEventListener('click', cerrarModal);
     btnCancelar?.addEventListener('click', cerrarModal);
   }
+
+  // 2. Interceptar el envío para evitar recargar la página (AJAX)
+  formularios.forEach((form) => {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault(); // 👈 Esto evita que la página se recargue
+
+      const targetForm = e.target as HTMLFormElement;
+      const formData = new FormData(targetForm);
+
+      // Si el botón presionado tiene nombre y valor (ej. "consentimiento" = "aceptadas")
+      const submitter = (e as SubmitEvent).submitter as HTMLButtonElement | null;
+      if (submitter && submitter.name) {
+        formData.append(submitter.name, submitter.value);
+      }
+
+      try {
+        // Enviamos los datos al servidor en segundo plano
+        await fetch('/api/guardar-cookie', {
+          method: 'POST',
+          body: formData,
+        });
+
+        // Ocultamos el modal si está abierto
+        if (modal && modal.open) {
+          modal.close();
+        }
+
+        // Ocultamos el banner de la pantalla con una transición suave
+        if (banner) {
+          banner.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+          banner.style.opacity = '0';
+          banner.style.transform = 'translateY(100%)';
+          setTimeout(() => banner.remove(), 300);
+        }
+
+        // Opcional: Recargar solo si necesitas que los scripts de analítica se activen de inmediato
+        // window.location.reload();
+
+      } catch (error) {
+        console.error('Error guardando la cookie:', error);
+      }
+    });
+  });
 </script>

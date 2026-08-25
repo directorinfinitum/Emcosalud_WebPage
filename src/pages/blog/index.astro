@@ -14,7 +14,7 @@ let totalPages = 1;
 
 try {
   // 1. Obtener el ID de la categoría cuyo slug es "blog"
-  const catResponse = await fetch(`https://emcosalud.com.co/wp-json/wp/v2/categories?slug=blog`);
+  const catResponse = await fetch(`https://gestion.emcosalud.com.co/wp-json/wp/v2/categories?slug=blog`);
 
   if (catResponse.ok) {
     const categories = await catResponse.json();
@@ -23,7 +23,7 @@ try {
       const blogCategoryId = categories[0].id;
 
       // 2. Pedir las publicaciones paginadas a WordPress mediante `page` y `per_page`
-      const WP_API = `https://emcosalud.com.co/wp-json/wp/v2/posts?categories=${blogCategoryId}&per_page=${PER_PAGE}&page=${currentPage}&_embed`;
+      const WP_API = `https://gestion.emcosalud.com.co/wp-json/wp/v2/posts?categories=${blogCategoryId}&per_page=${PER_PAGE}&page=${currentPage}&_embed`;
       const response = await fetch(WP_API);
 
       if (response.ok) {
@@ -44,7 +44,7 @@ try {
           }
 
           if (!imageUrl) {
-            imageUrl = 'https://emcosalud.com.co/wp-content/uploads/2025/01/logo-emcosalud.png';
+            imageUrl = 'https://gestion.emcosalud.com.co/wp-content/uploads/2025/01/logo-emcosalud.png';
           }
 
           const cleanExcerpt = post.excerpt?.rendered

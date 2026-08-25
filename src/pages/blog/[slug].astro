@@ -33,7 +33,7 @@ let post: Post | null = null;
 try {
   // Consultar la entrada directamente por su SLUG
   const response = await fetch(
-    `https://emcosalud.com.co/wp-json/wp/v2/posts?slug=${slug}&_embed`
+    `https://gestion.emcosalud.com.co/wp-json/wp/v2/posts?slug=${slug}&_embed`
   );
 
   if (response.ok) {
@@ -50,7 +50,7 @@ try {
       }
 
       if (!imageUrl) {
-        imageUrl = 'https://emcosalud.com.co/wp-content/uploads/2025/01/logo-emcosalud.png';
+        imageUrl = 'https://gestion.emcosalud.com.co/wp-content/uploads/2025/01/logo-emcosalud.png';
       }
 
       const cleanExcerpt = p.excerpt?.rendered

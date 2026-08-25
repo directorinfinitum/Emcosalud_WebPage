@@ -8,12 +8,28 @@ interface Props {
   categorySlug?: string;
 }
 
-const { year, categorySlug = 'boletines' } = Astro.props;
+const { year } = Astro.props;
 
-// Se agregan parámetros orderby=date&order=asc para ordenar de Enero a Diciembre
-const WP_API = `https://emcosalud.com.co/wp-json/wp/v2/posts?per_page=100&orderby=date&order=asc&_embed`;
+const BASE_URL = 'https://gestion.emcosalud.com.co';
+const WP_API = `${BASE_URL}/wp-json/wp/v2/posts?per_page=100&_embed`;
 
-let issues: BoletinIssue[] = [];
+// Mapa de orden de meses para asegurar la secuencia de Enero (1) a Diciembre (12)
+const MONTH_ORDER: Record<string, number> = {
+  ENERO: 1,
+  FEBRERO: 2,
+  MARZO: 3,
+  ABRIL: 4,
+  MAYO: 5,
+  JUNIO: 6,
+  JULIO: 7,
+  AGOSTO: 8,
+  SEPTIEMBRE: 9,
+  OCTUBRE: 10,
+  NOVIEMBRE: 11,
+  DICIEMBRE: 12,
+};
+
+let issues: (BoletinIssue & { monthIndex: number })[] = [];
 
 try {
   const response = await fetch(WP_API);
@@ -21,58 +37,70 @@ try {
   if (response.ok) {
     const posts = await response.json();
 
-    issues = posts
-      .filter((post: any) => {
-        // 1. Obtener el año definido en ACF o en la fecha de WP
-        const acfYear = post.acf?.anio_boletin ? String(post.acf.anio_boletin).trim() : null;
-        const wpYear = post.date ? post.date.substring(0, 4) : null;
-        const postYear = acfYear || wpYear;
+    // 1. Filtrar STRICTAMENTE por el año indicado en la Prop 'year'
+    const postsDelAnio = posts.filter((post: any) => {
+      const acfYear = post.acf?.anio_boletin ? String(post.acf.anio_boletin).trim() : null;
+      const wpYear = post.date ? post.date.substring(0, 4) : null;
+      const postYear = acfYear || wpYear;
 
-        // 2. Verificar categoría 'boletines'
-        const tieneCategoria = post._embedded?.['wp:term']?.[0]?.some(
-          (term: any) => term.slug === categorySlug
-        );
+      return postYear === String(year).trim();
+    });
 
-        return postYear === String(year).trim() && (tieneCategoria ?? true);
-      })
-      .map((post: any) => {
+    // 2. Mapear los posts filtrados
+    const rawIssues = await Promise.all(
+      postsDelAnio.map(async (post: any) => {
         let pdfUrl = '';
+        const acfPdf = post.acf?.archivo_pdf_boletin;
 
-        // Prioridad 1: URL del PDF desde ACF
-        if (typeof post.acf?.archivo_pdf_boletin === 'string' && post.acf.archivo_pdf_boletin.length > 0) {
-          pdfUrl = post.acf.archivo_pdf_boletin;
-        } else if (post.acf?.archivo_pdf_boletin?.url) {
-          pdfUrl = post.acf.archivo_pdf_boletin.url;
-        }
-
-        // Prioridad 2: Buscar cualquier enlace a .pdf en el contenido
-        if (!pdfUrl && post.content?.rendered) {
-          const match = post.content.rendered.match(/https?:\/\/[^\s"'<>]+\.pdf/i);
-          if (match) {
-            pdfUrl = match[0];
+        // Obtener URL según tipo de dato que entregue ACF
+        if (typeof acfPdf === 'number' || (typeof acfPdf === 'string' && /^\d+$/.test(acfPdf))) {
+          try {
+            const mediaRes = await fetch(`${BASE_URL}/wp-json/wp/v2/media/${acfPdf}`);
+            if (mediaRes.ok) {
+              const mediaData = await mediaRes.json();
+              pdfUrl = mediaData.source_url || '';
+            }
+          } catch (e) {
+            console.error(e);
           }
+        } else if (typeof acfPdf === 'string' && acfPdf.startsWith('http')) {
+          pdfUrl = acfPdf;
+        } else if (typeof acfPdf === 'object' && acfPdf?.url) {
+          pdfUrl = acfPdf.url;
         }
 
-        // Prioridad 3: Construcción estandarizada
+        // Fallback exacto con el slug
         if (!pdfUrl) {
-          const wpAnio = post.date.substring(0, 4);
-          const wpMes = post.date.substring(5, 7);
-          const mesSlug = post.slug.replace('boletin-', '');
-          pdfUrl = `https://emcosalud.com.co/wp-content/uploads/boletin-${mesSlug}.pdf`;
+          pdfUrl = `${BASE_URL}/wp-content/uploads/${post.slug}.pdf`;
         }
 
+        // --- ENMASCARAMIENTO DE URL CON PROXY LOCAL ---
+        // Extrae el nombre del archivo (ej. "boletin-marzo-2025.pdf")
+        const fileName = pdfUrl.split('/').pop() || `${post.slug}.pdf`;
+        const proxiedHref = `/pdf/${fileName}`;
+
+        const rawMes = post.acf?.mes_boletin ? String(post.acf.mes_boletin).trim().toUpperCase() : '';
         const labelText = post.acf?.mes_boletin 
-          ? `${post.acf.mes_boletin}` 
-          : post.title.rendered;
+          ? String(post.acf.mes_boletin) 
+          : post.title?.rendered || 'Edición';
+
+        // Determinar índice del mes para ordenamiento
+        const wpMonth = post.date ? parseInt(post.date.substring(5, 7), 10) : 99;
+        const monthIndex = MONTH_ORDER[rawMes] || wpMonth;
 
         return {
           label: labelText,
-          href: pdfUrl,
+          href: proxiedHref, // Se pasa el proxy interno (/api/pdf/...)
+          monthIndex,
         };
-      });
+      })
+    );
+
+    // 3. Ordenar de Enero a Diciembre
+    issues = rawIssues.sort((a, b) => a.monthIndex - b.monthIndex);
   }
 } catch (error) {
-  console.error(`Error obteniendo boletines del año ${year}:`, error);
+  console.error(`Error al conectar con la API:`, error);
   issues = [];
 }
 ---
@@ -80,7 +108,8 @@ try {
 <section class="section-block">
   <div class="container-page max-w-3xl">
     <h2 class="m-0 text-xl font-bold text-brand-blue">Ediciones {year}</h2>
-    {issues.length ? (
+    
+    {issues.length > 0 ? (
       <ul class="mt-6 grid gap-3 sm:grid-cols-2">
         {issues.map((issue) => (
           <li>
@@ -101,15 +130,3 @@ try {
     )}
   </div>
 </section>
-
-<script define:vars={{ WP_API }}>
-  try {
-    // @ts-ignore
-    const response = await fetch(WP_API);
-    // ... tu lógica ...
-  } catch (error) {
-    console.error(error);
-  } finally {
-    window.dispatchEvent(new Event('cartelera-loaded'));
-  }
-</script>
