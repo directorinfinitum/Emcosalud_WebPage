@@ -1,8 +1,11 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+
+// ID numérico de la Entidad "Emcosalud" en WordPress
+const ID_ENTIDAD_EMCOSALUD = 5; 
 ---
 
-<BaseLayout title="Consulta de documentos">
+<BaseLayout title="Consulta de documentos - Emcosalud">
   <section class="max-w-2xl mx-auto px-4 py-12">
     <div class="text-center mb-8">
       <h1 class="text-3xl font-bold text-gray-900 mb-2">Consulta de Documentos</h1>
@@ -12,7 +15,8 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
     <!-- Formulario de Búsqueda -->
     <form id="form-busqueda" class="flex flex-col sm:flex-row gap-3 mb-8">
       <input
-        type="number"
+        type="text"
+        inputmode="numeric"
         id="documento"
         name="documento"
         placeholder="Ej. 93390866"
@@ -22,14 +26,15 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
       <button
         type="submit"
         id="btn-buscar"
-        class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+        class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center min-w-[120px]"
       >
-        Buscar
+        <span id="btn-text">Buscar</span>
       </button>
     </form>
 
     <!-- Estado de carga -->
-    <div id="loading" class="hidden text-center py-4 text-gray-500">
+    <div id="loading" class="hidden text-center py-4 text-gray-500 font-medium">
+      <div class="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mr-2 align-middle"></div>
       Buscando certificados...
     </div>
 
@@ -38,11 +43,12 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
   </section>
 </BaseLayout>
 
-<script>
-  const form = document.getElementById('form-busqueda') as HTMLFormElement;
-  const inputDocumento = document.getElementById('documento') as HTMLInputElement;
-  const resultadosDiv = document.getElementById('resultados') as HTMLDivElement;
-  const loadingDiv = document.getElementById('loading') as HTMLDivElement;
+<script define:vars={{ ID_ENTIDAD_EMCOSALUD }}>
+  const form = document.getElementById('form-busqueda');
+  const inputDocumento = document.getElementById('documento');
+  const resultadosDiv = document.getElementById('resultados');
+  const loadingDiv = document.getElementById('loading');
+  const btnBuscar = document.getElementById('btn-buscar');
 
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -50,51 +56,66 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 
     if (!documento) return;
 
-    // Limpiar interfaz
+    // Limpiar interfaz y bloquear botón durante el proceso
     resultadosDiv.innerHTML = '';
     loadingDiv?.classList.remove('hidden');
+    if (btnBuscar) btnBuscar.disabled = true;
 
     try {
-      // 1. Consultar la REST API de Medios de WordPress
-      const WP_API = `https://emcosalud.com.co/wp-json/wp/v2/media?search=${documento}&mime_type=application/pdf`;
+      const BASE_URL = 'https://gestion.emcosalud.com.co';
+      
+      // Agregado per_page=100 para evitar que la API limite los resultados a 10 por defecto
+      const WP_API = `${BASE_URL}/wp-json/wp/v2/documentos?search=${encodeURIComponent(documento)}&entidades=${ID_ENTIDAD_EMCOSALUD}&per_page=100&_embed`;
+      
       const response = await fetch(WP_API);
 
-      if (!response.ok) throw new Error('Error de conexión con el servidor.');
+      if (!response.ok) {
+        throw new Error(`Error HTTP ${response.status}: ${response.statusText}`);
+      }
 
-      const archivos = await response.json();
-      loadingDiv?.classList.add('hidden');
+      const registros = await response.json();
 
-      // 2. RegEx para coincidencia EXACTA:
-      // Exige que el número introducido esté rodeado por límites de palabra (\b) 
-      // o separadores comunes como -, _, .
+      // Validación con regex exacta para evitar coincidencias parciales
       const exactRegex = new RegExp(`(?:^|[^0-9])${documento}(?:[^0-9]|$)`);
 
-      const certificadosEncontrados = archivos.filter((item: any) => {
-        const nombreArchivo = item.source_url.split('/').pop() || '';
+      const certificadosEncontrados = registros.filter((item) => {
         const titulo = item.title?.rendered || '';
+        const urlMeta = item.meta?._documento_url || '';
+        const slug = item.slug || '';
 
-        // Comprobar que el número exista exacto tanto en el nombre del archivo como en el título
-        return exactRegex.test(nombreArchivo) || exactRegex.test(titulo);
+        return exactRegex.test(titulo) || exactRegex.test(urlMeta) || exactRegex.test(slug);
       });
 
-      // 3. Si no hay coincidencias exactas, mostrar mensaje de "No encontrado"
       if (certificadosEncontrados.length === 0) {
         resultadosDiv.innerHTML = `
           <div class="p-4 text-amber-800 bg-amber-50 rounded-lg border border-amber-200 text-center">
-            No se encontraron certificados asociados exactamente al documento <strong>${documento}</strong>.
+            No se encontraron certificados asociados exactamente al documento <strong>${documento}</strong> en Emcosalud.
           </div>
         `;
         return;
       }
 
-      // 4. Mostrar únicamente los documentos con coincidencia exacta
       resultadosDiv.innerHTML = certificadosEncontrados
-        .map((cert: any) => {
-          const pdfUrl = cert.source_url;
-          const titulo = cert.title.rendered || 'Certificado PDF';
+        .map((cert) => {
+          const titulo = cert.title?.rendered || 'Certificado PDF';
+          
+          // Estrategia de extracción de URL
+          let pdfUrl = cert.meta?._documento_url;
+
+          if (!pdfUrl && cert._embedded?.['wp:attachment']?.[0]) {
+            pdfUrl = cert._embedded['wp:attachment'][0].source_url;
+          }
+
+          if (!pdfUrl && cert._embedded?.['wp:featuredmedia']?.[0]) {
+            pdfUrl = cert._embedded['wp:featuredmedia'][0].source_url;
+          }
+
+          if (!pdfUrl) {
+            pdfUrl = `${BASE_URL}/wp-content/uploads/${cert.slug}.pdf`;
+          }
 
           return `
-            <div class="p-5 border border-gray-200 rounded-lg shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white">
+            <div class="p-5 border border-gray-200 rounded-lg shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white hover:border-gray-300 transition-colors">
               <div>
                 <h3 class="font-semibold text-gray-800 uppercase text-sm">${titulo}</h3>
                 <span class="text-xs text-gray-500">Documento: ${documento}</span>
@@ -103,8 +124,11 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
                 href="${pdfUrl}" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-md transition-colors flex items-center gap-2"
+                class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-md transition-colors flex items-center gap-2 self-end sm:self-auto"
               >
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                  <path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z"/>
+                </svg>
                 Descargar PDF
               </a>
             </div>
@@ -113,12 +137,15 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
         .join('');
 
     } catch (error) {
-      loadingDiv?.classList.add('hidden');
+      console.error('Error detallado en la consulta:', error);
       resultadosDiv.innerHTML = `
         <div class="p-4 text-red-800 bg-red-50 rounded-lg border border-red-200 text-center">
-          Ocurrió un error al procesar la búsqueda. Por favor intenta de nuevo.
+          Ocurrió un error al procesar la búsqueda. Por favor intenta de nuevo más tarde.
         </div>
       `;
+    } finally {
+      loadingDiv?.classList.add('hidden');
+      if (btnBuscar) btnBuscar.disabled = false;
     }
   });
 </script>

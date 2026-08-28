@@ -1,11 +1,10 @@
-import { useState, type FormEvent } from 'react';
+import { useState, useRef, type FormEvent } from 'react';
 import {
   departamento,
   sedeshuila,
   sedestolima,
-  DocumentTypes
+  DocumentTypes,
 } from '@/data/pqrsf';
-
 
 type FormState = {
   fullName: string;
@@ -24,20 +23,18 @@ type FormState = {
 
 const initialState: FormState = {
   fullName: '',
-  lastName:'',
+  lastName: '',
   email: '',
   phone: '',
   acceptsPrivacy: false,
-  department:'',
-  description:'',
-  sedeshuila:'',
-  sedestolima:'',
-  document:'',
-  NumDoc:'',
-  address:'',
+  department: '',
+  description: '',
+  sedeshuila: '',
+  sedestolima: '',
+  document: '',
+  NumDoc: '',
+  address: '',
 };
-
-
 
 const fieldClass =
   'w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none transition focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/15';
@@ -46,22 +43,57 @@ const labelClass = 'mb-1.5 block text-sm font-semibold text-brand-blue';
 
 export default function PqrsfForm() {
   const [form, setForm] = useState<FormState>(initialState);
+  const [file, setFile] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const update = (field: keyof FormState, value: string | boolean) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setSubmitted(true);
-    setForm(initialState);
+    setLoading(true);
+    setErrorMsg(null);
+
+    try {
+      const data = new FormData();
+
+      Object.entries(form).forEach(([key, value]) => {
+        data.append(key, value.toString());
+      });
+
+      if (file) {
+        data.append('records', file);
+      }
+
+      const response = await fetch('/api/pqrsf', {
+        method: 'POST',
+        body: data,
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || 'Error al procesar la solicitud.');
+      }
+
+      setSubmitted(true);
+      setForm(initialState);
+      setFile(null);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Ocurrió un error inesperado al enviar.');
+    } finally {
+      setLoading(false);
+    }
   };
 
-   const showhuila = form.department ==='HUILA';
-   const showtolima = form.department ==='TOLIMA';
-
-
+  const showhuila = form.department === 'HUILA';
+  const showtolima = form.department === 'TOLIMA';
 
   if (submitted) {
     return (
@@ -83,8 +115,13 @@ export default function PqrsfForm() {
 
   return (
     <form className="space-y-4" onSubmit={handleSubmit}>
-      <div className="grid gap-4">
+      {errorMsg && (
+        <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-600">
+          {errorMsg}
+        </div>
+      )}
 
+      <div className="grid gap-4">
         <div>
           <label className={labelClass} htmlFor="pqrsf-fullName">
             Nombre completo *
@@ -99,13 +136,13 @@ export default function PqrsfForm() {
             onChange={(event) => update('fullName', event.target.value)}
           />
         </div>
-        
+
         <div>
-          <label className={labelClass} htmlFor="soat-email">
+          <label className={labelClass} htmlFor="pqrsf-email">
             Correo electrónico *
           </label>
           <input
-            id="soat-email"
+            id="pqrsf-email"
             className={fieldClass}
             type="email"
             required
@@ -115,7 +152,6 @@ export default function PqrsfForm() {
           />
         </div>
 
-        
         <div>
           <label className={labelClass} htmlFor="pqrsf-address">
             Dirección *
@@ -125,7 +161,6 @@ export default function PqrsfForm() {
             className={fieldClass}
             type="text"
             required
-            autoComplete="name"
             value={form.address}
             onChange={(event) => update('address', event.target.value)}
           />
@@ -151,31 +186,30 @@ export default function PqrsfForm() {
             Tipo de Documento *
           </label>
           <select
-            id="sicof-document"
+            id="pqrsf-document"
             className={fieldClass}
             required
             value={form.document}
             onChange={(event) => update('document', event.target.value)}
-            >
-              <option value="">— Por favor, elige una opción —</option>
-                {DocumentTypes.map((sicof) => (
-              <option key={sicof} value={sicof}>
-                {sicof}
+          >
+            <option value="">— Por favor, elige una opción —</option>
+            {DocumentTypes.map((doc) => (
+              <option key={doc} value={doc}>
+                {doc}
               </option>
-              ))}
+            ))}
           </select>
         </div>
 
         <div>
           <label className={labelClass} htmlFor="pqrsf-NumDoc">
-            Numero de Identificación *
+            Número de Identificación *
           </label>
           <input
             id="pqrsf-NumDoc"
             className={fieldClass}
             type="text"
             required
-            autoComplete="name"
             value={form.NumDoc}
             onChange={(event) => update('NumDoc', event.target.value)}
           />
@@ -186,18 +220,22 @@ export default function PqrsfForm() {
             Departamento *
           </label>
           <select
-            id="sicof-department"
+            id="pqrsf-department"
             className={fieldClass}
             required
             value={form.department}
-            onChange={(event) => update('department', event.target.value)}
-            >
-              <option value="">— Por favor, elige una opción —</option>
-                {departamento.map((sicof) => (
-              <option key={sicof} value={sicof}>
-                {sicof}
+            onChange={(event) => {
+              update('department', event.target.value);
+              update('sedeshuila', '');
+              update('sedestolima', '');
+            }}
+          >
+            <option value="">— Por favor, elige una opción —</option>
+            {departamento.map((dep) => (
+              <option key={dep} value={dep}>
+                {dep}
               </option>
-              ))}
+            ))}
           </select>
         </div>
 
@@ -209,18 +247,20 @@ export default function PqrsfForm() {
             <select
               id="sedeshuila"
               className={fieldClass}
+              required
               value={form.sedeshuila}
               onChange={(event) => update('sedeshuila', event.target.value)}
             >
               <option value="">— Por favor, elige una opción —</option>
-              {sedeshuila.map((description) => (
-                <option key={description} value={description}>
-                  {description}
+              {sedeshuila.map((sede) => (
+                <option key={sede} value={sede}>
+                  {sede}
                 </option>
               ))}
             </select>
           </div>
         )}
+
         {showtolima && (
           <div>
             <label className={labelClass} htmlFor="sedestolima">
@@ -229,13 +269,14 @@ export default function PqrsfForm() {
             <select
               id="sedestolima"
               className={fieldClass}
+              required
               value={form.sedestolima}
               onChange={(event) => update('sedestolima', event.target.value)}
             >
               <option value="">— Por favor, elige una opción —</option>
-              {sedestolima.map((description) => (
-                <option key={description} value={description}>
-                  {description}
+              {sedestolima.map((sede) => (
+                <option key={sede} value={sede}>
+                  {sede}
                 </option>
               ))}
             </select>
@@ -243,32 +284,37 @@ export default function PqrsfForm() {
         )}
 
         <div>
-          <label className={labelClass} htmlFor="sicof-description">
+          <label className={labelClass} htmlFor="pqrsf-description">
             Descripción *
           </label>
           <textarea
-            id="sicof-description"
+            id="pqrsf-description"
             className={`${fieldClass} min-h-20 resize-y`}
             value={form.description}
             required
             onChange={(event) => update('description', event.target.value)}
           />
         </div>
-       
+
         <div>
           <label className={labelClass} htmlFor="records">
             Adjuntar evidencia (opcional)
           </label>
           <input
             id="records"
+            ref={fileInputRef}
             className="block w-full text-sm text-slate-700 file:mr-3 file:rounded-lg file:border-0 file:bg-brand-blue file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-brand-blue-light"
             type="file"
             accept=".pdf,image/*"
-            
+            onChange={(e) => {
+              if (e.target.files && e.target.files[0]) {
+                setFile(e.target.files[0]);
+              } else {
+                setFile(null);
+              }
+            }}
           />
-      </div>
-
-        
+        </div>
       </div>
 
       <label className="flex items-start gap-3 text-sm text-slate-700">
@@ -288,8 +334,8 @@ export default function PqrsfForm() {
         </span>
       </label>
 
-      <button type="submit" className="btn btn--primary w-full">
-        Enviar
+      <button type="submit" className="btn btn--primary w-full" disabled={loading}>
+        {loading ? 'Enviando...' : 'Enviar'}
       </button>
     </form>
   );

@@ -1,8 +1,5 @@
-import { useState, type FormEvent } from 'react';
-
-import {
-  incidentes,
-} from '@/data/sicof';
+import { useState, useRef, type FormEvent } from 'react';
+import { incidentes } from '@/data/sicof';
 
 type FormState = {
   fullName: string;
@@ -10,7 +7,6 @@ type FormState = {
   email: string;
   phone: string;
   acceptsPrivacy: boolean;
-  temp: string;
   description: string;
   description2: string;
   appointmentDate: string;
@@ -19,25 +15,22 @@ type FormState = {
   incidenttype: string;
   situation: string;
   registrarDatos: 'SI' | 'NO' | '';
-  records: string;
 };
 
 const initialState: FormState = {
   fullName: '',
-  lastName:'',
+  lastName: '',
   email: '',
   phone: '',
   acceptsPrivacy: false,
-  temp:'',
-  description:'',
-  description2:'',
-  appointmentDate:'',
-  employeenames:'',
-  place:'',
-  incidenttype:'',
-  situation:'',
-  registrarDatos:'',
-  records:'',
+  description: '',
+  description2: '',
+  appointmentDate: '',
+  employeenames: '',
+  place: '',
+  incidenttype: '',
+  situation: '',
+  registrarDatos: '',
 };
 
 const fieldClass =
@@ -47,18 +40,56 @@ const labelClass = 'mb-1.5 block text-sm font-semibold text-brand-blue';
 
 export default function SicofForm() {
   const [form, setForm] = useState<FormState>(initialState);
+  const [file, setFile] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const update = (field: keyof FormState, value: string | boolean) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setSubmitted(true);
-    setForm(initialState);
-  };
+    setLoading(true);
+    setErrorMsg(null);
 
+    try {
+      const data = new FormData();
+
+      // Agregar campos de texto al FormData
+      Object.entries(form).forEach(([key, value]) => {
+        data.append(key, value.toString());
+      });
+
+      // Agregar el archivo opcional si existe
+      if (file) {
+        data.append('records', file);
+      }
+
+      const response = await fetch('/api/sicof', {
+        method: 'POST',
+        body: data,
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || 'Error al procesar la solicitud.');
+      }
+
+      setSubmitted(true);
+      setForm(initialState);
+      setFile(null);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Ocurrió un error inesperado al enviar.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const showDatosPersonales = form.registrarDatos === 'SI';
 
@@ -82,14 +113,19 @@ export default function SicofForm() {
 
   return (
     <form className="space-y-4" onSubmit={handleSubmit}>
+      {errorMsg && (
+        <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-600">
+          {errorMsg}
+        </div>
+      )}
+
       <div className="grid gap-4">
-        
         <div>
-          <label className={labelClass} htmlFor="soat-email">
+          <label className={labelClass} htmlFor="sicof-email">
             Correo electrónico *
           </label>
           <input
-            id="soat-email"
+            id="sicof-email"
             className={fieldClass}
             type="email"
             required
@@ -127,7 +163,7 @@ export default function SicofForm() {
 
         <div>
           <label className={labelClass} htmlFor="sicof-description2">
-           ¿Cómo se dio cuenta de esta situación? *
+            ¿Cómo se dio cuenta de esta situación? *
           </label>
           <textarea
             id="sicof-description2"
@@ -139,18 +175,18 @@ export default function SicofForm() {
         </div>
 
         <div>
-            <label className={labelClass} htmlFor="sicof-appointmentDate">
-                Fecha en que lo detectó *
-            </label>
+          <label className={labelClass} htmlFor="sicof-appointmentDate">
+            Fecha en que lo detectó *
+          </label>
 
-            <input
-                id="sicof-appointmentDate"
-                className={fieldClass}
-                type="date"
-                required
-                value={form.appointmentDate}
-                onChange={(event) => update('appointmentDate', event.target.value)}
-            />
+          <input
+            id="sicof-appointmentDate"
+            className={fieldClass}
+            type="date"
+            required
+            value={form.appointmentDate}
+            onChange={(event) => update('appointmentDate', event.target.value)}
+          />
         </div>
 
         <div>
@@ -170,7 +206,7 @@ export default function SicofForm() {
 
         <div>
           <label className={labelClass} htmlFor="sicof-place">
-           ¿En qué lugar ocurrió? *
+            ¿En qué lugar ocurrió? *
           </label>
           <input
             id="sicof-place"
@@ -182,106 +218,89 @@ export default function SicofForm() {
         </div>
 
         <div>
-            <label className={labelClass} htmlFor="sicof-incidenttype">
-                Seleccione el tipo de incidente *
-            </label>
-            <select
-                id="sicof-incidenttype"
-                className={fieldClass}
-                required
-                value={form.incidenttype}
-                onChange={(event) => update('incidenttype', event.target.value)}
-            >
-                <option value="">— Por favor, elige una opción —</option>
-                    {incidentes.map((sicof) => (
-                <option key={sicof} value={sicof}>
-                    {sicof}
-                </option>
-                ))}
-            </select>
+          <label className={labelClass} htmlFor="sicof-incidenttype">
+            Seleccione el tipo de incidente *
+          </label>
+          <select
+            id="sicof-incidenttype"
+            className={fieldClass}
+            required
+            value={form.incidenttype}
+            onChange={(event) => update('incidenttype', event.target.value)}
+          >
+            <option value="">— Por favor, elige una opción —</option>
+            {incidentes.map((sicof) => (
+              <option key={sicof} value={sicof}>
+                {sicof}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div>
-            <label className={labelClass}>
-                ¿Desea registrar sus datos personales? *
+          <label className={labelClass}>
+            ¿Desea registrar sus datos personales? *
+          </label>
+
+          <div className="mt-2 flex gap-6">
+            <label className="flex items-center gap-2">
+              <input
+                type="radio"
+                name="registrarDatos"
+                value="SI"
+                required
+                checked={form.registrarDatos === 'SI'}
+                onChange={(e) => update('registrarDatos', e.target.value)}
+              />
+              Sí
             </label>
 
-            <div className="mt-2 flex gap-6">
-                <label className="flex items-center gap-2">
-                <input
-                    type="radio"
-                    name="registrarDatos"
-                    value="SI"
-                    checked={form.registrarDatos === 'SI'}
-                    onChange={(e) =>
-                    update('registrarDatos', e.target.value)
-                    }
-                />
-                Sí
-                </label>
-
-                <label className="flex items-center gap-2">
-                <input
-                    type="radio"
-                    name="registrarDatos"
-                    value="NO"
-                    checked={form.registrarDatos === 'NO'}
-                    onChange={(e) =>
-                    update('registrarDatos', e.target.value)
-                    }
-                />
-                No
-                </label>
-            </div>
+            <label className="flex items-center gap-2">
+              <input
+                type="radio"
+                name="registrarDatos"
+                value="NO"
+                required
+                checked={form.registrarDatos === 'NO'}
+                onChange={(e) => update('registrarDatos', e.target.value)}
+              />
+              No
+            </label>
+          </div>
         </div>
 
         {showDatosPersonales && (
-        <>
+          <>
             <div>
-            <label className={labelClass}>
-                Nombre
-            </label>
-
-            <input
+              <label className={labelClass}>Nombre</label>
+              <input
                 className={fieldClass}
                 type="text"
                 value={form.fullName}
-                onChange={(e) =>
-                update('fullName', e.target.value)
-                }
-            />
+                onChange={(e) => update('fullName', e.target.value)}
+              />
             </div>
 
             <div>
-            <label className={labelClass}>
-                Apellidos
-            </label>
-
-            <input
+              <label className={labelClass}>Apellidos</label>
+              <input
                 className={fieldClass}
                 type="text"
                 value={form.lastName}
-                onChange={(e) =>
-                update('lastName', e.target.value)
-                }
-            />
+                onChange={(e) => update('lastName', e.target.value)}
+              />
             </div>
 
             <div>
-            <label className={labelClass}>
-                Teléfono
-            </label>
-
-            <input
+              <label className={labelClass}>Teléfono</label>
+              <input
                 className={fieldClass}
                 type="tel"
                 value={form.phone}
-                onChange={(e) =>
-                update('phone', e.target.value)
-                }
-            />
+                onChange={(e) => update('phone', e.target.value)}
+              />
             </div>
-        </>
+          </>
         )}
 
         <div>
@@ -290,14 +309,19 @@ export default function SicofForm() {
           </label>
           <input
             id="records"
+            ref={fileInputRef}
             className="block w-full text-sm text-slate-700 file:mr-3 file:rounded-lg file:border-0 file:bg-brand-blue file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-brand-blue-light"
             type="file"
             accept=".pdf,image/*"
-            
+            onChange={(e) => {
+              if (e.target.files && e.target.files[0]) {
+                setFile(e.target.files[0]);
+              } else {
+                setFile(null);
+              }
+            }}
           />
-      </div>
-
-        
+        </div>
       </div>
 
       <label className="flex items-start gap-3 text-sm text-slate-700">
@@ -311,14 +335,14 @@ export default function SicofForm() {
         <span>
           Autorizo{' '}
           <a href="/politica-privacidad" className="font-semibold text-brand-blue">
-             el tratamiento de datos
+            el tratamiento de datos
           </a>
           .
         </span>
       </label>
 
-      <button type="submit" className="btn btn--primary w-full">
-        Enviar
+      <button type="submit" className="btn btn--primary w-full" disabled={loading}>
+        {loading ? 'Enviando...' : 'Enviar'}
       </button>
     </form>
   );

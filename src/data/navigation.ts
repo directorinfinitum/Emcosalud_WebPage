@@ -136,7 +136,7 @@ export const footerNavigation = {
     { label: 'Medicamentos Huila', href: '/medicamentos-huila' },
     { label: 'Medicamentos Tolima', href: '/medicamentos-tolima' },
     { label: 'Citas médicas', href: '/citas' },
-    { label: 'PQR', href: '/pqrs' },
+    { label: 'PQR', href: '/pqrsf' },
     { label: 'Blog', href: '/blog' },
   ],
   enlaces: [
