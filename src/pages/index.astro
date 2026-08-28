@@ -5,25 +5,14 @@ import QuickAccess from '@/components/sections/QuickAccess.astro';
 import ServicesSection from '@/components/sections/ServicesSection.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import VideosYoutube from '@/components/sections/VideosYoutube.astro';
-import Popup from '@/components/react/Popup'; // 1. Importas tu componente interactivo
+import Popup from '@/components/react/Popup';// 1. Importas tu componente interactivo
+import { getPopupByEntity } from '@/utils/getPopup';
 import { site } from '@/data/site';
 
-// 2. Definimos la URL de tu WordPress
-const WORDPRESS_URL = 'https://emcosalud.com.co'; // Replace with your real WP domain
-let activePopup = null;
+// Consulta el popup asignado a la categoría "emcosalud"
+const activePopup = await getPopupByEntity('popup emcosalud');
 
-try {
-  // Consultamos el Post Type creado por Popup Builder ('popupbuilder')
-  const response = await fetch(`${WORDPRESS_URL}/wp-json/wp/v2/popups?per_page=1`);
-  
-  if (response.ok) {
-    const popups = await response.json();
-    // Tomamos el primer popup que esté publicado
-    activePopup = popups.length > 0 ? popups[0] : null;
-  }
-} catch (error) {
-  console.error('Error obteniendo el popup desde WP:', error);
-}
+
 ---
 
 <BaseLayout title={site.name} description={site.description}>
