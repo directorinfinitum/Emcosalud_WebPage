@@ -4,6 +4,9 @@ import BoletinEditions from '@/components/sections/BoletinEditions.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 
 const year = '2026';
+// Define el slug o ID de la categoría que deseas filtrar
+const categorySlug = 'boletines'; // Cambia esto por el slug de tu categoría en WP
+// const categoryId = 5; // Opcional: si prefieres usar el ID numérico en lugar del slug
 ---
 <BaseLayout title={`Boletín ${year}`} description={`Boletines institucionales ${year} — EMCOSALUD.`}>
 
@@ -21,7 +24,9 @@ const year = '2026';
   </div>
 
   <AtencionUsuarioHero title={`Boletín ${year}`} lead="Consulta y descarga las ediciones del boletín institucional." />
-  <BoletinEditions year={year} />
+  
+  {/* Se pasa la prop categorySlug (o categoryId) al componente */}
+  <BoletinEditions year={year} categorySlug={categorySlug} />
 </BaseLayout>
 
 <script is:inline>
@@ -43,7 +48,7 @@ const year = '2026';
     }
   }
 
-  // 1. Escuchar evento personalizado que enviará CarteleraEditions cuando la API termine
+  // 1. Escuchar evento personalizado que enviará BoletinEditions cuando la API termine
   window.addEventListener('cartelera-loaded', hideSpinner);
 
   // 2. Timeout de seguridad (Si la API o la red fallan, se oculta a los 4 segundos máximo)
@@ -51,11 +56,9 @@ const year = '2026';
 
   // 3. Si el DOM ya cargó antes de montar el listener, evaluar estado
   if (document.readyState === 'complete') {
-    // Le da 500ms adicionales por si la API responde rápido
     setTimeout(hideSpinner, 500);
   } else {
     window.addEventListener('load', () => {
-      // Espera breve para asegurar renderizado
       setTimeout(hideSpinner, 500);
     });
   }
