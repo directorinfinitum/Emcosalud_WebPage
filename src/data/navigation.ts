@@ -99,7 +99,7 @@ export const quickAccessLinks: QuickAccessItem[] = [
     label: 'Consulta de documentos',
     href: '/documentos',
     icon: 'document',
-    description: 'Trámites y certificados en línea',
+    description: 'Descarga tu Certificado de Retenciones',
   },
   {
     label: 'Clínica Emcosalud',
@@ -136,7 +136,7 @@ export const footerNavigation = {
     { label: 'Medicamentos Huila', href: '/medicamentos-huila' },
     { label: 'Medicamentos Tolima', href: '/medicamentos-tolima' },
     { label: 'Citas médicas', href: '/citas' },
-    { label: 'PQR', href: '/pqrs' },
+    { label: 'PQR', href: '/pqrsf' },
     { label: 'Blog', href: '/blog' },
   ],
   enlaces: [

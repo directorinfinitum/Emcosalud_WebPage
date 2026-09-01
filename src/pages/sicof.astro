@@ -1,5 +1,6 @@
 ---
 import Icon from '@/components/icons/Icon.astro';
+import SicofForm from '@/components/react/SicofForm';
 import {
   sicofGeneralConcepts,
   sicofNav,
@@ -117,5 +118,31 @@ const accentClasses: Record<
         </ul>
       </article>
     </div>
+    <br>
+
+    <aside class="mx-auto w-full max-w-2xl">
+      <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-brand md:p-6">
+        <div class="mb-5 border-b border-slate-100 pb-4">
+          <p class="mb-1 text-xs font-semibold uppercase tracking-wide text-brand-green-dark">
+            Formulario en línea
+          </p>
+
+          <h2 class="m-0 text-xl font-bold text-brand-blue">
+            Formulario de Reporte de Eventos Antifraude (SICOF)
+          </h2>
+
+          <p class="mt-2 m-0 text-sm leading-relaxed text-slate-600">
+            Completa tus datos y adjunta los documentos requeridos.
+          </p>
+        </div>
+
+        <SicofForm client:load />
+      </div>
+    </aside>
   </section>
+
 </BaseLayout>
+
+
+    
+

@@ -10,6 +10,9 @@ type FormState = {
   phone: string;
   phoneAlt: string;
   acceptsPrivacy: boolean;
+  documentsPdf: File | null;
+  medicalOrder: File | null;
+  serviceFormat: File | null;
 };
 
 const initialState: FormState = {
@@ -21,6 +24,9 @@ const initialState: FormState = {
   phone: '',
   phoneAlt: '',
   acceptsPrivacy: false,
+  documentsPdf: null,
+  medicalOrder: null,
+  serviceFormat: null,
 };
 
 const fieldClass =
@@ -31,15 +37,50 @@ const labelClass = 'mb-1.5 block text-sm font-semibold text-brand-blue';
 export default function CitasSoatForm() {
   const [form, setForm] = useState<FormState>(initialState);
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const update = (field: keyof FormState, value: string | boolean) => {
+  const update = (field: keyof FormState, value: string | boolean | File | null) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setSubmitted(true);
-    setForm(initialState);
+    setIsSubmitting(true);
+    setErrorMsg(null);
+
+    const formData = new FormData();
+
+    Object.entries(form).forEach(([key, value]) => {
+      if (value !== null && !(value instanceof File)) {
+        formData.append(key, String(value));
+      }
+    });
+
+    if (form.documentsPdf) formData.append('documentsPdf', form.documentsPdf);
+    if (form.medicalOrder) formData.append('medicalOrder', form.medicalOrder);
+    if (form.serviceFormat) formData.append('serviceFormat', form.serviceFormat);
+
+    try {
+      const response = await fetch('/api/citas/soat', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const resData = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(resData.message || 'Error en la solicitud. Intente nuevamente.');
+      }
+
+      setSubmitted(true);
+      setForm(initialState);
+    } catch (err: any) {
+      console.error('Error al enviar formulario SOAT:', err);
+      setErrorMsg(err.message || 'Ocurrió un error inesperado al procesar la solicitud.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (submitted) {
@@ -62,7 +103,24 @@ export default function CitasSoatForm() {
   }
 
   return (
-    <form className="space-y-4" onSubmit={handleSubmit}>
+    <form className="relative space-y-4" onSubmit={handleSubmit}>
+      {/* Modal / Toast emergente de error visualmente accesible */}
+      {errorMsg && (
+        <div className="sticky top-4 z-50 flex items-start justify-between gap-3 rounded-xl border border-red-300 bg-red-50 p-4 shadow-lg text-sm text-red-700">
+          <div>
+            <p className="font-bold m-0">No se pudo enviar la solicitud</p>
+            <p className="m-0 text-xs text-red-600 mt-1">{errorMsg}</p>
+          </div>
+          <button
+            type="button"
+            className="text-red-500 hover:text-red-800 font-bold text-base leading-none"
+            onClick={() => setErrorMsg(null)}
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
       <div className="grid gap-4">
         <div>
           <label className={labelClass} htmlFor="soat-firstName">
@@ -177,7 +235,7 @@ export default function CitasSoatForm() {
             Documentos en un solo PDF *
           </label>
           <p className="mb-2 text-xs leading-relaxed text-slate-600">
-            Documento de identificación, tarjeta de propiedad, SOAT, FURIst y prefacturas.
+            Documento de identificación, tarjeta de propiedad, SOAT, FURIPS y prefacturas.
           </p>
           <input
             id="soat-documentsPdf"
@@ -185,6 +243,7 @@ export default function CitasSoatForm() {
             type="file"
             accept=".pdf,application/pdf"
             required
+            onChange={(event) => update('documentsPdf', event.target.files?.[0] ?? null)}
           />
         </div>
 
@@ -198,6 +257,7 @@ export default function CitasSoatForm() {
             type="file"
             accept=".pdf,image/*"
             required
+            onChange={(event) => update('medicalOrder', event.target.files?.[0] ?? null)}
           />
         </div>
 
@@ -211,6 +271,7 @@ export default function CitasSoatForm() {
             type="file"
             accept=".pdf,image/*"
             required
+            onChange={(event) => update('serviceFormat', event.target.files?.[0] ?? null)}
           />
         </div>
       </div>
@@ -224,16 +285,20 @@ export default function CitasSoatForm() {
           onChange={(event) => update('acceptsPrivacy', event.target.checked)}
         />
         <span>
-          Acepto la{' '}
+          Autorizo{' '}
           <a href="/politica-privacidad" className="font-semibold text-brand-blue">
-            política de tratamiento de datos
+            el tratamiento de datos
           </a>
           .
         </span>
       </label>
 
-      <button type="submit" className="btn btn--primary w-full">
-        Enviar solicitud SOAT
+      <button
+        type="submit"
+        className="btn btn--primary w-full disabled:opacity-50"
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? 'Enviando solicitud...' : 'Enviar solicitud'}
       </button>
     </form>
   );

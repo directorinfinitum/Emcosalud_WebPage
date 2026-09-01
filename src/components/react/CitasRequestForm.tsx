@@ -1,11 +1,15 @@
-import { useState, type FormEvent } from 'react';
+import { useState, type FormEvent, type ChangeEvent } from 'react';
 import type { CitasDepartment } from '@/data/citas';
 import {
   citasDocumentTypes,
   citasEnfermeriaDescriptions,
+  citasConsultaporCursodeVida,
   citasJornadas,
   citasSedes,
   citasServices,
+  citasMedicos,
+  citasGinecologia,
+  citasPediatria,
 } from '@/data/citas';
 
 type Props = {
@@ -26,6 +30,12 @@ type FormState = {
   nursingDescription: string;
   serviceDescription: string;
   acceptsPrivacy: boolean;
+  medico: string;
+  consultavida: string;
+  serviceginecologia: string;
+  servicePediatria: string;
+  ordenFomag: File | null;
+  ordenMedica: File | null;
 };
 
 const initialState: FormState = {
@@ -42,6 +52,12 @@ const initialState: FormState = {
   nursingDescription: '',
   serviceDescription: '',
   acceptsPrivacy: false,
+  medico: '',
+  consultavida: '',
+  serviceginecologia: '',
+  servicePediatria: '',
+  ordenFomag: null,
+  ordenMedica: null,
 };
 
 const fieldClass =
@@ -52,16 +68,87 @@ const labelClass = 'mb-1.5 block text-sm font-semibold text-brand-blue';
 export default function CitasRequestForm({ department }: Props) {
   const [form, setForm] = useState<FormState>(initialState);
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const update = (field: keyof FormState, value: string | boolean) => {
+  const update = (field: keyof FormState, value: string | boolean | File | null) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setSubmitted(true);
-    setForm(initialState);
+  // Reset descendente cuando cambia la Sede
+  const handleSedeChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    setForm((prev) => ({
+      ...prev,
+      sede: value,
+      service: '',
+      medico: '',
+      nursingDescription: '',
+      consultavida: '',
+      serviceginecologia: '',
+      servicePediatria: '',
+    }));
   };
+
+  // Reset descendente cuando cambia el Servicio
+  const handleServiceChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    setForm((prev) => ({
+      ...prev,
+      service: value,
+      medico: '',
+      nursingDescription: '',
+      consultavida: '',
+      serviceginecologia: '',
+      servicePediatria: '',
+    }));
+  };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+    setErrorMsg(null);
+
+    const formData = new FormData();
+
+    // Recompilar atributos básicos en el FormData
+    Object.entries(form).forEach(([key, value]) => {
+      if (value !== null && !(value instanceof File)) {
+        formData.append(key, String(value));
+      }
+    });
+
+    // Adjuntar archivos explicitamente si existen
+    if (form.ordenFomag) formData.append('ordenFomag', form.ordenFomag);
+    if (form.ordenMedica) formData.append('ordenMedica', form.ordenMedica);
+
+    // Adjuntar el parámetro del departamento
+    formData.append('department', department);
+
+    try {
+      const response = await fetch('/api/citas/solicitar', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Error al procesar la solicitud');
+      }
+
+      setSubmitted(true);
+      setForm(initialState);
+    } catch (err: any) {
+      console.error('Error durante el envío del formulario:', err);
+      setErrorMsg(err.message || 'Ocurrió un error inesperado al enviar la solicitud.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const minDate = tomorrow.toISOString().split('T')[0];
 
   if (submitted) {
     return (
@@ -82,10 +169,30 @@ export default function CitasRequestForm({ department }: Props) {
     );
   }
 
+  const serviciosDisponibles = form.sede
+    ? citasServices?.[department]?.[form.sede.replace(/\s+/g, '_')] ?? []
+    : [];
+
   const showNursingDescription = form.service === 'ENFERMERIA';
+  const showserviceginecologia = form.service === 'GINECOLOGIA';
+  const showconsultavida = showNursingDescription && form.nursingDescription === 'CONSULTA POR CURSO DE VIDA';
+  const showservicepediatria = form.service === 'PEDIATRIA';
+
+  const medicosDisponibles =
+    form.sede && form.service
+      ? citasMedicos?.[form.sede]?.[form.service.replace(/\s+/g, '_')] ?? []
+      : [];
+
+  const showMedicos = medicosDisponibles.length > 0;
 
   return (
     <form className="space-y-4" onSubmit={handleSubmit}>
+      {errorMsg && (
+        <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-600">
+          {errorMsg}
+        </div>
+      )}
+
       <div className="grid gap-4">
         <div>
           <label className={labelClass} htmlFor={`fullName-${department}`}>
@@ -190,6 +297,7 @@ export default function CitasRequestForm({ department }: Props) {
             className={fieldClass}
             type="date"
             required
+            min={minDate}
             value={form.appointmentDate}
             onChange={(event) => update('appointmentDate', event.target.value)}
           />
@@ -224,10 +332,10 @@ export default function CitasRequestForm({ department }: Props) {
             className={fieldClass}
             required
             value={form.sede}
-            onChange={(event) => update('sede', event.target.value)}
+            onChange={handleSedeChange}
           >
             <option value="">— Por favor, elige una opción —</option>
-            {citasSedes[department].map((sede) => (
+            {citasSedes[department]?.map((sede) => (
               <option key={sede} value={sede}>
                 {sede}
               </option>
@@ -244,16 +352,39 @@ export default function CitasRequestForm({ department }: Props) {
             className={fieldClass}
             required
             value={form.service}
-            onChange={(event) => update('service', event.target.value)}
+            onChange={handleServiceChange}
+            disabled={!form.sede}
           >
             <option value="">— Por favor, elige una opción —</option>
-            {citasServices[department].map((service) => (
+            {serviciosDisponibles.map((service) => (
               <option key={service} value={service}>
                 {service}
               </option>
             ))}
           </select>
         </div>
+
+        {showMedicos && (
+          <div>
+            <label className={labelClass} htmlFor={`medico-${department}`}>
+              Médico *
+            </label>
+            <select
+              id={`medico-${department}`}
+              className={fieldClass}
+              required
+              value={form.medico}
+              onChange={(event) => update('medico', event.target.value)}
+            >
+              <option value="">— Por favor, elige una opción —</option>
+              {medicosDisponibles.map((medico) => (
+                <option key={medico} value={medico}>
+                  {medico}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         {showNursingDescription && (
           <div>
@@ -276,6 +407,69 @@ export default function CitasRequestForm({ department }: Props) {
           </div>
         )}
 
+        {showconsultavida && (
+          <div>
+            <label className={labelClass} htmlFor={`consultavida-${department}`}>
+              Consulta Por:
+            </label>
+            <select
+              id={`consultavida-${department}`}
+              className={fieldClass}
+              value={form.consultavida}
+              onChange={(event) => update('consultavida', event.target.value)}
+            >
+              <option value="">— Por favor, elige una opción —</option>
+              {citasConsultaporCursodeVida.map((description) => (
+                <option key={description} value={description}>
+                  {description}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {showserviceginecologia && (
+          <div>
+            <label className={labelClass} htmlFor={`serviceginecologia-${department}`}>
+              Consulta Por:
+            </label>
+            <select
+              id={`serviceginecologia-${department}`}
+              className={fieldClass}
+              value={form.serviceginecologia}
+              onChange={(event) => update('serviceginecologia', event.target.value)}
+            >
+              <option value="">— Por favor, elige una opción —</option>
+              {citasGinecologia.map((description) => (
+                <option key={description} value={description}>
+                  {description}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {showservicepediatria && (
+          <div>
+            <label className={labelClass} htmlFor={`servicepediatria-${department}`}>
+              Consulta Por:
+            </label>
+            <select
+              id={`servicepediatria-${department}`}
+              className={fieldClass}
+              value={form.servicePediatria}
+              onChange={(event) => update('servicePediatria', event.target.value)}
+            >
+              <option value="">— Por favor, elige una opción —</option>
+              {citasPediatria.map((description) => (
+                <option key={description} value={description}>
+                  {description}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
         <div>
           <label className={labelClass} htmlFor={`serviceDescription-${department}`}>
             Observaciones adicionales
@@ -289,6 +483,32 @@ export default function CitasRequestForm({ department }: Props) {
         </div>
       </div>
 
+      <div>
+        <label className={labelClass} htmlFor={`OrdenFomag-${department}`}>
+          ANEXAR ORDEN DEL FOMAG (SI APLICA)
+        </label>
+        <input
+          id={`OrdenFomag-${department}`}
+          className="block w-full text-sm text-slate-700 file:mr-3 file:rounded-lg file:border-0 file:bg-brand-blue file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-brand-blue-light"
+          type="file"
+          accept=".pdf,image/*"
+          onChange={(event) => update('ordenFomag', event.target.files?.[0] ?? null)}
+        />
+      </div>
+
+      <div>
+        <label className={labelClass} htmlFor={`MedicalOrden-${department}`}>
+          ANEXAR ORDEN MÉDICA (SI APLICA)
+        </label>
+        <input
+          id={`MedicalOrden-${department}`}
+          className="block w-full text-sm text-slate-700 file:mr-3 file:rounded-lg file:border-0 file:bg-brand-blue file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-brand-blue-light"
+          type="file"
+          accept=".pdf,image/*"
+          onChange={(event) => update('ordenMedica', event.target.files?.[0] ?? null)}
+        />
+      </div>
+
       <label className="flex items-start gap-3 text-sm text-slate-700">
         <input
           className="mt-1 h-4 w-4 accent-brand-green"
@@ -298,16 +518,20 @@ export default function CitasRequestForm({ department }: Props) {
           onChange={(event) => update('acceptsPrivacy', event.target.checked)}
         />
         <span>
-          Acepto la{' '}
+          Autorizo{' '}
           <a href="/politica-privacidad" className="font-semibold text-brand-blue">
-            política de tratamiento de datos
+            el tratamiento de datos
           </a>
           .
         </span>
       </label>
 
-      <button type="submit" className="btn btn--primary w-full">
-        Enviar solicitud
+      <button
+        type="submit"
+        className="btn btn--primary w-full disabled:opacity-50"
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? 'Enviando solicitud...' : 'Enviar solicitud'}
       </button>
     </form>
   );

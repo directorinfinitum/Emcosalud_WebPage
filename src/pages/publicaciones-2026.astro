@@ -1,0 +1,75 @@
+---
+import AtencionUsuarioHero from '@/components/sections/AtencionUsuarioHero.astro';
+import CarteleraEditions from '@/components/sections/CarteleraEditions.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+const year = '2026';
+---
+
+<BaseLayout title={`Cartelera ${year}`} description={`Carteleras informativas ${year} — EMCOSALUD.`}>
+  <!-- Overlay del Spinner -->
+  <div 
+    id="page-loading-overlay" 
+    class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white/90 backdrop-blur-sm transition-opacity duration-300"
+  >
+    <div class="flex flex-col items-center gap-3">
+      <svg class="h-10 w-10 animate-spin text-brand-blue" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <span class="text-sm font-semibold text-brand-blue">Cargando Cartelera {year}...</span>
+    </div>
+  </div>
+
+  <AtencionUsuarioHero title={`Cartelera ${year}`} lead="Consulta y descarga las carteleras informativas." />
+  <CarteleraEditions year={year} />
+</BaseLayout>
+
+<script is:inline>
+  const overlay = document.getElementById('page-loading-overlay');
+
+  function hideSpinner() {
+    if (overlay) {
+      overlay.classList.add('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        overlay.style.display = 'none';
+      }, 300);
+    }
+  }
+
+  function showSpinner() {
+    if (overlay) {
+      overlay.style.display = 'flex';
+      overlay.classList.remove('opacity-0', 'pointer-events-none');
+    }
+  }
+
+  // 1. Escuchar evento personalizado que enviará CarteleraEditions cuando la API termine
+  window.addEventListener('cartelera-loaded', hideSpinner);
+
+  // 2. Timeout de seguridad (Si la API o la red fallan, se oculta a los 4 segundos máximo)
+  const fallbackTimer = setTimeout(hideSpinner, 4000);
+
+  // 3. Si el DOM ya cargó antes de montar el listener, evaluar estado
+  if (document.readyState === 'complete') {
+    // Le da 500ms adicionales por si la API responde rápido
+    setTimeout(hideSpinner, 500);
+  } else {
+    window.addEventListener('load', () => {
+      // Espera breve para asegurar renderizado
+      setTimeout(hideSpinner, 500);
+    });
+  }
+
+  // 4. Activar el spinner al hacer clic en enlaces internos
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('a');
+    if (link) {
+      const href = link.getAttribute('href');
+      const target = link.getAttribute('target');
+      if (href && !href.startsWith('#') && target !== '_blank') {
+        showSpinner();
+      }
+    }
+  });
+</script>

@@ -7,12 +7,12 @@ export type HeroBanner = {
 /** Banners institucionales (imágenes en /public/images/banners/) */
 export const heroBanners: HeroBanner[] = [
   {
-    src: '/images/banners/solicita-cita.png',
+    src: '/images/banners/solicita-cita.svg',
     alt: 'Solicita tu cita — Somos tu IPS de confianza',
     href: '/citas',
   },
   {
-    src: '/images/banners/nuestras-sedes.png',
+    src: '/images/banners/nuestras-sedes.svg',
     alt: 'Nuestras sedes para ti',
     href: '/sedes',
   },
@@ -27,20 +27,20 @@ export const heroBanners: HeroBanner[] = [
     href: '/sedes',
   },
   {
-    src: '/images/banners/sede-exclusiva.png',
+    src: '/images/banners/sede-exclusiva1.svg',
     alt: 'Nuestra sede exclusiva para ti',
     href: '/sedes',
   },
   {
-    src: '/images/banners/fiebre-amarilla.png',
+    src: '/images/banners/fiebre-amarilla1.png',
     alt: '¿Qué es la fiebre amarilla? — Vacúnate, las vacunas son gratis',
   },
   {
-    src: '/images/banners/calidad-compromiso.png',
+    src: '/images/banners/calidad-compromiso2.png',
     alt: 'Confianza, calidad y compromiso — EMCO Salud',
   },
   {
-    src: '/images/banners/violencia-sexual.png',
+    src: '/images/banners/violencia-sexual1.png',
     alt: 'La violencia sexual no se justifica, se denuncia',
   },
 ];

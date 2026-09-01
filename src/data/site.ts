@@ -5,6 +5,7 @@ export const site = {
     'Acceso a servicios de salud, promoción y mantenimiento, citas médicas y atención en el sur colombiano.',
   assets: {
     logo: '/images/logo-emcosalud.png',
+    logofooter: '/images/logo emcosalud blanco.png',
     logoAlt: 'EMCOSALUD — Cooperativa de servicios de salud',
   },
   phones: {

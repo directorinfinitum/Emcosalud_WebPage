@@ -1,54 +1,109 @@
 ---
-import Icon from '@/components/icons/Icon.astro';
-import { blogPosts } from '@/data/services';
+let posts: any[] = [];
+
+try {
+  // 1. Obtener el ID de la categoría cuyo slug es "blog"
+  const catResponse = await fetch(`https://gestion.emcosalud.com.co/wp-json/wp/v2/categories?slug=blog`);
+
+  if (catResponse.ok) {
+    const categories = await catResponse.json();
+
+    if (categories.length > 0) {
+      const blogCategoryId = categories[0].id;
+
+      // 2. Traer ÚNICAMENTE 4 publicaciones asociadas al ID de la categoría "blog"
+      const WP_API = `https://gestion.emcosalud.com.co/wp-json/wp/v2/posts?categories=${blogCategoryId}&per_page=4&_embed`;
+      const response = await fetch(WP_API);
+
+      if (response.ok) {
+        const rawPosts = await response.json();
+
+        posts = rawPosts.map((post: any) => {
+          let imageUrl = post._embedded?.['wp:featuredmedia']?.[0]?.source_url || '';
+
+          if (!imageUrl && post.content?.rendered) {
+            const match = post.content.rendered.match(/<img[^>]+src=["']([^"']+)["']/i);
+            if (match) imageUrl = match[1];
+          }
+
+          if (!imageUrl) {
+            imageUrl = 'https://gestion.emcosalud.com.co/wp-content/uploads/2025/01/logo-emcosalud.png';
+          }
+
+          const cleanExcerpt = post.excerpt?.rendered
+            ? post.excerpt.rendered.replace(/<[^>]+>/g, '').trim()
+            : '';
+
+          return {
+            id: post.id,
+            title: post.title.rendered,
+            excerpt: cleanExcerpt,
+            date: post.date,
+            slug: post.slug,
+            imageUrl,
+          };
+        });
+      }
+    }
+  }
+} catch (error) {
+  console.error('Error al obtener las publicaciones para el inicio:', error);
+  posts = [];
+}
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('es-CO', {
     day: '2-digit',
-    month: 'short',
+    month: 'long',
     year: 'numeric',
   });
 }
 ---
 
-<section class="section-block bg-brand-green/10">
-  <div class="container-page">
-    <div class="mb-2 flex flex-wrap items-end justify-between gap-4">
-      <div>
-        <h2 class="section-title flex items-center gap-2">
-          <Icon name="blog" size={28} class="text-brand-green" />
-          Novedades y salud
-        </h2>
-        <p class="section-lead mb-0">Recomendaciones y fechas conmemorativas de interés.</p>
+{posts.length > 0 && (
+  <section class="section-block bg-slate-50 py-12 sm:py-16">
+    <div class="container-page">
+      <!-- Encabezado de la sección -->
+      <div class="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+        <div>
+          <h2 class="section-title">Últimas publicaciones</h2>
+          <p class="section-lead mt-1 text-slate-600">Mantente informado con nuestras noticias y artículos de salud.</p>
+        </div>
+        <a
+          href="/blog"
+          class="inline-flex items-center gap-1 font-semibold text-brand-blue transition hover:text-brand-green-dark"
+        >
+          Ver todo el blog &rarr;
+        </a>
       </div>
-      <a class="btn btn--outline shrink-0" href="/blog">
-        <Icon name="blog" size={18} />
-        Ver blog
-      </a>
-    </div>
 
-    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-      {
-        blogPosts.map((post) => (
-          <article class="card-base">
-            <time
-              class="mb-2 block text-xs font-bold text-brand-green-dark"
-              datetime={post.date}
-            >
-              {formatDate(post.date)}
-            </time>
-            <h3 class="m-0 mb-2 text-base font-bold">
-              <a
-                href={`/blog/${post.slug}`}
-                class="text-brand-blue no-underline hover:text-brand-green-dark"
-              >
-                {post.title}
-              </a>
-            </h3>
-            <p class="m-0 text-sm text-slate-600">{post.excerpt}</p>
+      <!-- Cuadrícula con las 4 tarjetas (2 columnas en sm, 4 columnas en lg) -->
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {posts.map((post) => (
+          <article class="card-base flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:shadow-lg">
+            <a href={`/blog/${post.slug}`} target="_blank" rel="noopener noreferrer" class="block aspect-video overflow-hidden bg-slate-100">
+              <img
+                src={post.imageUrl}
+                alt={post.title}
+                class="h-full w-full object-cover transition duration-300 hover:scale-105"
+                loading="lazy"
+              />
+            </a>
+
+            <div class="flex flex-1 flex-col p-4">
+              <time class="mb-2 block text-xs font-bold text-brand-green-dark" datetime={post.date}>
+                {formatDate(post.date)}
+              </time>
+              <h3 class="m-0 mb-2 text-base font-bold leading-tight">
+                <a href={`/blog/${post.slug}`} target="_blank" rel="noopener noreferrer" class="text-brand-blue no-underline hover:text-brand-green-dark">
+                  <Fragment set:html={post.title} />
+                </a>
+              </h3>
+              <p class="m-0 text-xs text-slate-600 line-clamp-2">{post.excerpt}</p>
+            </div>
           </article>
-        ))
-      }
+        ))}
+      </div>
     </div>
-  </div>
-</section>
+  </section>
+)}

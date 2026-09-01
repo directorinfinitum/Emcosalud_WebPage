@@ -4,16 +4,109 @@ import type { BoletinIssue } from '@/data/atencion-usuario';
 
 interface Props {
   year: string;
-  issues: BoletinIssue[];
+  issues?: BoletinIssue[];
+  categorySlug?: string;
+  categoryId?: number; // Añadido para poder filtrar directamente por ID si se dispone de él
 }
 
-const { year, issues } = Astro.props;
+const { year, categorySlug, categoryId } = Astro.props;
+
+const BASE_URL = 'https://gestion.emcosalud.com.co';
+const WP_API = `${BASE_URL}/wp-json/wp/v2/posts?per_page=100&_embed`;
+
+const MONTH_ORDER: Record<string, number> = {
+  ENERO: 1, FEBRERO: 2, MARZO: 3, ABRIL: 4,
+  MAYO: 5, JUNIO: 6, JULIO: 7, AGOSTO: 8,
+  SEPTIEMBRE: 9, OCTUBRE: 10, NOVIEMBRE: 11, DICIEMBRE: 12,
+};
+
+let issues: (BoletinIssue & { monthIndex: number })[] = [];
+
+try {
+  const response = await fetch(WP_API);
+
+  if (response.ok) {
+    const posts = await response.json();
+
+    const postsFiltrados = posts.filter((post: any) => {
+      // 1. Determinar el año exacto (Da prioridad absoluta a ACF sobre la fecha de WordPress)
+      const acfYear = post.acf?.anio_boletin ? String(post.acf.anio_boletin).trim() : null;
+      const wpYear = post.date ? post.date.substring(0, 4) : null;
+      const postYear = acfYear || wpYear;
+
+      const matchesYear = postYear === String(year).trim();
+
+      // 2. Filtrar por Categoría (si se proporciona `categoryId` o `categorySlug`)
+      let matchesCategory = true;
+      if (categoryId) {
+        matchesCategory = Array.isArray(post.categories) && post.categories.includes(categoryId);
+      } else if (categorySlug && post._embedded?.['wp:term']) {
+        // Busca en los términos embebidos si el slug coincide
+        const terms = post._embedded['wp:term'].flat();
+        matchesCategory = terms.some((term: any) => term.taxonomy === 'category' && term.slug === categorySlug);
+      }
+
+      return matchesYear && matchesCategory;
+    });
+
+    // Mapear los posts filtrados
+    const rawIssues = await Promise.all(
+      postsFiltrados.map(async (post: any) => {
+        let pdfUrl = '';
+        const acfPdf = post.acf?.archivo_pdf_boletin;
+
+        if (typeof acfPdf === 'number' || (typeof acfPdf === 'string' && /^\d+$/.test(acfPdf))) {
+          try {
+            const mediaRes = await fetch(`${BASE_URL}/wp-json/wp/v2/media/${acfPdf}`);
+            if (mediaRes.ok) {
+              const mediaData = await mediaRes.json();
+              pdfUrl = mediaData.source_url || '';
+            }
+          } catch (e) {
+            console.error(e);
+          }
+        } else if (typeof acfPdf === 'string' && acfPdf.startsWith('http')) {
+          pdfUrl = acfPdf;
+        } else if (typeof acfPdf === 'object' && acfPdf?.url) {
+          pdfUrl = acfPdf.url;
+        }
+
+        if (!pdfUrl) {
+          pdfUrl = `${BASE_URL}/wp-content/uploads/${post.slug}.pdf`;
+        }
+
+        const fileName = pdfUrl.split('/').pop() || `${post.slug}.pdf`;
+        const proxiedHref = `/pdf/${fileName}`;
+
+        const rawMes = post.acf?.mes_boletin ? String(post.acf.mes_boletin).trim().toUpperCase() : '';
+        const labelText = post.acf?.mes_boletin 
+          ? String(post.acf.mes_boletin) 
+          : post.title?.rendered || 'Edición';
+
+        const wpMonth = post.date ? parseInt(post.date.substring(5, 7), 10) : 99;
+        const monthIndex = MONTH_ORDER[rawMes] || wpMonth;
+
+        return {
+          label: labelText,
+          href: proxiedHref,
+          monthIndex,
+        };
+      })
+    );
+
+    issues = rawIssues.sort((a, b) => a.monthIndex - b.monthIndex);
+  }
+} catch (error) {
+  console.error(`Error al conectar con la API:`, error);
+  issues = [];
+}
 ---
 
 <section class="section-block">
   <div class="container-page max-w-3xl">
     <h2 class="m-0 text-xl font-bold text-brand-blue">Ediciones {year}</h2>
-    {issues.length ? (
+    
+    {issues.length > 0 ? (
       <ul class="mt-6 grid gap-3 sm:grid-cols-2">
         {issues.map((issue) => (
           <li>

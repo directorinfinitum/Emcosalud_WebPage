@@ -4,12 +4,31 @@ import Hero from '@/components/sections/Hero.astro';
 import QuickAccess from '@/components/sections/QuickAccess.astro';
 import ServicesSection from '@/components/sections/ServicesSection.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import VideosYoutube from '@/components/sections/VideosYoutube.astro';
+import Popup from '@/components/react/Popup';// 1. Importas tu componente interactivo
+import { getPopupByEntity } from '@/utils/getPopup';
 import { site } from '@/data/site';
+
+// Consulta el popup asignado a la categoría "emcosalud"
+const activePopup = await getPopupByEntity('popup emcosalud');
+
+
 ---
 
 <BaseLayout title={site.name} description={site.description}>
   <Hero />
   <QuickAccess />
   <ServicesSection />
+  <VideosYoutube/>
   <BlogPreview />
+
+  {/* 3. Renderizado condicional del modal en el cliente */}
+  {activePopup && (
+    <Popup 
+      client:load 
+      id={activePopup.id.toString()}
+      title={activePopup.title.rendered} 
+      content={activePopup.content.rendered} 
+    />
+  )}
 </BaseLayout>

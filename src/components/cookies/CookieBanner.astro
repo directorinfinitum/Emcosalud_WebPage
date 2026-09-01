@@ -1,0 +1,199 @@
+---
+// src/components/CookieBanner.astro
+const cookiesConsent = Astro.cookies.get('cookies-consent');
+
+// Si ya tiene un valor, ocultamos el banner por defecto
+const mostrarBanner = !cookiesConsent;
+---
+
+{mostrarBanner && (
+  <!-- Banner Inferior Principal -->
+  <div id="cookie-banner" class="fixed bottom-0 left-0 right-0 z-40 bg-white border-t-4 border-blue-600 p-5 shadow-[0_-8px_30px_rgb(0,0,0,0.08)] text-slate-700 antialiased font-sans">
+    <div class="max-w-6xl mx-auto flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+      
+      {/* Texto Informativo */}
+      <div class="max-w-3xl">
+        <h2 class="text-xs font-bold text-slate-900 mb-1 tracking-wide uppercase">
+          Aviso de Privacidad y Cookies
+        </h2>
+        <p class="text-sm leading-relaxed text-slate-600">
+          En Emcosalud utilizamos cookies propias y de terceros para garantizar el correcto funcionamiento de nuestro portal web, recordar sus preferencias y analizar el tráfico de navegación. Puede aceptar todas las cookies, rechazar su uso o personalizar la configuración según sus necesidades.
+        </p>
+      </div>
+      
+      {/* Botones de Acción */}
+      <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-end shrink-0 text-xs font-semibold">
+        <button 
+          type="button" 
+          id="btn-abrir-modal"
+          class="px-4 py-2.5 text-slate-700 bg-slate-100 border border-slate-200 rounded hover:bg-slate-200 hover:text-slate-900 transition-colors duration-200"
+        >
+          Configurar preferencias
+        </button>
+        
+        <form method="POST" action="/api/guardar-cookie" class="flex gap-3">
+          <button 
+            name="consentimiento" 
+            value="rechazadas" 
+            class="px-4 py-2.5 text-slate-600 bg-white border border-slate-300 rounded hover:bg-slate-50 hover:text-slate-800 transition-colors duration-200"
+          >
+            Rechazar
+          </button>
+          
+          <button 
+            name="consentimiento" 
+            value="aceptadas" 
+            class="px-5 py-2.5 bg-blue-600 text-white rounded hover:bg-blue-700 shadow-sm transition-colors duration-200"
+          >
+            Aceptar todas
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 📌 VENTANA EMERGENTE (MODAL INSTITUCIONAL) -->
+  <dialog id="modal-preferencias" class="rounded-lg shadow-2xl border border-slate-200 p-0 max-w-2xl w-full backdrop:bg-slate-900/40 text-slate-700 antialiased font-sans overflow-hidden">
+    
+    {/* Cabecera del Modal */}
+    <div class="bg-slate-50 border-b border-slate-200 p-5 flex justify-between items-center">
+      <h3 class="font-bold text-slate-950 text-sm uppercase tracking-wider">Centro de Preferencias de Privacidad</h3>
+      <button type="button" id="btn-cerrar-modal" class="text-slate-400 hover:text-slate-600 text-xl font-bold p-1 leading-none">&times;</button>
+    </div>
+
+    {/* Cuerpo del Modal */}
+    <div class="p-6 space-y-4 max-h-[60vh] overflow-y-auto">
+      <p class="text-xs text-slate-500 mb-4 leading-relaxed">
+        Su privacidad es importante para nosotros. A continuación puede activar o desactivar las distintas categorías de cookies según su preferencia. Las decisiones que tome se guardarán para sus próximas visitas.
+      </p>
+
+      <form method="POST" action="/api/guardar-cookie" class="space-y-4">
+        
+        {/* Opción 1: Obligatorias */}
+        <div class="flex items-start justify-between bg-slate-50 border border-slate-200 p-4 rounded-md">
+          <div class="pr-6">
+            <span class="font-bold text-slate-800 block text-xs uppercase tracking-wider mb-1">Cookies Técnicas (Necesarias)</span>
+            <span class="text-xs text-slate-500 leading-relaxed block">Estas cookies son indispensables para permitir la navegación segura, el acceso a las sedes de Emcosalud, búsquedas de documentos y la estabilidad técnica de la plataforma web. No pueden desactivarse.</span>
+          </div>
+          <div class="pt-0.5 shrink-0">
+            <input type="checkbox" checked disabled class="h-4 w-4 text-blue-600 border-slate-300 rounded accent-blue-600" />
+          </div>
+        </div>
+        
+        {/* Opción 2: Analíticas */}
+        <div class="flex items-start justify-between bg-slate-50 border border-slate-200 p-4 rounded-md">
+          <div class="pr-6">
+            <span class="font-bold text-slate-800 block text-xs uppercase tracking-wider mb-1">Cookies de Rendimiento y Analítica</span>
+            <span class="text-xs text-slate-500 leading-relaxed block">Nos permiten cuantificar de forma totalmente anónima el flujo de visitas de usuarios con el único fin de medir, auditar y mejorar la calidad informativa del servicio en nuestro portal web.</span>
+          </div>
+          <div class="pt-0.5 shrink-0">
+            <input type="checkbox" name="analitica" class="h-4 w-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500 accent-blue-600" />
+          </div>
+        </div>
+
+        {/* Opción 3: Funcionales */}
+        <div class="flex items-start justify-between bg-slate-50 border border-slate-100 p-3 rounded-md">
+          <div class="pr-4">
+            <span class="font-bold text-slate-800 block text-xs uppercase tracking-wider mb-0.5">Cookies Funcionales</span>
+            <span class="text-xs text-slate-500 leading-normal block">Las cookies funcionales soportan funciones como compartir contenido en redes sociales, recopilar comentarios y habilitar herramientas de terceros.</span>
+          </div>
+          <div class="pt-1">
+            <input type="checkbox" name="funcionales" class="h-4 w-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500 accent-blue-600" />
+          </div>
+        </div>
+
+        {/* Opción 4: Publicidad */}
+        <div class="flex items-start justify-between bg-slate-50 border border-slate-100 p-3 rounded-md">
+          <div class="pr-4">
+            <span class="font-bold text-slate-800 block text-xs uppercase tracking-wider mb-0.5">Cookies de Publicidad</span>
+            <span class="text-xs text-slate-500 leading-normal block">Las cookies de publicidad entregan anuncios personalizados basados en sus visitas previas y analizan la efectividad de las campañas publicitarias.</span>
+          </div>
+          <div class="pt-1">
+            <input type="checkbox" name="publicidad" class="h-4 w-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500 accent-blue-600" />
+          </div>
+        </div>
+
+        {/* Pie del Modal con botón Guardar */}
+        <div class="flex justify-end pt-4 border-t border-slate-200 gap-3 text-xs font-semibold">
+          <button 
+            type="button" 
+            id="btn-cancelar-modal" 
+            class="px-4 py-2.5 text-slate-600 bg-white border border-slate-300 rounded hover:bg-slate-50"
+          >
+            Regresar
+          </button>
+          <button 
+            name="consentimiento" 
+            value="personalizadas" 
+            class="px-5 py-2.5 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors duration-200 shadow-sm"
+          >
+            Guardar mi configuración
+          </button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+)}
+
+<script>
+  // Elementos del Modal
+  const btnAbrir = document.getElementById('btn-abrir-modal');
+  const btnCerrarX = document.getElementById('btn-cerrar-modal');
+  const btnCancelar = document.getElementById('btn-cancelar-modal');
+  const modal = document.getElementById('modal-preferencias') as HTMLDialogElement | null;
+  
+  // Elementos del Banner
+  const banner = document.getElementById('cookie-banner');
+  const formularios = document.querySelectorAll('form[action="/api/guardar-cookie"]');
+
+  // 1. Manejo del Modal (<dialog>)
+  if (btnAbrir && modal) {
+    btnAbrir.addEventListener('click', () => modal.showModal());
+    const cerrarModal = () => modal.close();
+    btnCerrarX?.addEventListener('click', cerrarModal);
+    btnCancelar?.addEventListener('click', cerrarModal);
+  }
+
+  // 2. Interceptar el envío para evitar recargar la página (AJAX)
+  formularios.forEach((form) => {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault(); // 👈 Esto evita que la página se recargue
+
+      const targetForm = e.target as HTMLFormElement;
+      const formData = new FormData(targetForm);
+
+      // Si el botón presionado tiene nombre y valor (ej. "consentimiento" = "aceptadas")
+      const submitter = (e as SubmitEvent).submitter as HTMLButtonElement | null;
+      if (submitter && submitter.name) {
+        formData.append(submitter.name, submitter.value);
+      }
+
+      try {
+        // Enviamos los datos al servidor en segundo plano
+        await fetch('/api/guardar-cookie', {
+          method: 'POST',
+          body: formData,
+        });
+
+        // Ocultamos el modal si está abierto
+        if (modal && modal.open) {
+          modal.close();
+        }
+
+        // Ocultamos el banner de la pantalla con una transición suave
+        if (banner) {
+          banner.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+          banner.style.opacity = '0';
+          banner.style.transform = 'translateY(100%)';
+          setTimeout(() => banner.remove(), 300);
+        }
+
+        // Opcional: Recargar solo si necesitas que los scripts de analítica se activen de inmediato
+        // window.location.reload();
+
+      } catch (error) {
+        console.error('Error guardando la cookie:', error);
+      }
+    });
+  });
+</script>

@@ -1,0 +1,129 @@
+---
+import Icon from '@/components/icons/Icon.astro';
+
+interface CarteleraIssue {
+  label: string;
+  href: string;
+}
+
+interface Props {
+  year: string;
+  categorySlug?: string;
+}
+
+const { year, categorySlug = 'cartelera' } = Astro.props;
+
+// Helper para convertir cualquier URL remota en una URL proxies interna
+const getProxiedUrl = (fullUrl: string) => {
+  if (!fullUrl) return '#';
+  // Extrae la ruta relativa después de /uploads/ (ej: "2024/03/imagen.webp" o "cartelera-marzo.webp")
+  const uploadPath = fullUrl.split('/wp-content/uploads/')[1] || fullUrl.split('/').pop() || '';
+  return `/publicaciones/${uploadPath}`;
+};
+
+const WP_API = `https://gestion.emcosalud.com.co/wp-json/wp/v2/posts?per_page=100&orderby=date&order=asc&_embed`;
+
+let issues: CarteleraIssue[] = [];
+
+try {
+  const response = await fetch(WP_API);
+
+  if (response.ok) {
+    const posts = await response.json();
+
+    const filteredPosts = posts.filter((post: any) => {
+      const acfYearRaw = post.acf?.anio_cartelera_ ?? post.acf?.anio_cartelera;
+      const acfYear = acfYearRaw ? String(acfYearRaw).trim() : null;
+      const wpYear = post.date ? post.date.substring(0, 4) : null;
+      
+      const postYear = acfYear || wpYear;
+
+      const tieneCategoria = post._embedded?.['wp:term']?.[0]?.some(
+        (term: any) => term.slug === categorySlug
+      );
+
+      return postYear === String(year).trim() && (tieneCategoria ?? true);
+    });
+
+    issues = await Promise.all(
+      filteredPosts.map(async (post: any) => {
+        let imageUrl = '';
+        const acfFile = post.acf?.archivo_cartelera;
+
+        if (typeof acfFile === 'string' && acfFile.trim() !== '') {
+          imageUrl = acfFile;
+        } else if (typeof acfFile === 'object' && acfFile !== null) {
+          imageUrl = acfFile.url || acfFile.link || acfFile.source_url || '';
+        } else if (typeof acfFile === 'number') {
+          try {
+            const mediaRes = await fetch(`https://gestion.emcosalud.com.co/wp-json/wp/v2/media/${acfFile}`);
+            if (mediaRes.ok) {
+              const mediaData = await mediaRes.json();
+              imageUrl = mediaData.source_url || mediaData.guid?.rendered || '';
+            }
+          } catch (e) {
+            console.error(`Error consultando media ID ${acfFile}:`, e);
+          }
+        }
+
+        if (!imageUrl && post.content?.rendered) {
+          const match = post.content.rendered.match(/https?:\/\/[^\s"'<>]+\.(webp|jpg|jpeg|png|gif|svg|pdf)(\?[^\s"'<>]*)?/i);
+          if (match) {
+            imageUrl = match[0];
+          }
+        }
+
+        if (!imageUrl && post._embedded?.['wp:featuredmedia']?.[0]?.source_url) {
+          imageUrl = post._embedded['wp:featuredmedia'][0].source_url;
+        }
+
+        if (!imageUrl) {
+          const mesSlug = post.slug.replace('cartelera-', '').trim();
+          imageUrl = `https://gestion.emcosalud.com.co/wp-content/uploads/cartelera-${mesSlug}.webp`;
+        }
+
+        const labelText = post.acf?.mes_cartelera 
+          ? post.acf.mes_cartelera 
+          : post.title.rendered.replace(/cartelera/i, '').replace(year, '').trim();
+
+        return {
+          label: labelText,
+          href: getProxiedUrl(imageUrl), // 🚀 Convertimos a URL local limpia
+        };
+      })
+    );
+  }
+} catch (error) {
+  console.error(`Error al obtener las carteleras del año ${year}:`, error);
+  issues = [];
+}
+---
+
+<section class="section-block">
+  <div class="container-page max-w-3xl">
+    <h2 class="m-0 text-xl font-bold text-brand-blue">Carteleras {year}</h2>
+    {issues.length ? (
+      <ul class="mt-6 grid gap-3 sm:grid-cols-2">
+        {issues.map((issue) => (
+          <li>
+            <a
+              href={issue.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-brand-blue no-underline shadow-sm transition hover:border-brand-green/40 hover:bg-brand-green/5"
+            >
+              {issue.label}
+              <Icon name="external" size={16} class="shrink-0 opacity-60" />
+            </a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="mt-4 text-slate-600">Próximamente se publicarán las carteleras de este año.</p>
+    )}
+  </div>
+</section>
+
+<script>
+  window.dispatchEvent(new Event('cartelera-loaded'));
+</script>

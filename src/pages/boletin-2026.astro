@@ -1,13 +1,77 @@
 ---
 import AtencionUsuarioHero from '@/components/sections/AtencionUsuarioHero.astro';
 import BoletinEditions from '@/components/sections/BoletinEditions.astro';
-import { boletinesByYear } from '@/data/atencion-usuario';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 
 const year = '2026';
+// Define el slug o ID de la categoría que deseas filtrar
+const categorySlug = 'boletines'; // Cambia esto por el slug de tu categoría en WP
+// const categoryId = 5; // Opcional: si prefieres usar el ID numérico en lugar del slug
 ---
-
 <BaseLayout title={`Boletín ${year}`} description={`Boletines institucionales ${year} — EMCOSALUD.`}>
+
+  <div 
+    id="page-loading-overlay" 
+    class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white/90 backdrop-blur-sm transition-opacity duration-300"
+  >
+    <div class="flex flex-col items-center gap-3">
+      <svg class="h-10 w-10 animate-spin text-brand-blue" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <span class="text-sm font-semibold text-brand-blue">Cargando Boletín {year}...</span>
+    </div>
+  </div>
+
   <AtencionUsuarioHero title={`Boletín ${year}`} lead="Consulta y descarga las ediciones del boletín institucional." />
-  <BoletinEditions year={year} issues={boletinesByYear[year] ?? []} />
+  
+  {/* Se pasa la prop categorySlug (o categoryId) al componente */}
+  <BoletinEditions year={year} categorySlug={categorySlug} />
 </BaseLayout>
+
+<script is:inline>
+  const overlay = document.getElementById('page-loading-overlay');
+
+  function hideSpinner() {
+    if (overlay) {
+      overlay.classList.add('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        overlay.style.display = 'none';
+      }, 300);
+    }
+  }
+
+  function showSpinner() {
+    if (overlay) {
+      overlay.style.display = 'flex';
+      overlay.classList.remove('opacity-0', 'pointer-events-none');
+    }
+  }
+
+  // 1. Escuchar evento personalizado que enviará BoletinEditions cuando la API termine
+  window.addEventListener('cartelera-loaded', hideSpinner);
+
+  // 2. Timeout de seguridad (Si la API o la red fallan, se oculta a los 4 segundos máximo)
+  const fallbackTimer = setTimeout(hideSpinner, 4000);
+
+  // 3. Si el DOM ya cargó antes de montar el listener, evaluar estado
+  if (document.readyState === 'complete') {
+    setTimeout(hideSpinner, 500);
+  } else {
+    window.addEventListener('load', () => {
+      setTimeout(hideSpinner, 500);
+    });
+  }
+
+  // 4. Activar el spinner al hacer clic en enlaces internos
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('a');
+    if (link) {
+      const href = link.getAttribute('href');
+      const target = link.getAttribute('target');
+      if (href && !href.startsWith('#') && target !== '_blank') {
+        showSpinner();
+      }
+    }
+  });
+</script>

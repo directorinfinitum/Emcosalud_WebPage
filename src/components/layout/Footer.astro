@@ -11,7 +11,12 @@ const footerLinkIcons: Record<string, IconName> = {
   Emcofarma: 'pharmacy',
   'Escuela Emcosalud': 'graduation',
   'Servicios médicos': 'stethoscope',
-  'Citas médicas': 'calendar',
+  'Nuestras sedes': 'building',
+  'Medicamentos Huila': 'pharmacy',
+  'Medicamentos Tolima': 'pharmacy',
+  'Grupo empresarial': 'building',
+  'Emcofarma Plus': 'pharmacy',
+    'Citas médicas': 'calendar',
   PQR: 'file-claim',
   Blog: 'blog',
   Nosotros: 'users',
@@ -165,15 +170,7 @@ const footerLinkIcons: Record<string, IconName> = {
   <div class="border-t border-white/10">
     <div class="container-page flex flex-wrap items-center justify-between gap-4 py-4 text-sm text-white/75">
       <p class="m-0">© {new Date().getFullYear()} {site.name}. Todos los derechos reservados.</p>
-      <img
-        src={site.assets.logo}
-        alt=""
-        class="h-8 w-auto opacity-40"
-        width="120"
-        height="34"
-        loading="lazy"
-        aria-hidden="true"
-      />
+      
     </div>
   </div>
 </footer>
