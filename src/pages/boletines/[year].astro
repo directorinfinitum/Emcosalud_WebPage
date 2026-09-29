@@ -3,12 +3,42 @@ import AtencionUsuarioHero from '@/components/sections/AtencionUsuarioHero.astro
 import BoletinEditions from '@/components/sections/BoletinEditions.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 
-const year = '2026';
-// Define el slug o ID de la categoría que deseas filtrar
-const categorySlug = 'boletines'; // Cambia esto por el slug de tu categoría en WP
-// const categoryId = 5; // Opcional: si prefieres usar el ID numérico en lugar del slug
+// Si usas output: 'server' o SSG con getStaticPaths:
+export async function getStaticPaths() {
+  const EMCOSALUD_PORTAL_ID = 1;
+  try {
+    const response = await fetch(`http://localhost:4321/api/capacitaciones.json?portalId=${EMCOSALUD_PORTAL_ID}`);
+    if (response.ok) {
+      const json = await response.json();
+      const publications = json.data ?? [];
+      
+      const yearsSet = new Set<string>();
+      publications.forEach((pub: { publishedDate?: string }) => {
+        if (pub.publishedDate) {
+          const pubYear = new Date(pub.publishedDate).getFullYear().toString();
+          yearsSet.add(pubYear);
+        }
+      });
+
+      // Si no hay años, devolvemos el año actual por defecto
+      if (yearsSet.size === 0) yearsSet.add('2026');
+
+      return Array.from(yearsSet).map((year) => ({
+        params: { year },
+      }));
+    }
+  } catch (error) {
+    console.error('Error generando rutas para boletines:', error);
+  }
+
+  return [{ params: { year: '2026' } }];
+}
+
+const { year } = Astro.params;
+const currentYear = year || '2026';
+const categorySlug = 'boletines'; 
 ---
-<BaseLayout title={`Boletín ${year}`} description={`Boletines institucionales ${year} — EMCOSALUD.`}>
+<BaseLayout title={`Boletín ${currentYear}`} description={`Boletines institucionales ${currentYear} — EMCOSALUD.`}>
 
   <div 
     id="page-loading-overlay" 
@@ -19,14 +49,13 @@ const categorySlug = 'boletines'; // Cambia esto por el slug de tu categoría en
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
       </svg>
-      <span class="text-sm font-semibold text-brand-blue">Cargando Boletín {year}...</span>
+      <span class="text-sm font-semibold text-brand-blue">Cargando Boletín {currentYear}...</span>
     </div>
   </div>
 
-  <AtencionUsuarioHero title={`Boletín ${year}`} lead="Consulta y descarga las ediciones del boletín institucional." />
+  <AtencionUsuarioHero title={`Boletín ${currentYear}`} lead="Consulta y descarga las ediciones del boletín institucional." />
   
-  {/* Se pasa la prop categorySlug (o categoryId) al componente */}
-  <BoletinEditions year={year} categorySlug={categorySlug} />
+  <BoletinEditions year={currentYear} categorySlug={categorySlug} />
 </BaseLayout>
 
 <script is:inline>
@@ -48,13 +77,12 @@ const categorySlug = 'boletines'; // Cambia esto por el slug de tu categoría en
     }
   }
 
-  // 1. Escuchar evento personalizado que enviará BoletinEditions cuando la API termine
-  window.addEventListener('cartelera-loaded', hideSpinner);
+  // Escuchamos el evento que enviará BoletinEditions (ajustado a 'boletines-loaded' o el que uses)
+  window.addEventListener('boletines-loaded', hideSpinner);
+  window.addEventListener('cartelera-loaded', hideSpinner); // Por compatibilidad
 
-  // 2. Timeout de seguridad (Si la API o la red fallan, se oculta a los 4 segundos máximo)
   const fallbackTimer = setTimeout(hideSpinner, 4000);
 
-  // 3. Si el DOM ya cargó antes de montar el listener, evaluar estado
   if (document.readyState === 'complete') {
     setTimeout(hideSpinner, 500);
   } else {
@@ -63,7 +91,6 @@ const categorySlug = 'boletines'; // Cambia esto por el slug de tu categoría en
     });
   }
 
-  // 4. Activar el spinner al hacer clic en enlaces internos
   document.addEventListener('click', (e) => {
     const link = e.target.closest('a');
     if (link) {

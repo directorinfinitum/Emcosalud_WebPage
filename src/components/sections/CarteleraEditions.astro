@@ -1,97 +1,69 @@
 ---
 import Icon from '@/components/icons/Icon.astro';
 
-interface CarteleraIssue {
-  label: string;
-  href: string;
-}
-
 interface Props {
   year: string;
-  categorySlug?: string;
 }
 
-const { year, categorySlug = 'cartelera' } = Astro.props;
+const { year } = Astro.props;
 
-// Helper para convertir cualquier URL remota en una URL proxies interna
-const getProxiedUrl = (fullUrl: string) => {
-  if (!fullUrl) return '#';
-  // Extrae la ruta relativa después de /uploads/ (ej: "2024/03/imagen.webp" o "cartelera-marzo.webp")
-  const uploadPath = fullUrl.split('/wp-content/uploads/')[1] || fullUrl.split('/').pop() || '';
-  return `/publicaciones/${uploadPath}`;
+interface CarteleraItem {
+  id: number;
+  title: string; // Aquí viene el mes seleccionado (ej. 'ENERO', 'FEBRERO'...)
+  description?: string;
+  publishedDate?: string;
+  imageUrl?: string;
+}
+
+// Diccionario para ordenar los meses cronológicamente
+const MONTH_ORDER: Record<string, number> = {
+  ENERO: 1,
+  FEBRERO: 2,
+  MARZO: 3,
+  ABRIL: 4,
+  MAYO: 5,
+  JUNIO: 6,
+  JULIO: 7,
+  AGOSTO: 8,
+  SEPTIEMBRE: 9,
+  OCTUBRE: 10,
+  NOVIEMBRE: 11,
+  DICIEMBRE: 12,
 };
 
-const WP_API = `https://gestion.emcosalud.com.co/wp-json/wp/v2/posts?per_page=100&orderby=date&order=asc&_embed`;
-
-let issues: CarteleraIssue[] = [];
+let issues: { label: string; href: string }[] = [];
 
 try {
-  const response = await fetch(WP_API);
+  const response = await fetch('http://localhost:4321/api/publicaciones.json');
 
   if (response.ok) {
-    const posts = await response.json();
+    const json = await response.json();
+    const publications: CarteleraItem[] = json.data ?? [];
 
-    const filteredPosts = posts.filter((post: any) => {
-      const acfYearRaw = post.acf?.anio_cartelera_ ?? post.acf?.anio_cartelera;
-      const acfYear = acfYearRaw ? String(acfYearRaw).trim() : null;
-      const wpYear = post.date ? post.date.substring(0, 4) : null;
-      
-      const postYear = acfYear || wpYear;
-
-      const tieneCategoria = post._embedded?.['wp:term']?.[0]?.some(
-        (term: any) => term.slug === categorySlug
-      );
-
-      return postYear === String(year).trim() && (tieneCategoria ?? true);
+    // 1. Filtramos por año basándonos en publishedDate
+    const filtered = publications.filter((pub) => {
+      if (!pub.publishedDate) return false;
+      const pubYear = new Date(pub.publishedDate).getFullYear().toString();
+      return pubYear === String(year).trim();
     });
 
-    issues = await Promise.all(
-      filteredPosts.map(async (post: any) => {
-        let imageUrl = '';
-        const acfFile = post.acf?.archivo_cartelera;
+    // 2. Ordenamos por mes utilizando el diccionario MONTH_ORDER
+    filtered.sort((a, b) => {
+      const mesA = a.title?.trim().toUpperCase() || '';
+      const mesB = b.title?.trim().toUpperCase() || '';
+      return (MONTH_ORDER[mesA] || 99) - (MONTH_ORDER[mesB] || 99);
+    });
 
-        if (typeof acfFile === 'string' && acfFile.trim() !== '') {
-          imageUrl = acfFile;
-        } else if (typeof acfFile === 'object' && acfFile !== null) {
-          imageUrl = acfFile.url || acfFile.link || acfFile.source_url || '';
-        } else if (typeof acfFile === 'number') {
-          try {
-            const mediaRes = await fetch(`https://gestion.emcosalud.com.co/wp-json/wp/v2/media/${acfFile}`);
-            if (mediaRes.ok) {
-              const mediaData = await mediaRes.json();
-              imageUrl = mediaData.source_url || mediaData.guid?.rendered || '';
-            }
-          } catch (e) {
-            console.error(`Error consultando media ID ${acfFile}:`, e);
-          }
-        }
+    // 3. Mapeamos a la estructura de la UI (capitalizando la primera letra para que se vea bien)
+    issues = filtered.map((pub) => {
+      const rawTitle = pub.title || 'Cartelera';
+      const formattedLabel = rawTitle.charAt(0).toUpperCase() + rawTitle.slice(1).toLowerCase();
 
-        if (!imageUrl && post.content?.rendered) {
-          const match = post.content.rendered.match(/https?:\/\/[^\s"'<>]+\.(webp|jpg|jpeg|png|gif|svg|pdf)(\?[^\s"'<>]*)?/i);
-          if (match) {
-            imageUrl = match[0];
-          }
-        }
-
-        if (!imageUrl && post._embedded?.['wp:featuredmedia']?.[0]?.source_url) {
-          imageUrl = post._embedded['wp:featuredmedia'][0].source_url;
-        }
-
-        if (!imageUrl) {
-          const mesSlug = post.slug.replace('cartelera-', '').trim();
-          imageUrl = `https://gestion.emcosalud.com.co/wp-content/uploads/cartelera-${mesSlug}.webp`;
-        }
-
-        const labelText = post.acf?.mes_cartelera 
-          ? post.acf.mes_cartelera 
-          : post.title.rendered.replace(/cartelera/i, '').replace(year, '').trim();
-
-        return {
-          label: labelText,
-          href: getProxiedUrl(imageUrl), // 🚀 Convertimos a URL local limpia
-        };
-      })
-    );
+      return {
+        label: formattedLabel,
+        href: pub.imageUrl || '#',
+      };
+    });
   }
 } catch (error) {
   console.error(`Error al obtener las carteleras del año ${year}:`, error);

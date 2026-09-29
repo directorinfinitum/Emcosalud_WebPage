@@ -2,14 +2,14 @@ import type { NavLink } from '@/data/navigation';
 
 export const atencionUsuarioAssets = {
   derechosDeberesPdf:
-    'https://emcosalud.com.co/wp-content/uploads/2025/04/Derechos-y-Deberes.pdf',
-  asociacionUsuariosImg:
-    'https://emcosalud.com.co/wp-content/uploads/2025/06/asociacion-de-usuarios.png',
+    '/public/documents/Derechos-y-Deberes.pdf',
   protocoloEnfoqueDiferencialPdf:
-    'https://emcosalud.com.co/wp-content/uploads/2025/04/PROTOCOLO-DE-ATENCION-CON-ENFOQUE-DIFERENCIAL-EMCOSALUD.pdf',
+    '/public/documents/PROTOCOLO-DE-ATENCION-CON-ENFOQUE-DIFERENCIAL-EMCOSALUD.pdf',
   resolucionEnfoqueDiferencialPdf:
-    'https://emcosalud.com.co/wp-content/uploads/2025/07/RESOLUCION-005-DE-2025_POLITICA-DE-ATENCION-CON-ENFOQUE-DIFERENCIAL-EN-EMCOSALUD.pdf',
+    '/public/documents/RESOLUCION-005-DE-2025_POLITICA-DE-ATENCION-CON-ENFOQUE-DIFERENCIAL-EN-EMCOSALUD.pdf',
 } as const;
+
+
 
 export type PromocionCampaign = {
   title: string;
@@ -306,17 +306,25 @@ export function buildAtencionUsuarioNavChildren(): NavLink[] {
       href: '/politica-con-enfoque-diferencial',
     },
     { label: 'Asociación de Usuarios', href: '/asociacion-de-usuarios' },
+    {
+      label: 'Capacitaciones',
+      children: [
+        { label: 'Capacitaciones 2027', href: '/capacitaciones/2027' },
+        { label: 'Capacitaciones 2026', href: '/capacitaciones/2026' },
+      ],
+    },
     { label: 'Publicaciones',
       children: [
-        { label: 'Publicaciones 2026', href: '/publicaciones-2026' },
+        { label: 'Publicaciones 2027', href: '/carteleras/2027' },
+        { label: 'Publicaciones 2026', href: '/carteleras/2026' },
       ],
     },
     {
       label: 'Boletines',
       children: [
-        { label: 'Boletín 2024', href: '/boletin-2024' },
-        { label: 'Boletín 2025', href: '/boletin-2025' },
-        { label: 'Boletín 2026', href: '/boletin-2026' },
+        { label: 'Boletín 2027', href: '/boletines/2027' },
+        { label: 'Boletín 2026', href: '/boletines/2026' },
+        { label: 'Boletín 2025', href: '/boletines/2025' },
       ],
     },
     { label: 'Mejoremos Juntos', href: '/mejoremos-juntos' },

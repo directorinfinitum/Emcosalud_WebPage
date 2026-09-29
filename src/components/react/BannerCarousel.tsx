@@ -1,5 +1,17 @@
 import { useCallback, useEffect, useState } from 'react';
-import type { HeroBanner } from '@/data/banners';
+
+// 1. Actualizamos la interfaz con los campos que entrega el CMS
+export interface HeroBanner {
+  id: string;
+  title?: string | null;
+  subtitle?: string | null;
+  description?: string | null;
+  buttonText?: string | null;
+  url?: string | null;
+  linkType?: string;
+  imageUrl: string;
+  mobileImageUrl?: string | null;
+}
 
 type Props = {
   banners: HeroBanner[];
@@ -50,14 +62,15 @@ export default function BannerCarousel({ banners, intervalMs = 5500 }: Props) {
       onFocus={() => setPaused(true)}
       onBlur={() => setPaused(false)}
     >
-      {/* Contenedor con proporción fija para que el carrusel tenga altura */}
       <div className="relative aspect-[21/8] w-full min-h-[11rem] sm:min-h-[14rem] md:min-h-[18rem] lg:min-h-[22rem] xl:min-h-[26rem]">
         {banners.map((banner, index) => {
           const isActive = index === active;
+          const altText = banner.title || 'Banner institucional';
+
           const content = (
             <img
-              src={banner.src}
-              alt={banner.alt}
+              src={banner.imageUrl}
+              alt={altText}
               className="h-full w-full object-cover object-center"
               loading={index === 0 ? 'eager' : 'lazy'}
               decoding="async"
@@ -67,7 +80,7 @@ export default function BannerCarousel({ banners, intervalMs = 5500 }: Props) {
 
           return (
             <div
-              key={banner.src}
+              key={banner.id} // <--- Usamos el id único de la BD como key
               className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
                 isActive ? 'z-10 opacity-100' : 'z-0 opacity-0 pointer-events-none'
               }`}
@@ -76,9 +89,9 @@ export default function BannerCarousel({ banners, intervalMs = 5500 }: Props) {
               aria-label={`${index + 1} de ${total}`}
               aria-hidden={!isActive}
             >
-              {banner.href ? (
+              {banner.url ? (
                 <a
-                  href={banner.href}
+                  href={banner.url}
                   className="block h-full w-full focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-green"
                   tabIndex={isActive ? 0 : -1}
                 >
@@ -118,7 +131,7 @@ export default function BannerCarousel({ banners, intervalMs = 5500 }: Props) {
           >
             {banners.map((banner, index) => (
               <button
-                key={banner.src}
+                key={banner.id} // <--- Usamos el id único aquí también
                 type="button"
                 role="tab"
                 className={`h-2.5 shrink-0 rounded-full transition-all ${
@@ -127,14 +140,14 @@ export default function BannerCarousel({ banners, intervalMs = 5500 }: Props) {
                     : 'w-2.5 bg-white/80 hover:bg-white'
                 }`}
                 onClick={() => goTo(index)}
-                aria-label={banner.alt}
+                aria-label={`Ir al banner ${index + 1}`}
                 aria-selected={index === active}
               />
             ))}
           </div>
 
           <p className="sr-only" aria-live="polite">
-            {current.alt}
+            {current.title || `Banner ${active + 1}`}
           </p>
         </>
       )}

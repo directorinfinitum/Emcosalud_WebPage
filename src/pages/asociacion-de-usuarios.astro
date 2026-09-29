@@ -1,6 +1,5 @@
 ---
 import AtencionUsuarioHero from '@/components/sections/AtencionUsuarioHero.astro';
-import { atencionUsuarioAssets } from '@/data/atencion-usuario';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 ---
 
@@ -14,13 +13,78 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
   />
 
   <section class="section-block">
-    <div class="container-page max-w-4xl">
-      <img
-        src={atencionUsuarioAssets.asociacionUsuariosImg}
-        alt="Asociación de Usuarios — EMCOSALUD"
-        class="mx-auto w-full max-w-3xl rounded-2xl border border-slate-200 shadow-sm"
-        loading="lazy"
-      />
+    <div class="container-page max-w-5xl">
+      <h2 class="text-2xl font-bold text-slate-800 mb-6 text-center">
+        Directorio Telefónico – Asociación de Usuarios
+      </h2>
+
+      <!-- Tabla de directorio -->
+      <div class="overflow-x-auto rounded-2xl border border-slate-200 shadow-sm mb-10">
+        <table class="w-full text-left border-collapse bg-white">
+          <thead>
+            <tr class="bg-slate-100 text-slate-700 text-sm uppercase tracking-wider">
+              <th class="py-3 px-4 font-semibold">Nombre</th>
+              <th class="py-3 px-4 font-semibold">Correo Electrónico</th>
+              <th class="py-3 px-4 font-semibold">Teléfono</th>
+              <th class="py-3 px-4 font-semibold">Rol</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200 text-sm text-slate-600">
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td class="py-3 px-4 font-medium text-slate-800">CARLOS JULIO OSPINA REINOSO</td>
+              <td class="py-3 px-4"><a href="mailto:citas.tolima@emcosalud.com" class="text-blue-600 hover:underline">citas.tolima@emcosalud.com</a></td>
+              <td class="py-3 px-4">318 604 6800</td>
+              <td class="py-3 px-4">Coordinador</td>
+            </tr>
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td class="py-3 px-4 font-medium text-slate-800">YURANI GUZMÁN MACHADO</td>
+              <td class="py-3 px-4"><a href="mailto:yuraguzmanm@hotmail.com" class="text-blue-600 hover:underline">yuraguzmanm@hotmail.com</a></td>
+              <td class="py-3 px-4">311 575 9176</td>
+              <td class="py-3 px-4">Usuario</td>
+            </tr>
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td class="py-3 px-4 font-medium text-slate-800">JAKELYNE CHARRY CASTRO</td>
+              <td class="py-3 px-4"><a href="mailto:atencionalusuario@emcosalud.com" class="text-blue-600 hover:underline">atencionalusuario@emcosalud.com</a></td>
+              <td class="py-3 px-4">317 744 9152</td>
+              <td class="py-3 px-4">Representante SIAU IPS</td>
+            </tr>
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td class="py-3 px-4 font-medium text-slate-800">LADY CATHERINE SUAREZ</td>
+              <td class="py-3 px-4"><a href="mailto:atencion.usuario.tolima@emcosalud.com" class="text-blue-600 hover:underline">atencion.usuario.tolima@emcosalud.com</a></td>
+              <td class="py-3 px-4">322 830 1034</td>
+              <td class="py-3 px-4">Representante SIAU IPS</td>
+            </tr>
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td class="py-3 px-4 font-medium text-slate-800">PAOLA ANDREA OTÁLORA PUENTES</td>
+              <td class="py-3 px-4"><a href="mailto:paotajag@gmail.com" class="text-blue-600 hover:underline">paotajag@gmail.com</a></td>
+              <td class="py-3 px-4">315 638 9468</td>
+              <td class="py-3 px-4">Usuario</td>
+            </tr>
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td class="py-3 px-4 font-medium text-slate-800">KAREN YISSETH TORRES RODRÍGUEZ</td>
+              <td class="py-3 px-4"><a href="mailto:atus.pitalito@gmail.com" class="text-blue-600 hover:underline">atus.pitalito@gmail.com</a></td>
+              <td class="py-3 px-4">333 271 1703</td>
+              <td class="py-3 px-4">Representante IPS</td>
+            </tr>
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td class="py-3 px-4 font-medium text-slate-800">YAKELINE CASTAÑO BERMEO</td>
+              <td class="py-3 px-4"><a href="mailto:profeyaquis@gmail.com" class="text-blue-600 hover:underline">profeyaquis@gmail.com</a></td>
+              <td class="py-3 px-4">318 726 1925</td>
+              <td class="py-3 px-4">Usuario</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Sección de la imagen al final -->
+      <div class="container-page max-w-4xl">
+        <img
+          src="/public/images/asociación-de-usuarios/miembros-asociacion-usuarios-EMCOSALUD-2025-2027.webp"
+          alt="Asociación de Usuarios — EMCOSALUD"
+          class="mx-auto w-full max-w-3xl rounded-2xl border border-slate-200 shadow-sm"
+          loading="lazy"
+        />
+      </div>
     </div>
   </section>
 </BaseLayout>

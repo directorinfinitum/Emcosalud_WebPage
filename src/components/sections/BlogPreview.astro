@@ -1,50 +1,44 @@
 ---
-let posts: any[] = [];
+interface PostItem {
+  id: string;
+  title: string;
+  excerpt?: string | null;
+  publishedAt?: string | null;
+  createdAt: string;
+  slug: string;
+  featuredUrl?: string | null;
+}
+
+let posts: {
+  id: string;
+  title: string;
+  excerpt: string;
+  date: string;
+  slug: string;
+  imageUrl: string;
+}[] = [];
 
 try {
-  // 1. Obtener el ID de la categoría cuyo slug es "blog"
-  const catResponse = await fetch(`https://gestion.emcosalud.com.co/wp-json/wp/v2/categories?slug=blog`);
+  // Consumimos el endpoint JSON limpio del CMS (puerto 4321) pidiendo exactamente 4 elementos
+  const response = await fetch('http://localhost:4321/api/blog.json?limit=4');
 
-  if (catResponse.ok) {
-    const categories = await catResponse.json();
+  if (response.ok) {
+    const json = await response.json();
+    const rawPosts: PostItem[] = json.data ?? [];
 
-    if (categories.length > 0) {
-      const blogCategoryId = categories[0].id;
+    posts = rawPosts.map((post) => {
+      // Usamos exclusivamente la imagen provista por el CMS
+      const imageUrl = post.featuredUrl || '';
 
-      // 2. Traer ÚNICAMENTE 4 publicaciones asociadas al ID de la categoría "blog"
-      const WP_API = `https://gestion.emcosalud.com.co/wp-json/wp/v2/posts?categories=${blogCategoryId}&per_page=4&_embed`;
-      const response = await fetch(WP_API);
-
-      if (response.ok) {
-        const rawPosts = await response.json();
-
-        posts = rawPosts.map((post: any) => {
-          let imageUrl = post._embedded?.['wp:featuredmedia']?.[0]?.source_url || '';
-
-          if (!imageUrl && post.content?.rendered) {
-            const match = post.content.rendered.match(/<img[^>]+src=["']([^"']+)["']/i);
-            if (match) imageUrl = match[1];
-          }
-
-          if (!imageUrl) {
-            imageUrl = 'https://gestion.emcosalud.com.co/wp-content/uploads/2025/01/logo-emcosalud.png';
-          }
-
-          const cleanExcerpt = post.excerpt?.rendered
-            ? post.excerpt.rendered.replace(/<[^>]+>/g, '').trim()
-            : '';
-
-          return {
-            id: post.id,
-            title: post.title.rendered,
-            excerpt: cleanExcerpt,
-            date: post.date,
-            slug: post.slug,
-            imageUrl,
-          };
-        });
-      }
-    }
+      return {
+        id: post.id,
+        title: post.title,
+        excerpt: post.excerpt || '',
+        date: post.publishedAt || post.createdAt,
+        slug: post.slug,
+        imageUrl,
+      };
+    });
   }
 } catch (error) {
   console.error('Error al obtener las publicaciones para el inicio:', error);
@@ -52,6 +46,7 @@ try {
 }
 
 function formatDate(iso: string) {
+  if (!iso) return '';
   return new Date(iso).toLocaleDateString('es-CO', {
     day: '2-digit',
     month: 'long',
@@ -81,13 +76,19 @@ function formatDate(iso: string) {
       <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {posts.map((post) => (
           <article class="card-base flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:shadow-lg">
-            <a href={`/blog/${post.slug}`} target="_blank" rel="noopener noreferrer" class="block aspect-video overflow-hidden bg-slate-100">
-              <img
-                src={post.imageUrl}
-                alt={post.title}
-                class="h-full w-full object-cover transition duration-300 hover:scale-105"
-                loading="lazy"
-              />
+            <a href={`/blog/${post.slug}`} class="block aspect-video overflow-hidden bg-slate-100">
+              {post.imageUrl ? (
+                <img
+                  src={post.imageUrl}
+                  alt={post.title}
+                  class="h-full w-full object-cover transition duration-300 hover:scale-105"
+                  loading="lazy"
+                />
+              ) : (
+                <div class="flex h-full w-full items-center justify-center bg-slate-200 text-xs text-slate-400">
+                  Sin imagen
+                </div>
+              )}
             </a>
 
             <div class="flex flex-1 flex-col p-4">
@@ -95,7 +96,7 @@ function formatDate(iso: string) {
                 {formatDate(post.date)}
               </time>
               <h3 class="m-0 mb-2 text-base font-bold leading-tight">
-                <a href={`/blog/${post.slug}`} target="_blank" rel="noopener noreferrer" class="text-brand-blue no-underline hover:text-brand-green-dark">
+                <a href={`/blog/${post.slug}`} class="text-brand-blue no-underline hover:text-brand-green-dark">
                   <Fragment set:html={post.title} />
                 </a>
               </h3>

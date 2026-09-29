@@ -1,0 +1,90 @@
+---
+import Icon from '@/components/icons/Icon.astro';
+
+interface Props {
+  year: string;
+}
+
+const { year } = Astro.props;
+
+// ID correspondiente a Emcosalud en la base de datos de portales
+const EMCOSALUD_PORTAL_ID = 1;
+
+interface CapacitacionItem {
+  id: number;
+  title: string; 
+  description?: string;
+  publishedDate?: string;
+  imageUrl?: string;
+  fileUrl?: string;
+}
+
+let issues: { label: string; href: string }[] = [];
+
+try {
+  // Añadimos limit=1000 para asegurarnos de traer registros históricos de todos los años
+  const response = await fetch(`http://localhost:4321/api/capacitaciones.json?portalId=${EMCOSALUD_PORTAL_ID}&limit=1000`);
+
+  if (response.ok) {
+    const json = await response.json();
+    const publications: CapacitacionItem[] = json.data ?? [];
+
+    // 1. Filtramos por año de forma segura extrayendo los primeros 4 caracteres (YYYY)
+    const filtered = publications.filter((pub) => {
+      if (!pub.publishedDate) return false;
+      const pubYear = pub.publishedDate.toString().substring(0, 4);
+      return pubYear === String(year).trim();
+    });
+
+    // 2. Ordenamos por fecha (de más antigua a más reciente: Enero a Diciembre)
+    filtered.sort((a, b) => {
+      const dateA = new Date(a.publishedDate!).getTime();
+      const dateB = new Date(b.publishedDate!).getTime();
+      return dateA - dateB; 
+    });
+
+    // 3. Mapeamos respetando las mayúsculas originales del título (solo asegurando la primera letra en mayúscula)
+    issues = filtered.map((pub) => {
+      const rawTitle = pub.title || 'Capacitación';
+      const formattedLabel = rawTitle.charAt(0).toUpperCase() + rawTitle.slice(1);
+
+      return {
+        label: formattedLabel,
+        href: pub.fileUrl || '#',
+      };
+    });
+  }
+} catch (error) {
+  console.error(`Error al obtener las capacitaciones del año ${year}:`, error);
+  issues = [];
+}
+---
+
+<section class="section-block">
+  <div class="container-page max-w-3xl">
+    <h2 class="m-0 text-xl font-bold text-brand-blue">Capacitaciones {year}</h2>
+    {issues.length ? (
+      <ul class="mt-6 grid gap-3 sm:grid-cols-2">
+        {issues.map((issue) => (
+          <li>
+            <a
+              href={issue.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-brand-blue no-underline shadow-sm transition hover:border-brand-green/40 hover:bg-brand-green/5"
+            >
+              <span class="truncate">{issue.label}</span>
+              <Icon name="external" size={16} class="shrink-0 opacity-60" />
+            </a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="mt-4 text-slate-600">Próximamente se publicarán las capacitaciones de este año.</p>
+    )}
+  </div>
+</section>
+
+<script>
+  window.dispatchEvent(new Event('capacitaciones-loaded'));
+</script>

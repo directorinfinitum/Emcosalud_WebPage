@@ -1,15 +1,44 @@
 ---
 import Icon from '@/components/icons/Icon.astro';
-import {
-  financialStatements,
-  financialStatementsIntro,
-} from '@/data/financial-statements';
 import BaseLayout from '@/layouts/BaseLayout.astro';
+
+// 1. Definimos la interfaz para que TypeScript reconozca los campos
+interface FinancialStatement {
+  id: number;
+  fiscalYear: number;
+  title: string | null;
+  summary: string | null;
+  publishedDate: string | null;
+  pdfFile: string | null;
+  fileLabel: string | null;
+}
+
+const currentCompanyId = 1; // El ID correspondiente a esta página pública
+
+let statementsList: FinancialStatement[] = [];
+
+try {
+  // Apuntando firmemente al puerto 4321 del CMS
+  const response = await fetch(`http://localhost:4321/api/financial-statements.json?company=${currentCompanyId}`);
+  if (response.ok) {
+    statementsList = await response.json();
+    
+    // ORDENAR: Del año más actual al más viejo (descendente)
+    statementsList.sort((a, b) => b.fiscalYear - a.fiscalYear);
+
+  } else {
+    console.error("El CMS respondió con estado:", response.status);
+  }
+} catch (error) {
+  console.error("Error al conectar con el CMS administrativo:", error);
+}
+
+const financialStatementsIntro = "Estados financieros publicados conforme a la normativa vigente.";
 ---
 
 <BaseLayout
   title="Estados financieros"
-  description="Estados financieros de EMCOSALUD — publicación conforme a la circular externa 016 de 2016 de la Supersalud."
+  description="Estados financieros — publicación conforme a la circular externa 016 de 2016 de la Supersalud."
 >
   <section class="bg-brand-blue-dark py-12 text-white md:py-14">
     <div class="container-page">
@@ -25,44 +54,49 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
     <div class="container-page max-w-4xl">
       <p class="section-lead mb-10">{financialStatementsIntro}</p>
 
-      <div class="grid gap-8 sm:grid-cols-2">
-        {
-          financialStatements.map((statement) => (
-            <a
-              href={statement.pdfHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-brand-sm no-underline transition hover:border-brand-green hover:shadow-brand"
-            >
-              <div class="flex items-center justify-center bg-slate-50 px-6 py-8">
-                <img
-                  src={statement.thumbnail}
-                  alt=""
-                  width={120}
-                  height={140}
-                  class="h-auto w-28 object-contain transition group-hover:scale-105"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
-              <div class="flex flex-1 flex-col p-5 text-center">
-                <p class="m-0 text-xs font-bold uppercase tracking-wide text-brand-green-dark">
-                  {statement.publishedAt}
-                </p>
-                <h2 class="m-0 mt-2 text-base font-bold uppercase text-brand-blue sm:text-lg">
-                  {statement.title}
-                </h2>
-                <p class="m-0 mt-2 text-sm text-slate-600">{statement.description}</p>
-                <span class="mt-4 inline-flex items-center justify-center gap-1 text-sm font-semibold text-brand-blue group-hover:text-brand-green-dark">
-                  <Icon name="document" size={16} />
-                  Ver PDF
-                  <Icon name="external" size={14} />
-                </span>
-              </div>
-            </a>
-          ))
-        }
-      </div>
+      {statementsList.length === 0 ? (
+        <p class="text-slate-500 text-center py-8">No hay estados financieros publicados para esta entidad en este momento.</p>
+      ) : (
+        <div class="grid gap-8 sm:grid-cols-2">
+          {
+            statementsList.map((statement: FinancialStatement) => {
+              const pdfHref = statement.pdfFile ? `http://localhost:4321/${statement.pdfFile}` : '#';
+              const yearText = statement.fiscalYear ? `Año ${statement.fiscalYear}` : '';
+
+              return (
+                <a
+                  href={pdfHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-brand-sm no-underline transition hover:border-brand-green hover:shadow-brand"
+                >
+                  <div class="flex items-center justify-center bg-slate-50 px-6 py-8">
+                    <div class="flex h-28 w-24 items-center justify-center rounded-xl bg-brand-blue/5 text-brand-blue transition group-hover:scale-105">
+                      <Icon name="document" size={48} />
+                    </div>
+                  </div>
+                  <div class="flex flex-1 flex-col p-5 text-center">
+                    <p class="m-0 text-xs font-bold uppercase tracking-wide text-brand-green-dark">
+                      {yearText}
+                    </p>
+                    <h2 class="m-0 mt-2 text-base font-bold uppercase text-brand-blue sm:text-lg">
+                      {statement.title || `Estados Financieros ${statement.fiscalYear}`}
+                    </h2>
+                    {statement.summary && (
+                      <p class="m-0 mt-2 text-sm text-slate-600">{statement.summary}</p>
+                    )}
+                    <span class="mt-4 inline-flex items-center justify-center gap-1 text-sm font-semibold text-brand-blue group-hover:text-brand-green-dark">
+                      <Icon name="document" size={16} />
+                      {statement.fileLabel || 'Ver PDF'}
+                      <Icon name="external" size={14} />
+                    </span>
+                  </div>
+                </a>
+              );
+            })
+          }
+        </div>
+      )}
     </div>
   </section>
 </BaseLayout>

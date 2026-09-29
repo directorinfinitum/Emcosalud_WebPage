@@ -1,6 +1,21 @@
 ---
 import BannerCarousel from '@/components/react/BannerCarousel';
-import { heroBanners } from '@/data/banners';
+
+export const prerender = false;
+
+let banners = [];
+// Define aquí el ID numérico que tiene Emcosalud en la tabla 'portals' de tu base de datos
+const EMCOSALUD_PORTAL_ID = 1; // <--- Cambia este número por el ID real de Emcosalud
+
+try {
+  const response = await fetch(`http://localhost:4321/api/banners.json?portalId=${EMCOSALUD_PORTAL_ID}`);
+  if (response.ok) {
+    const json = await response.json();
+    banners = json.data ?? [];
+  }
+} catch (error) {
+  console.error('Error al conectar con el CMS para los banners:', error);
+}
 ---
 
-<BannerCarousel client:load banners={heroBanners} />
+<BannerCarousel client:load banners={banners} />

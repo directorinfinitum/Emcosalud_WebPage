@@ -4,7 +4,7 @@ import Header from "@/components/layout/Header.astro";
 import { site } from "@/data/site";
 import "@/styles/global.css";
 import CookieBanner from "../components/cookies/CookieBanner.astro";
-
+import Popup from '@/components/react/Popup';
 
 interface Props {
   title?: string;
@@ -14,16 +14,38 @@ interface Props {
 const { title = site.name, description = site.description } = Astro.props;
 const pageTitle = title === site.name ? title : `${title} | ${site.name}`;
 
-
-
 const consentCookie = Astro.cookies.get('cookies-consent');
-
-// Intentamos parsear la cookie de forma segura utilizando el método .json() de Astro
 const permisos = consentCookie ? consentCookie.json() : null;
 
-// Creamos banderas lógicas listas para usar en el HTML
 const permitirAnalitica = permisos?.analitica === true;
 const permitirPublicidad = permisos?.publicidad === true;
+
+// Slug registrado en el CMS
+const PORTAL_SLUG = 'emcosalud';
+
+// 1. OBTENEMOS LA RUTA ACTUAL DINÁMICAMENTE DESDE ASTRO
+const currentPath = Astro.url.pathname;
+
+let activePopup = null;
+
+try {
+  // 2. ENVIAMOS EL PATH ACTUAL EN LA CONSULTA AL CMS
+  const response = await fetch(`http://localhost:4321/api/v1/popups?portal=${PORTAL_SLUG}&path=${currentPath}`, {
+    headers: {
+      'X-Portal-Slug': PORTAL_SLUG,
+    },
+  });
+
+  if (response.ok) {
+    const result = await response.json();
+
+    if (result.data && result.data.length > 0) {
+      activePopup = result.data[0];
+    }
+  }
+} catch (error) {
+  console.error('Error al obtener el popup desde la API pública:', error);
+}
 ---
 
 <!doctype html>
@@ -47,24 +69,31 @@ const permitirPublicidad = permisos?.publicidad === true;
     </div>
 
     <CookieBanner />
-    {/* CONSULTA: Si se permitió la analítica, inyectamos el script correspondiente */}
-      {permitirAnalitica && (
-        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-XXXXX-Y"></script>
-        <script is:inline>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'UA-XXXXX-Y');
-        </script>
-      )}
 
-<!--     {/* CONSULTA: Si se permitió la publicidad, inyectamos el píxel */}
-      {permitirPublicidad && (
-        <script is:inline>
-          console.log("Script de marketing/publicidad inicializado");
-        </script>
-      )}
--->
+    {permitirAnalitica && (
+      <script async src="https://www.googletagmanager.com/gtag/js?id=UA-XXXXX-Y"></script>
+      <script is:inline>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-XXXXX-Y');
+      </script>
+    )}
+
     <script src="https://cdn.userway.org/widget.js" data-account="jY03tOl3dk"></script>
+
+    {/* 3. RENDERIZAMOS EL POPUP DENTRO DEL BODY (O al final de este) */}
+    {activePopup && (
+      <Popup 
+        client:load 
+        id={activePopup.id.toString()}
+        title={activePopup.title || activePopup.internal_name} 
+        content={activePopup.description || activePopup.content}
+        imageUrl={activePopup.imageUrl}
+        linkUrl={activePopup.url}
+        ctaText={activePopup.buttonText || activePopup.ctaText}
+        frequency={activePopup.frequency}
+      />
+    )}
   </body>
 </html>

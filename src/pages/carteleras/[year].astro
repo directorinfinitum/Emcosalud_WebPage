@@ -1,15 +1,47 @@
 ---
 import AtencionUsuarioHero from '@/components/sections/AtencionUsuarioHero.astro';
-import BoletinEditions from '@/components/sections/BoletinEditions.astro';
+import CarteleraEditions from '@/components/sections/CarteleraEditions.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 
-const year = '2025';
-// Define el slug o ID de la categoría que deseas filtrar
-const categorySlug = 'boletines'; // Cambia esto por el slug de tu categoría en WP
-// const categoryId = 5; // Opcional: si prefieres usar el ID numérico en lugar del slug
----
-<BaseLayout title={`Boletín ${year}`} description={`Boletines institucionales ${year} — EMCOSALUD.`}>
+const EMCOSALUD_PORTAL_ID = 1;
 
+// 1. Obtenemos dinámicamente los años disponibles desde la API al compilar
+export async function getStaticPaths() {
+  try {
+    const response = await fetch(`http://localhost:4321/api/capacitaciones.json?portalId=1`);
+    if (!response.ok) return [{ params: { year: '2026' } }];
+
+    const json = await response.json();
+    const publications = json.data ?? [];
+    
+    const yearsSet = new Set<string>();
+    publications.forEach((pub: { publishedDate?: string }) => {
+      if (pub.publishedDate) {
+        const pubYear = new Date(pub.publishedDate).getFullYear().toString();
+        yearsSet.add(pubYear);
+      }
+    });
+
+    if (yearsSet.size === 0) {
+      yearsSet.add('2026');
+    }
+
+    return Array.from(yearsSet).map((year) => ({
+      params: { year },
+    }));
+  } catch (error) {
+    console.error('Error al obtener los años para las carteleras:', error);
+    return [{ params: { year: '2026' } }];
+  }
+}
+
+// 2. Extraemos el año actual de la URL
+const { year } = Astro.params;
+const currentYear = year || '2026';
+---
+
+<BaseLayout title={`Cartelera ${currentYear}`} description={`Carteleras informativas ${currentYear} — EMCOSALUD.`}>
+  <!-- Overlay del Spinner -->
   <div 
     id="page-loading-overlay" 
     class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white/90 backdrop-blur-sm transition-opacity duration-300"
@@ -19,14 +51,14 @@ const categorySlug = 'boletines'; // Cambia esto por el slug de tu categoría en
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
       </svg>
-      <span class="text-sm font-semibold text-brand-blue">Cargando Boletín {year}...</span>
+      <span class="text-sm font-semibold text-brand-blue">Cargando Cartelera {currentYear}...</span>
     </div>
   </div>
 
-  <AtencionUsuarioHero title={`Boletín ${year}`} lead="Consulta y descarga las ediciones del boletín institucional." />
+  <AtencionUsuarioHero title={`Cartelera ${currentYear}`} lead="Consulta y descarga las carteleras informativas." />
   
-  {/* Se pasa la prop categorySlug (o categoryId) al componente */}
-  <BoletinEditions year={year} categorySlug={categorySlug} />
+  {/* Pasamos el año dinámico al componente que hace el fetch y filtrado */}
+  <CarteleraEditions year={currentYear} />
 </BaseLayout>
 
 <script is:inline>
@@ -48,13 +80,10 @@ const categorySlug = 'boletines'; // Cambia esto por el slug de tu categoría en
     }
   }
 
-  // 1. Escuchar evento personalizado que enviará BoletinEditions cuando la API termine
   window.addEventListener('cartelera-loaded', hideSpinner);
 
-  // 2. Timeout de seguridad (Si la API o la red fallan, se oculta a los 4 segundos máximo)
   const fallbackTimer = setTimeout(hideSpinner, 4000);
 
-  // 3. Si el DOM ya cargó antes de montar el listener, evaluar estado
   if (document.readyState === 'complete') {
     setTimeout(hideSpinner, 500);
   } else {
@@ -63,7 +92,6 @@ const categorySlug = 'boletines'; // Cambia esto por el slug de tu categoría en
     });
   }
 
-  // 4. Activar el spinner al hacer clic en enlaces internos
   document.addEventListener('click', (e) => {
     const link = e.target.closest('a');
     if (link) {

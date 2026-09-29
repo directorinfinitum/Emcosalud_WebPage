@@ -36,7 +36,7 @@ export const site = {
     authorizationFormPdf:
       '/documents/formulario-autorizacion-tratamiento-datos.pdf',
     cookiesPolicyPdf:
-      'https://emcofarma.com/wp-content/uploads/2025/09/POLITICA-USO-DE-COOKIES-Y-SITIO-WEB-INSTITUCIONAL.pdf',
+      '/documents/POLITICA-USO-DE-COOKIES-Y-SITIO-WEB-INSTITUCIONAL.pdf',
   },
   regulators: [
     {
