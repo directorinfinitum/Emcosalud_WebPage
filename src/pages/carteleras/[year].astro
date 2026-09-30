@@ -7,8 +7,9 @@ const EMCOSALUD_PORTAL_ID = 1;
 
 // 1. Obtenemos dinámicamente los años disponibles desde la API al compilar
 export async function getStaticPaths() {
+  const EMCOSALUD_PORTAL_ID = 1;
   try {
-    const response = await fetch(`http://localhost:4321/api/capacitaciones.json?portalId=1`);
+    const response = await fetch(`http://localhost:4321/api/capacitaciones.json?portalId=${EMCOSALUD_PORTAL_ID}`);
     if (!response.ok) return [{ params: { year: '2026' } }];
 
     const json = await response.json();
@@ -57,8 +58,8 @@ const currentYear = year || '2026';
 
   <AtencionUsuarioHero title={`Cartelera ${currentYear}`} lead="Consulta y descarga las carteleras informativas." />
   
-  {/* Pasamos el año dinámico al componente que hace el fetch y filtrado */}
-  <CarteleraEditions year={currentYear} />
+  {/* ✅ Pasamos el portalId junto con el año */}
+  <CarteleraEditions year={currentYear} portalId={EMCOSALUD_PORTAL_ID} />
 </BaseLayout>
 
 <script is:inline>

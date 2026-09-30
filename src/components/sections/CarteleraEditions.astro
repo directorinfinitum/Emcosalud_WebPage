@@ -3,9 +3,10 @@ import Icon from '@/components/icons/Icon.astro';
 
 interface Props {
   year: string;
+  portalId?: number; // 👈 1. Añadido a las props
 }
 
-const { year } = Astro.props;
+const { year, portalId } = Astro.props;
 
 interface CarteleraItem {
   id: number;
@@ -34,7 +35,13 @@ const MONTH_ORDER: Record<string, number> = {
 let issues: { label: string; href: string }[] = [];
 
 try {
-  const response = await fetch('http://localhost:4321/api/publicaciones.json');
+  // 👈 2. Construimos la URL de forma dinámica agregando portalId si está presente
+  const url = new URL('http://localhost:4321/api/publicaciones.json');
+  if (portalId) {
+    url.searchParams.set('portalId', String(portalId));
+  }
+
+  const response = await fetch(url.toString());
 
   if (response.ok) {
     const json = await response.json();

@@ -5,9 +5,10 @@ interface Props {
   year: string;
   categorySlug?: string;
   categoryId?: number;
+  portalId?: number; // 👈 1. Añadido a las props
 }
 
-const { year, categorySlug } = Astro.props;
+const { year, categorySlug, portalId } = Astro.props;
 
 // Estructura ligera que esperas recibir de la API del CMS
 interface BoletinItem {
@@ -28,9 +29,16 @@ const MONTH_ORDER: Record<string, number> = {
 let boletines: BoletinItem[] = [];
 
 try {
-  // Consumimos directamente la API pública del CMS (puerto 4321)
-  // Ajusta la URL según tu entorno de producción o desarrollo
-  const response = await fetch('http://localhost:4321/api/boletines.json');
+  // 👈 2. Construimos la URL de forma dinámica agregando portalId si viene definido
+  const url = new URL('http://localhost:4321/api/boletines.json');
+  if (portalId) {
+    url.searchParams.set('portalId', String(portalId));
+  }
+  if (categorySlug) {
+    url.searchParams.set('category', categorySlug);
+  }
+
+  const response = await fetch(url.toString());
   if (response.ok) {
     const json = await response.json();
     boletines = json.data ?? [];
