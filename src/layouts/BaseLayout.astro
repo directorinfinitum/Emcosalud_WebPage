@@ -5,6 +5,7 @@ import { site } from "@/data/site";
 import "@/styles/global.css";
 import CookieBanner from "../components/cookies/CookieBanner.astro";
 import Popup from '@/components/react/Popup';
+import WhatsAppButton from "@/components/react/WhatsAppButton";
 
 interface Props {
   title?: string;
@@ -95,5 +96,11 @@ try {
         frequency={activePopup.frequency}
       />
     )}
+
+    <WhatsAppButton 
+      client:idle 
+      message="Hola" 
+      companyName="Ferrocarriles" 
+    />
   </body>
 </html>
