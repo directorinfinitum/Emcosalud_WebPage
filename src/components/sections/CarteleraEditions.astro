@@ -36,7 +36,7 @@ let issues: { label: string; href: string }[] = [];
 
 try {
   // 👈 2. Construimos la URL de forma dinámica agregando portalId si está presente
-  const url = new URL('http://localhost:4321/api/publicaciones.json');
+  const url = new URL('https://gestion.emcosalud.com.co/api/publicaciones.json');
   if (portalId) {
     url.searchParams.set('portalId', String(portalId));
   }

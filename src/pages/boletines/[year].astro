@@ -9,7 +9,7 @@ const EMCOSALUD_PORTAL_ID = 1;
 export async function getStaticPaths() {
   const EMCOSALUD_PORTAL_ID = 1;
   try {
-    const response = await fetch(`http://localhost:4321/api/capacitaciones.json?portalId=${EMCOSALUD_PORTAL_ID}`);
+    const response = await fetch(`http://localhost:4321/api/boletines.json?portalId=${EMCOSALUD_PORTAL_ID}`);
     if (response.ok) {
       const json = await response.json();
       const publications = json.data ?? [];

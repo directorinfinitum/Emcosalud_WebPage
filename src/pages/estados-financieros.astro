@@ -2,7 +2,6 @@
 import Icon from '@/components/icons/Icon.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 
-// 1. Definimos la interfaz para que TypeScript reconozca los campos
 interface FinancialStatement {
   id: number;
   fiscalYear: number;
@@ -13,27 +12,43 @@ interface FinancialStatement {
   fileLabel: string | null;
 }
 
-const currentCompanyId = 1; // El ID correspondiente a esta página pública
+const currentCompanyId = 1;
+
+// Servidor a servidor (red interna de Docker). En local cae a localhost.
+const CMS_API_URL = process.env.CMS_API_URL ?? 'http://localhost:4321';
+// Lo que abre el navegador del visitante.
+const CMS_PUBLIC_URL = process.env.CMS_PUBLIC_URL ?? 'https://gestion.emcosalud.com.co';
 
 let statementsList: FinancialStatement[] = [];
 
 try {
-  // Apuntando firmemente al puerto 4321 del CMS
-  const response = await fetch(`http://localhost:4321/api/financial-statements.json?company=${currentCompanyId}`);
+  const response = await fetch(
+    `${CMS_PUBLIC_URL}/api/financial-statements.json?company=${currentCompanyId}`,
+    { signal: AbortSignal.timeout(3000) },
+  );
   if (response.ok) {
     statementsList = await response.json();
-    
-    // ORDENAR: Del año más actual al más viejo (descendente)
     statementsList.sort((a, b) => b.fiscalYear - a.fiscalYear);
-
   } else {
-    console.error("El CMS respondió con estado:", response.status);
+    console.error('El CMS respondió con estado:', response.status);
   }
 } catch (error) {
-  console.error("Error al conectar con el CMS administrativo:", error);
+  console.error('Error al conectar con el CMS administrativo:', error);
 }
 
-const financialStatementsIntro = "Estados financieros publicados conforme a la normativa vigente.";
+// Convierte lo que devuelva el CMS (ruta o URL con localhost) en una URL pública.
+function publicFileUrl(file: string | null): string {
+  if (!file) return '#';
+  // Si el CMS ya devolviera una URL completa, la usamos tal cual
+  if (/^https?:\/\//i.test(file)) {
+    return `${CMS_PUBLIC_URL}${new URL(file).pathname}`;
+  }
+  // pdfFile es la storageKey ("media/2026/10/xxx.pdf"); la ruta pública
+  // del CMS es /media/<storageKey>
+  return `${CMS_PUBLIC_URL}/media/${file.replace(/^\/+/, '')}`;
+}
+
+const financialStatementsIntro = 'Estados financieros publicados conforme a la normativa vigente.';
 ---
 
 <BaseLayout
@@ -60,7 +75,7 @@ const financialStatementsIntro = "Estados financieros publicados conforme a la n
         <div class="grid gap-8 sm:grid-cols-2">
           {
             statementsList.map((statement: FinancialStatement) => {
-              const pdfHref = statement.pdfFile ? `http://localhost:4321/${statement.pdfFile}` : '#';
+              const pdfHref = statement.pdfFile ? `https://gestion.emcosalud.com.co/media/${statement.pdfFile}` : '#';
               const yearText = statement.fiscalYear ? `Año ${statement.fiscalYear}` : '';
 
               return (

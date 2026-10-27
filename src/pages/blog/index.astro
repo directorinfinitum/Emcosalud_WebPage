@@ -36,7 +36,7 @@ let totalPages = 1;
 try {
   // 2. ENVIAR EL `portal` AL ENDPOINT DEL CMS
   const response = await fetch(
-    `http://localhost:4321/api/blog.json?page=${currentPage}&limit=${PER_PAGE}&portal=${portalSlug}`
+    `https://gestion.emcosalud.com.co/api/blog.json?page=${currentPage}&limit=${PER_PAGE}&portal=${portalSlug}`
   );
 
   if (response.ok) {

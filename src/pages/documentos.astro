@@ -60,7 +60,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 
     try {
       // URL de tu CMS local corriendo en desarrollo (ajusta el puerto si es necesario, ej. 4321)
-      const CMS_API = `http://localhost:4321/api/search.json?doc=${encodeURIComponent(documento)}`;
+      const CMS_API = `https://gestion.emcosalud.com.co/api/search.json?doc=${encodeURIComponent(documento)}`;
       
       const response = await fetch(CMS_API);
 
@@ -91,7 +91,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
           const pdfPath = cert.pdfFile ? cert.pdfFile : '';
           
           // Construimos la URL completa apuntando al CMS local (puerto 4321)
-          const pdfUrl = pdfPath ? `http://localhost:4321/media/${pdfPath}` : '';
+          const pdfUrl = pdfPath ? `https://gestion.emcosalud.com.co/media/${pdfPath}` : '';
 
           // Si no hay archivo PDF asociado, mostramos una advertencia en lugar del botón de ver
           const botonAccion = pdfUrl ? `

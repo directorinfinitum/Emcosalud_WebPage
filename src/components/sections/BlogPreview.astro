@@ -20,7 +20,7 @@ let posts: {
 
 try {
   // Consumimos el endpoint JSON limpio del CMS (puerto 4321) pidiendo exactamente 4 elementos
-  const response = await fetch('http://localhost:4321/api/blog.json?limit=4');
+  const response = await fetch('https://gestion.emcosalud.com.co/api/blog.json?limit=4');
 
   if (response.ok) {
     const json = await response.json();

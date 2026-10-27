@@ -30,7 +30,7 @@ let boletines: BoletinItem[] = [];
 
 try {
   // 👈 2. Construimos la URL de forma dinámica agregando portalId si viene definido
-  const url = new URL('http://localhost:4321/api/boletines.json');
+  const url = new URL('https://gestion.emcosalud.com.co/api/boletines.json');
   if (portalId) {
     url.searchParams.set('portalId', String(portalId));
   }

@@ -8,7 +8,7 @@ let banners = [];
 const EMCOSALUD_PORTAL_ID = 1; // <--- Cambia este número por el ID real de Emcosalud
 
 try {
-  const response = await fetch(`http://localhost:4321/api/banners.json?portalId=${EMCOSALUD_PORTAL_ID}`);
+  const response = await fetch(`https://gestion.emcosalud.com.co/api/banners.json?portalId=${EMCOSALUD_PORTAL_ID}`);
   if (response.ok) {
     const json = await response.json();
     banners = json.data ?? [];

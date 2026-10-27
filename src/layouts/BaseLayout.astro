@@ -30,8 +30,8 @@ const currentPath = Astro.url.pathname;
 let activePopup = null;
 
 try {
-  // 2. ENVIAMOS EL PATH ACTUAL EN LA CONSULTA AL CMS
-  const response = await fetch(`http://localhost:4321/api/v1/popups?portal=${PORTAL_SLUG}&path=${currentPath}`, {
+  // 2. ENVIAMOS EL PATH ACTUAL EN LA CONSULTA AL CMS EN PRODUCCIÓN
+  const response = await fetch(`https://gestion.emcosalud.com.co/api/v1/popups?portal=${PORTAL_SLUG}&path=${currentPath}`, {
     headers: {
       'X-Portal-Slug': PORTAL_SLUG,
     },

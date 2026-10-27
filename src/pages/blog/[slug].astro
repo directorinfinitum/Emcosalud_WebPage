@@ -26,7 +26,7 @@ let post: PostView | null = null;
 
 try {
   // 2. PASAR EL PORTAL AL ENDPOINT DEL CMS
-  const response = await fetch(`http://localhost:4321/api/blog/${slug}?portal=${portalSlug}`);
+  const response = await fetch(`https://gestion.emcosalud.com.co/api/blog/${slug}?portal=${portalSlug}`);
 
   if (response.ok) {
     const json = await response.json();
