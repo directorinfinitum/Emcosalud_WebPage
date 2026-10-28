@@ -98,9 +98,9 @@ export const POST: APIRoute = async ({ request }) => {
 
     // 6. Enviar correo a la sede correspondiente
     await resend.emails.send({
-      from: 'AGENDAMIENTO DE CITA PAGÍNA WEB <onboarding@resend.dev>',
-      to: ['webmaster@emcosalud.com'],
-     // cc: ['redes.sociales@emcosalud.com'], // Recibe copia visible del mensaje inicial
+      from: 'AGENDAMIENTO DE CITA PAGÍNA WEB <onboarding@gestion.emcosalud.com.co>',
+      to: [correoDestino],
+      cc: ['redes.sociales@emcosalud.com'], // Recibe copia visible del mensaje inicial
       replyTo: email,
       subject: `Nueva Solicitud Cita [${sede}] - ${fullName}`,
       html: `

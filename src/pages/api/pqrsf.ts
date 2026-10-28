@@ -1,6 +1,14 @@
 import type { APIRoute } from 'astro';
 import { Buffer } from 'node:buffer'; // Importación explícita para evitar fallos de ejecución
 
+export const EMAILS_POR_SEDE: Record<string, string> = {
+  // Sedes Huila
+  'HUILA': 'atencionalusuario@emcosalud.com',
+  'TOLIMA': 'atencion.usuario.tolima@emcosalud.com', 
+  // Correo de respaldo si no coincide ninguna sede
+  'default': 'webmaster@emcosalud.com',
+};
+
 // Forzar a Astro a tratar esta ruta como un endpoint dinámico (evita el 404 en SSG/Híbrido)
 export const prerender = false;
 
@@ -32,6 +40,9 @@ export const POST: APIRoute = async ({ request }) => {
     // Determinar sede seleccionada
     const sede = department === 'HUILA' ? sedeshuila : department === 'TOLIMA' ? sedestolima : 'No especificada';
 
+    // 3. Obtener el correo destino según la sede
+    const correoDestino = EMAILS_POR_SEDE[department] || EMAILS_POR_SEDE['default'];
+
     // Manejo de archivo adjunto
     const file = formData.get('records') as File | null;
     const attachments = [];
@@ -53,7 +64,7 @@ export const POST: APIRoute = async ({ request }) => {
     // Identificador único de radicado
     const ticketId = Math.floor(100000 + Math.random() * 900000); // Se amplió a 6 dígitos
     const timestamp = new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota' });
-    const subject = `PQRSF #${ticketId}`;
+    const subject = `PQRSF PAGINA WEB #${ticketId}`;
 
     const resendResponse = await fetch('https://api.resend.com/emails', {
       method: 'POST',
@@ -62,9 +73,9 @@ export const POST: APIRoute = async ({ request }) => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: 'Sistema PQRSF <onboarding@resend.dev>',
-        to: ['webmaster@emcosalud.com'],
-        // cc: ['redes.sociales@emcosalud.com'],
+        from: 'Sistema PQRSF <onboarding@gestion.emcosalud.com.co>',
+        to: [correoDestino],
+        cc: ['redes.sociales@emcosalud.com'],
         reply_to: email,
         subject,
         headers: {

@@ -57,16 +57,16 @@ export const POST: APIRoute = async ({ request }) => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: 'Sistema SICOF <onboarding@resend.dev>', // Cambiar por dominio verificado en prod
-        to: ['webmaster@emcosalud.com'], // Cambiar al buzón receptor final
-       // cc: ['redes.sociales@emcosalud.com'], // Recibe copia visible del mensaje inicial
+        from: 'Sistema SICOF <onboarding@gestion.emcosalud.com.co>', // Cambiar por dominio verificado en prod
+        to: ['sarlaft@emcosalud.com'], // Cambiar al buzón receptor final
+        cc: ['redes.sociales@emcosalud.com'], // Recibe copia visible del mensaje inicial
         reply_to: email,
         subject,
         headers: {
           'X-Entity-Ref-ID': `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
         },
         html: `
-          <h2>Nuevo Reporte SICOF (#${ticketId})</h2>
+          <h2>Nuevo Reporte SICOF PAGINA WEB (#${ticketId})</h2>
           <hr />
           <p><strong>Tipo de Incidente:</strong> ${incidenttype}</p>
           <p><strong>Fecha en que se detectó:</strong> ${appointmentDate}</p>

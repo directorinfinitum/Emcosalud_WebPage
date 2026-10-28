@@ -68,9 +68,9 @@ export const POST: APIRoute = async ({ request }) => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: 'Sistema SOAT <onboarding@resend.dev>', // Ajustar a tu dominio verificado en producción
-        to: ['webmaster@emcosalud.com'], // Ajustar a tu correo de pruebas
-      //  cc: ['redes.sociales@emcosalud.com'], // Recibe copia visible del mensaje inicial
+        from: 'Sistema SOAT <onboarding@gestion.emcosalud.com.co>', // Ajustar a tu dominio verificado en producción
+        to: ['prestacion.servicios.citas12@gmail.com'], // Ajustar a tu correo de pruebas
+        cc: ['redes.sociales@emcosalud.com'], // Recibe copia visible del mensaje inicial
         reply_to: email,
         subject: `Nueva Solicitud SOAT - ${firstName} ${lastName}`,
         html: `
