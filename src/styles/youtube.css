@@ -1,11 +1,14 @@
-
 .youtube-section {
-  padding: 4rem 1rem;
+  width: 100%;
+  padding: 4rem 1.5rem; /* Un poco más de espacio lateral de seguridad */
+  box-sizing: border-box;
 }
 
 .container {
+  width: 100%;
   max-width: 1300px;
-  margin: auto;
+  margin: 0 auto; /* Asegura el centrado perfecto */
+  box-sizing: border-box;
 }
 
 .section-header {
@@ -51,7 +54,7 @@
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 15px rgba(0,0,0,.08);
-  transition: .3s;
+  transition: transform .3s ease;
 }
 
 .video-card:hover {
@@ -61,13 +64,17 @@
 .video-card img {
   width: 100%;
   display: block;
+  aspect-ratio: 16 / 9; /* Mantiene la proporción uniforme en miniatura */
+  object-fit: cover;
 }
 
 .video-content {
   padding: 1rem;
 }
 
-.video-content h4 {
+/* Corregido de h4 a h3 para que coincida con tu componente de Astro */
+.video-content h3 {
   color: #222;
+  font-size: 1rem;
   line-height: 1.4;
 }
